@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS crop_information;
+
 create table plots
 (
     plot_id             serial

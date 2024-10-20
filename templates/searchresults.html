@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Wildflower Farm</title>
+    </head>
+    <body>
+        {% include 'header.html' %}
+        <h1>Crop Search Results</h1>
+        {% if crop_infos|length == 0: %}
+            (None)
+        {% else %}
+            {% for crop_info in crop_infos: %}
+            <strong>Variety:</strong> {{ crop_info['variety'] }}<br>
+            <strong>Latin Name:</strong> {{ crop_info['latin_name'] }}<br>
+            <strong>Type:</strong> {{ crop_info['type'] }}<br>
+            <strong>Seed Spacing (inches):</strong> {{ crop_info['seed_spacing_inches'] }}<br>
+            <strong>Row Spacing (inches):</strong> {{ crop_info['row_spacing_inches'] }}<br>
+            <strong>Seed Spacing (Harvest) (inches):</strong> {{ crop_info['seed_spacing_harvest'] }}<br>
+            <strong>Row Spacing (Harvest) (inches):</strong> {{ crop_info['row_spacing_harvest'] }}<br>
+            <strong>Days to Maturity:</strong> {{ crop_info['days_to_maturity'] }}<br>
+            <strong>Days to Seed Maturity:</strong> {{ crop_info['days_to_seed_maturity'] }}<br>
+            <strong>Days to Transplantation:</strong> {{ crop_info['days_to_transplantation'] }}<br>
+            <strong>Days to Direct Sow:</strong> {{ crop_info['days_to_direct_sow'] }}<br>
+            <strong>Days to Harvest:</strong> {{ crop_info['days_to_harvest'] }}<br>
+            <strong>Days to Seed Harvest:</strong> {{ crop_info['days_to_seed_harvest'] }}<br>
+            <strong>Indoor Seed Starting Date:</strong> {{ crop_info['indoor_seed_starting_date'] }}<br>
+            <strong>Transplanting Date:</strong> {{ crop_info['transplanting_date'] }}<br>
+            <strong>Direct Sow Date:</strong> {{ crop_info['direct_sow_date'] }}<br>
+            <strong>Harvest Date:</strong> {{ crop_info['harvest_date'] }}<br>
+            <strong>Seed Harvest Date:</strong> {{ crop_info['seed_harvest_date'] }}<br>
+            <strong>Frost Sensitivity Rating:</strong> {{ crop_info['frost_sensitivity_rating'] }}<br>
+            {% endfor %}
+        {% endif %}
+        <br>
+        <br>
+        Click here to search another
+        <a href="/searchcrops">Crop search</a>
+        <br>
+        <br>
+        <br>
+        <br>
+            {% include 'footer.html' %}
+    </body>
+</html>

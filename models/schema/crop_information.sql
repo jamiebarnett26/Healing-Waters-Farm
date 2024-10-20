@@ -1,4 +1,6 @@
-create table crop_information
+DROP TABLE IF EXISTS crop_information;
+
+CREATE TABLE crop_information
 (
     crop_id                   serial
         primary key,
