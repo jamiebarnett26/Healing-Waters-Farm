@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Wildflower Farm</title>
-    </head>
     <body>
-        {% include 'header.html' %}
         <h1>Search for Crops</h1>
-        <form action="/searchresults" method="get">
-            Please enter a crop name:
-            <input type="text", name="crop_name", autofocus>
-            <input type="submit" value="Submit">
+        <form action="/searchcrops" method="get">
+            <input type="text", name="crop_name", autofocus> <input type="submit" value="Submit">
         </form>
         <br>
+        <hr>
+        {% for crop in crops: %}
+            <a href="/showcrop/{{ crop['type'] }}">{{ crop['type'] }}</a>
+            <hr>
+        {% endfor %}
         {% include 'footer.html' %}
     </body>
 </html>

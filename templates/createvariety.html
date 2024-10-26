@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    {{ crop_name }}<br>
+    {{ crop_info['latin_name'] }}<br>
+    <hr>
+    <form action="/addvariety/{{ crop_name }}" method="post">
+
+        <strong>Variety</strong>
+        <input type="text", name="variety", autofocus> <br>
+        <strong>Seed Spacing (inches):</strong>
+        <input type="text", name="speed_spacing_inches", value={{ crop_info['seed_spacing_inches'] }} autofocus> <br>
+        <strong>Row Spacing (inches):</strong>
+        <input type="text", name="row_spacing_inches", value={{ crop_info['row_spacing_inches'] }} autofocus> <br>
+        <strong>Seed Spacing (Harvest) (inches):</strong>
+        <input type="text", name="speed_spacing_harvest", value={{ crop_info['speed_spacing_harvest'] }} autofocus> <br>
+        <strong>Row Spacing (Harvest) (inches):</strong>
+        <input type="text", name="row_spacing_harvest", value={{ crop_info['row_spacing_harvest'] }} autofocus> <br>
+        <strong>Days to Transplantation:</strong>
+        <input type="text", name="days_to_transplantation", value={{ crop_info['days_to_transplantation'] }} autofocus> <br>
+        <strong>Days to Seed Maturity:</strong>
+        <input type="text", name="days_to_seed_maturity", value={{ crop_info['days_to_seed_maturity'] }} autofocus> <br>
+        <strong>Days to Direct Sow:</strong>
+        <input type="text", name="days_to_direct_sow", value={{ crop_info['days_to_direct_sow'] }} autofocus> <br>
+        <strong>Days to Harvest:</strong>
+        <input type="text", name="days_to_harvest", value={{ crop_info['days_to_harvest'] }} autofocus> <br>
+        <strong>Days to Seed Harvest:</strong>
+        <input type="text", name="days_to_seed_harvest", value={{ crop_info['days_to_seed_harvest'] }} autofocus> <br>
+        <strong>Indoor Seed Starting Date:</strong>
+        <input type="text", name="indoor_seed_starting_date", value={{ crop_info['indoor_seed_starting_date'] }} autofocus> <br>
+        <strong>Transplanting Date:</strong>
+        <input type="text", name="transplanting_date", value={{ crop_info['transplanting_date'] }} autofocus> <br>
+        <strong>Direct Sow Date:</strong>
+        <input type="text", name="direct_sow_date", value={{ crop_info['direct_sow_date'] }} autofocus> <br>
+        <strong>Harvest Date:</strong>
+        <input type="text", name="harvest_date", value={{ crop_info['harvest_date'] }} autofocus> <br>
+        <strong>Seed Harvest Date:</strong>
+        <input type="text", name="seed_harvest_date", value={{ crop_info['seed_harvest_date'] }} autofocus> <br>
+        <strong>Frost Sensitivity Rating:</strong>
+        <input type="text", name="frost_sensitivity_rating", value={{ crop_info['frost_sensitivity_rating'] }} autofocus> <br>
+        <input type="submit" value="Add Variety">
+    </form>
+    <hr>
+    {% include 'footer.html' %}
+</html>
+
+                

@@ -7,6 +7,7 @@ CREATE TABLE crop_information
     latin_name                varchar(255),
     variety                   varchar(255),
     type                      varchar(100),
+    template                  boolean,
     seed_spacing_inches       integer,
     row_spacing_inches        integer,
     seed_spacing_harvest      integer,

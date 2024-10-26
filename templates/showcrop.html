@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <strong>{{crop_name}}</strong> Add Crop Template
+        <hr>
+        See Varieties
+        <hr>
+        {% include 'displaycropinfo.html' %}
+        <hr>
+            <a href="/createvariety/{{ crop_name }}">Create Variety</a>
+        <hr>
+        {% include 'footer.html' %}
+    </body>
+</html>
+
