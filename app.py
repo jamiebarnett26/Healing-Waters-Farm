@@ -26,14 +26,14 @@ def index():
 
 #-----------------------------------------------------------------------
 
-@app.route('/searchcrops', methods=['GET'])
+@app.route('/selectFamily', methods=['GET'])
 def search_crops():
     cropname = flask.request.args.get('crop_name')
     if cropname == None:
         cropname = ""
     
     crops = database.get_crop_info(cropname)
-    html_code = flask.render_template('searchcrops.html',
+    html_code = flask.render_template('selectFamily.html',
                                       crops = crops,
                                       current_time=get_current_time())
     response = flask.make_response(html_code)
