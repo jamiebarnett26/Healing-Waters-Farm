@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
     <body>
-        <h1>Search for Crops</h1>
+        {% include 'cropselection_header.html' %}
+        <br>
+        <strong>Select Family</strong>
+        <br>
         <form action="/searchcrops" method="get">
             <input type="text", name="crop_name", autofocus> <input type="submit" value="Submit">
         </form>
