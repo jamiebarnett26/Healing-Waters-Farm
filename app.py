@@ -53,7 +53,7 @@ from urllib.parse import unquote
 
 @app.route('/selectSpecies/<family>', methods=['GET'])
 def show_species(family):
-    crops = database.get_crop_info_family(family)
+    crops = database.get_crop_info(family, 'family')
 
     seen_species = set()
     unique_species = []
@@ -95,31 +95,26 @@ def show_variety(species):
 
 #-----------------------------------------------------------------------
 
-@app.route('/selectType/<type>', methods=['GET'])
-def show_type(type):
-    crops = database.get_crop_info(type, 'crop_type')
+@app.route('/selectType/<crop_type>', methods=['GET'])
+def show_type(crop_type):
+    crops = database.get_crop_info(crop_type, 'variety')
 
-    seen_type = set()
-    unique_type = []
-    for crop in crops:
-        if crop['type'] not in seen_type:
-            unique_type.append(crop)
-            seen_type.add(crop['type'])
-    
     html_code = flask.render_template(
         'selectType.html',
-        type=type,
-        crops=unique_type,
+        crop_type=crop_type,
+        crops=crops,  
         current_time=get_current_time()
     )
 
     response = flask.make_response(html_code)
     return response
 
+#-----------------------------------------------------------------------
 
 @app.route('/showcrop/<crop_name>', methods=['GET'])
 def show_crop(crop_name):
-    crops = database.get_crop_info(crop_name)
+    crops = database.get_crop_info(crop_name, 'crop_type')
+
     html_code = flask.render_template('showcrop.html',
                                       crop_name=crop_name,
                                       crop_infos=crops,

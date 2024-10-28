@@ -8,7 +8,7 @@ CREATE TABLE crop_information
     family                    varchar(255),
     species                   varchar(255),
     variety                   varchar(255),
-    type                      varchar(100),
+    crop_type                 varchar(100),
     template                  boolean,
     seed_spacing_inches       integer,
     row_spacing_inches        integer,
