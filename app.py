@@ -97,7 +97,7 @@ def show_variety(species):
 
 @app.route('/selectType/<type>', methods=['GET'])
 def show_type(type):
-    crops = database.get_crop_info(type, 'type')
+    crops = database.get_crop_info(type, 'crop_type')
 
     seen_type = set()
     unique_type = []

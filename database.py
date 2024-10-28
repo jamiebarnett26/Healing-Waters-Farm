@@ -25,7 +25,7 @@ class Crop_Info (Base):
     family = sqlalchemy.Column(sqlalchemy.String)
     species = sqlalchemy.Column(sqlalchemy.String)
     variety = sqlalchemy.Column(sqlalchemy.String)
-    type = sqlalchemy.Column(sqlalchemy.String)
+    crop_type = sqlalchemy.Column(sqlalchemy.String)
     seed_spacing_inches = sqlalchemy.Column(sqlalchemy.Integer)
     row_spacing_inches = sqlalchemy.Column(sqlalchemy.Integer)
     seed_spacing_harvest = sqlalchemy.Column(sqlalchemy.Integer)
@@ -63,7 +63,7 @@ def get_crop_info_family(family_name):
                          'species':row.species, 
                          'variety':row.variety, 
                          'template':row.template,
-                         'type':row.type, 
+                         'crop_type':row.crop_type, 
                          'seed_spacing_inches':row.seed_spacing_inches, 
                          'row_spacing_inches':row.row_spacing_inches,
                          'seed_spacing_harvest':row.seed_spacing_harvest, 
@@ -92,7 +92,7 @@ def get_crop_info(search_value, search_field):
         'family': Crop_Info.family,
         'species': Crop_Info.species,
         'variety': Crop_Info.variety,
-        'type': Crop_Info.type
+        'crop_type': Crop_Info.crop_type
     }
 
     with sqlalchemy.orm.Session(_engine) as session:
@@ -109,7 +109,7 @@ def get_crop_info(search_value, search_field):
                 'species': row.species,
                 'variety': row.variety,
                 'template': row.template,
-                'type': row.type,
+                'crop_type': row.crop_type,
                 'seed_spacing_inches': row.seed_spacing_inches,
                 'row_spacing_inches': row.row_spacing_inches,
                 'seed_spacing_harvest': row.seed_spacing_harvest,
