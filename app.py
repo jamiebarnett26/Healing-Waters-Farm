@@ -32,9 +32,17 @@ def search_crops():
     if cropname == None:
         cropname = ""
     
-    crops = database.get_crop_info(cropname)
+    crops = database.get_crop_info(cropname, 'family')
+    seen_families = set()
+    unique_families = []
+    for crop in crops:
+        if crop['family'] not in seen_families:
+            unique_families.append(crop)
+            seen_families.add(crop['family'])
+
+
     html_code = flask.render_template('selectFamily.html',
-                                      crops = crops,
+                                      crops = unique_families,
                                       current_time=get_current_time())
     response = flask.make_response(html_code)
     return response
@@ -46,10 +54,65 @@ from urllib.parse import unquote
 @app.route('/selectSpecies/<family>', methods=['GET'])
 def show_species(family):
     crops = database.get_crop_info_family(family)
+
+    seen_species = set()
+    unique_species = []
+    for crop in crops:
+        if crop['species'] not in seen_species:
+            unique_species.append(crop)
+            seen_species.add(crop['species'])
+
+
     html_code = flask.render_template('selectSpecies.html', 
                                       family=family,
-                                      crop_infos = crops,
+                                      crops = unique_species,
                                       current_time = get_current_time())
+    response = flask.make_response(html_code)
+    return response
+
+#-----------------------------------------------------------------------
+
+@app.route('/selectVariety/<species>', methods=['GET'])
+def show_variety(species):
+    crops = database.get_crop_info(species, 'species')
+
+    seen_variety = set()
+    unique_variety = []
+    for crop in crops:
+        if crop['variety'] not in seen_variety:
+            unique_variety.append(crop)
+            seen_variety.add(crop['variety'])
+    
+    html_code = flask.render_template(
+        'selectVariety.html',
+        species=species,
+        crops=unique_variety,
+        current_time=get_current_time()
+    )
+    
+    response = flask.make_response(html_code)
+    return response
+
+#-----------------------------------------------------------------------
+
+@app.route('/selectType/<type>', methods=['GET'])
+def show_type(type):
+    crops = database.get_crop_info(type, 'type')
+
+    seen_type = set()
+    unique_type = []
+    for crop in crops:
+        if crop['type'] not in seen_type:
+            unique_type.append(crop)
+            seen_type.add(crop['type'])
+    
+    html_code = flask.render_template(
+        'selectType.html',
+        type=type,
+        crops=unique_type,
+        current_time=get_current_time()
+    )
+
     response = flask.make_response(html_code)
     return response
 

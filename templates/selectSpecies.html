@@ -6,7 +6,7 @@
         <strong>Select Species</strong>
         <hr>
         {% for crop in crops: %}
-            <a href="/showcrop/{{ crop['type'] }}">{{ crop['species'] }}</a>
+            <a href="/selectVariety/{{ crop['species'] }}">{{ crop['species'] }}</a>
             <hr>
         {% endfor %}
         {% include 'footer.html' %}
