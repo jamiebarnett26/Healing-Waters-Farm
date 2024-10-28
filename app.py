@@ -140,6 +140,7 @@ def create_variety(species):
 @app.route('/addvariety/<species>', methods=['POST'])
 def add_variety(species):
     crops = database.get_crop_info(species, 'species')
+    crop_type = flask.request.form.get('type')
     variety = flask.request.form.get('variety')
     family = flask.request.form.get('family')
     seed_spacing_inches = flask.request.form.get('seed_spacing_inches')
@@ -159,7 +160,7 @@ def add_variety(species):
     frost_sensitivity_rating = flask.request.form.get('frost_sensitivity_rating')
 
     crop_info = {'latin_name':crops[0]['latin_name'], 'variety':variety, 'template':False,
-                         'crop_type':crops[0]['crop_type'], 
+                         'crop_type':crop_type, 
                          'family':family,
                          'species':species,
                          'seed_spacing_inches':seed_spacing_inches, 'row_spacing_inches':row_spacing_inches,
@@ -169,5 +170,6 @@ def add_variety(species):
                          'days_to_seed_harvest':days_to_seed_harvest, 'indoor_seed_starting_date':indoor_seed_starting_date,
                          'transplanting_date':transplanting_date, 'direct_sow_date':direct_sow_date, 'harvest_date':harvest_date,
                          'seed_harvest_date':seed_harvest_date, 'frost_sensitivity_rating':frost_sensitivity_rating}
+    print(crop_info)
     database.add_crop(crop_info)
     return index()
