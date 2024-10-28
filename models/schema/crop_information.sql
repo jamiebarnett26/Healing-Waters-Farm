@@ -5,6 +5,8 @@ CREATE TABLE crop_information
     crop_id                   serial
         primary key,
     latin_name                varchar(255),
+    family                    varchar(255),
+    species                   varchar(255),
     variety                   varchar(255),
     type                      varchar(100),
     template                  boolean,

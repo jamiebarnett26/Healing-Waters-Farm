@@ -67,8 +67,10 @@ def create_variety(crop_name):
 
 @app.route('/addvariety/<crop_name>', methods=['POST'])
 def add_variety(crop_name):
-    variety = flask.request.args.get('variety')
     crops = database.get_crop_info(crop_name)
+    variety = flask.request.args.get('variety')
+    family = flask.request.args.get('family')
+    species = flask.request.args.get('species')
     seed_spacing_inches = flask.request.args.get('seed_spacing_inches')
     row_spacing_inches = flask.request.args.get('row_spacing_inches')
     seed_spacing_harvest = flask.request.args.get('seed_spacing_harvest')
@@ -86,7 +88,10 @@ def add_variety(crop_name):
     frost_sensitivity_rating = flask.request.args.get('frost_sensitivity_rating')
 
     crop_info = {'latin_name':crops[0]['latin_name'], 'variety':variety, 'template':False,
-                         'type':crop_name, 'seed_spacing_inches':seed_spacing_inches, 'row_spacing_inches':row_spacing_inches,
+                         'type':crop_name, 
+                         'family':family,
+                         'species':species,
+                         'seed_spacing_inches':seed_spacing_inches, 'row_spacing_inches':row_spacing_inches,
                          'seed_spacing_harvest':seed_spacing_harvest, 'row_spacing_harvest':row_spacing_harvest,
                          'days_to_transplantation':days_to_transplantation, 'days_to_seed_maturity':days_to_seed_maturity,
                          'days_to_direct_sow':days_to_direct_sow, 'days_to_harvest':days_to_harvest,
