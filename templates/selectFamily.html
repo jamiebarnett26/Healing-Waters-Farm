@@ -11,7 +11,7 @@
         <br>
         <hr>
         {% for crop in crops: %}
-            <a href="/showcrop/{{ crop['type'] }}">{{ crop['type'] }}</a>
+            <a href="/selectSpecies/{{ crop['family'] }}">{{ crop['family'] }}</a>
             <hr>
         {% endfor %}
         {% include 'footer.html' %}

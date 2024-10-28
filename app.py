@@ -41,6 +41,12 @@ def search_crops():
 
 #-----------------------------------------------------------------------
 
+@app.route('/selectSpecies/<family>', methods=['GET'])
+def show_species():
+    crop_family =flask.request.args.get('crop_family')
+    crops = database.get_crop_info(cropname)
+
+
 @app.route('/showcrop/<crop_name>', methods=['GET'])
 def show_crop(crop_name):
     crops = database.get_crop_info(crop_name)
