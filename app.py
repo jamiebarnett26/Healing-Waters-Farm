@@ -41,10 +41,17 @@ def search_crops():
 
 #-----------------------------------------------------------------------
 
+from urllib.parse import unquote
+
 @app.route('/selectSpecies/<family>', methods=['GET'])
-def show_species():
-    crop_family =flask.request.args.get('crop_family')
-    crops = database.get_crop_info(cropname)
+def show_species(family):
+    crops = database.get_crop_info_family(family)
+    html_code = flask.render_template('selectSpecies.html', 
+                                      family=family,
+                                      crop_infos = crops,
+                                      current_time = get_current_time())
+    response = flask.make_response(html_code)
+    return response
 
 
 @app.route('/showcrop/<crop_name>', methods=['GET'])

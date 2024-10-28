@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html>
     <body>
-        bruh
+        {% include 'cropselection_header.html' %}
+        <br>
+        <strong>Select Species</strong>
+        <hr>
+        {% for crop in crops: %}
+            <a href="/showcrop/{{ crop['type'] }}">{{ crop['species'] }}</a>
+            <hr>
+        {% endfor %}
+        {% include 'footer.html' %}
     </body>
 </html>

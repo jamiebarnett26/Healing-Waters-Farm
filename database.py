@@ -47,6 +47,31 @@ class Crop_Info (Base):
 _engine = sqlalchemy.create_engine(_DATABASE_URL)
 
 #-----------------------------------------------------------------------
+def get_crop_info_family(family_name):
+    crop_infos = []
+
+    with sqlalchemy.orm.Session(_engine) as session:
+        query = session.query(Crop_Info).filter(
+            Crop_Info.family.ilike(family_name + '%'),
+            Crop_Info.template == True  # Filter for template being True
+        )
+        table = query.all()
+        for row in table:
+            crop_info = {'crop_id':row.crop_id, 'latin_name':row.latin_name, 
+                         'family':row.family, 'species':row.species, 'variety':row.variety, 'template':row.template,
+                         'type':row.type, 'seed_spacing_inches':row.seed_spacing_inches, 'row_spacing_inches':row.row_spacing_inches,
+                         'seed_spacing_harvest':row.seed_spacing_harvest, 'row_spacing_harvest':row.row_spacing_harvest,
+                         'days_to_transplantation':row.days_to_transplantation, 'days_to_seed_maturity':row.days_to_seed_maturity,
+                         'days_to_direct_sow':row.days_to_direct_sow, 'days_to_harvest':row.days_to_harvest,
+                         'days_to_seed_harvest':row.days_to_seed_harvest, 'indoor_seed_starting_date':row.indoor_seed_starting_date,
+                         'transplanting_date':row.transplanting_date, 'direct_sow_date':row.direct_sow_date, 'harvest_date':row.harvest_date,
+                         'seed_harvest_date':row.seed_harvest_date, 'frost_sensitivity_rating':row.frost_sensitivity_rating}
+            crop_infos.append(crop_info)
+
+    return crop_infos
+
+#------------------------------------------------------------------------------
+
 
 def get_crop_info(crop_name):
     crop_infos = []
