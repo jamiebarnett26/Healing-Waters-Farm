@@ -100,6 +100,7 @@ def get_crop_info(search_value, search_field):
 def add_crop(crop_info):
     with sqlalchemy.orm.Session(_engine) as session:
         new_crop = Crop_Info(**crop_info)
+        print(crop_info)
         session.add(new_crop)
         session.commit()
 

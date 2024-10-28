@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
-    {{ crop_name }}<br>
+    {{ species }}<br>
     {{ crop_info['latin_name'] }}<br>
     <hr>
-    <form action="/addvariety/{{ crop_name }}" method="post">
+    <form action="/addvariety/{{ species }}" method="post">
 
         <strong>Variety</strong>
         <input type="text", name="variety", autofocus> <br>
