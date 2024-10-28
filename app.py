@@ -126,7 +126,8 @@ def show_crop(crop_name):
 
 @app.route('/createvariety/<crop_name>', methods=['GET'])
 def create_variety(crop_name):
-    crops = database.get_crop_info(crop_name, 'variety')
+    crops = database.get_crop_info(crop_name, 'crop_type')
+    print(crops)
     html_code = flask.render_template('createvariety.html',
                                       crop_name=crop_name,
                                       crop_info=crops[0],
@@ -138,7 +139,7 @@ def create_variety(crop_name):
 
 @app.route('/addvariety/<crop_name>', methods=['POST'])
 def add_variety(crop_name):
-    crops = database.get_crop_info(crop_name, 'variety')
+    crops = database.get_crop_info(crop_name, 'crop_type')
     variety = flask.request.args.get('variety')
     family = flask.request.args.get('family')
     species = flask.request.args.get('species')
