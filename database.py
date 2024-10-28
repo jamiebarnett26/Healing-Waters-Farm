@@ -22,6 +22,8 @@ class Crop_Info (Base):
     crop_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     template = sqlalchemy.Column(sqlalchemy.Boolean)
     latin_name = sqlalchemy.Column(sqlalchemy.String)
+    family = sqlalchemy.Column(sqlalchemy.String)
+    species = sqlalchemy.Column(sqlalchemy.String)
     variety = sqlalchemy.Column(sqlalchemy.String)
     type = sqlalchemy.Column(sqlalchemy.String)
     seed_spacing_inches = sqlalchemy.Column(sqlalchemy.Integer)
@@ -56,7 +58,8 @@ def get_crop_info(crop_name):
         )
         table = query.all()
         for row in table:
-            crop_info = {'crop_id':row.crop_id, 'latin_name':row.latin_name, 'variety':row.variety, 'template':row.template,
+            crop_info = {'crop_id':row.crop_id, 'latin_name':row.latin_name, 
+                         'family':row.family, 'species':row.species, 'variety':row.variety, 'template':row.template,
                          'type':row.type, 'seed_spacing_inches':row.seed_spacing_inches, 'row_spacing_inches':row.row_spacing_inches,
                          'seed_spacing_harvest':row.seed_spacing_harvest, 'row_spacing_harvest':row.row_spacing_harvest,
                          'days_to_transplantation':row.days_to_transplantation, 'days_to_seed_maturity':row.days_to_seed_maturity,
