@@ -4,7 +4,7 @@
   "short_name": "CropManager",
   "icons": [
     {
-      "src": "icons/icon-192x192.png",
+      "src": "icons/icon-192x192.png -- need to get actual icons",
       "type": "image/png",
       "sizes": "192x192"
     },
