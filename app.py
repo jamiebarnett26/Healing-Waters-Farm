@@ -170,6 +170,5 @@ def add_variety(species):
                          'days_to_seed_harvest':days_to_seed_harvest, 'indoor_seed_starting_date':indoor_seed_starting_date,
                          'transplanting_date':transplanting_date, 'direct_sow_date':direct_sow_date, 'harvest_date':harvest_date,
                          'seed_harvest_date':seed_harvest_date, 'frost_sensitivity_rating':frost_sensitivity_rating}
-    print(crop_info)
     database.add_crop(crop_info)
     return index()
