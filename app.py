@@ -75,6 +75,7 @@ def show_species(family):
 @app.route('/selectVariety/<species>', methods=['GET'])
 def show_variety(species):
     crops = database.get_crop_info(species, 'species')
+    print(crops)
     seen_variety = set()
     unique_variety = []
     for crop in crops:
@@ -139,23 +140,23 @@ def create_variety(species):
 @app.route('/addvariety/<species>', methods=['POST'])
 def add_variety(species):
     crops = database.get_crop_info(species, 'species')
-    variety = flask.request.args.get('variety')
-    family = flask.request.args.get('family')
-    seed_spacing_inches = flask.request.args.get('seed_spacing_inches')
-    row_spacing_inches = flask.request.args.get('row_spacing_inches')
-    seed_spacing_harvest = flask.request.args.get('seed_spacing_harvest')
-    row_spacing_harvest = flask.request.args.get('row_spacing_harvest')
-    days_to_transplantation = flask.request.args.get('days_to_transplantation')
-    days_to_seed_maturity = flask.request.args.get('days_to_seed_maturity')
-    days_to_direct_sow = flask.request.args.get('days_to_direct_sow')
-    days_to_harvest = flask.request.args.get('days_to_harvest')
-    days_to_seed_harvest = flask.request.args.get('days_to_seed_harvest')
-    indoor_seed_starting_date= flask.request.args.get('indoor_seed_starting_date')
-    transplanting_date = flask.request.args.get('transplanting_date')
-    direct_sow_date = flask.request.args.get('direct_sow_date')
-    harvest_date = flask.request.args.get('harvest_date')
-    seed_harvest_date = flask.request.args.get('seed_harvest_date')
-    frost_sensitivity_rating = flask.request.args.get('frost_sensitivity_rating')
+    variety = flask.request.form.get('variety')
+    family = flask.request.form.get('family')
+    seed_spacing_inches = flask.request.form.get('seed_spacing_inches')
+    row_spacing_inches = flask.request.form.get('row_spacing_inches')
+    seed_spacing_harvest = flask.request.form.get('seed_spacing_harvest')
+    row_spacing_harvest = flask.request.form.get('row_spacing_harvest')
+    days_to_transplantation = flask.request.form.get('days_to_transplantation')
+    days_to_seed_maturity = flask.request.form.get('days_to_seed_maturity')
+    days_to_direct_sow = flask.request.form.get('days_to_direct_sow')
+    days_to_harvest = flask.request.form.get('days_to_harvest')
+    days_to_seed_harvest = flask.request.form.get('days_to_seed_harvest')
+    indoor_seed_starting_date= flask.request.form.get('indoor_seed_starting_date')
+    transplanting_date = flask.request.form.get('transplanting_date')
+    direct_sow_date = flask.request.form.get('direct_sow_date')
+    harvest_date = flask.request.form.get('harvest_date')
+    seed_harvest_date = flask.request.form.get('seed_harvest_date')
+    frost_sensitivity_rating = flask.request.form.get('frost_sensitivity_rating')
 
     crop_info = {'latin_name':crops[0]['latin_name'], 'variety':variety, 'template':False,
                          'crop_type':crops[0]['crop_type'], 

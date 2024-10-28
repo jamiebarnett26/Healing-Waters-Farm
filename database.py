@@ -64,7 +64,6 @@ def get_crop_info(search_value, search_field):
     with sqlalchemy.orm.Session(_engine) as session:
         query = session.query(Crop_Info).filter(
             search_fields_map[search_field].ilike(f"%{search_value}%"),
-            Crop_Info.template == True  # Filter for template being True
         )
         table = query.all()
         for row in table:
@@ -100,7 +99,6 @@ def get_crop_info(search_value, search_field):
 def add_crop(crop_info):
     with sqlalchemy.orm.Session(_engine) as session:
         new_crop = Crop_Info(**crop_info)
-        print(crop_info)
         session.add(new_crop)
         session.commit()
 
