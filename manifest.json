@@ -1,0 +1,23 @@
+{
+  "//comment": "Manifest files allow for websites to be downloaded as PWAs", 
+  "name": "My Crop Manager",
+  "short_name": "CropManager",
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/index.html",
+  "background_color": "#FFFFFF",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#4CAF50",
+  "description": "Manage and track your crop varieties and essential planting information."
+}
