@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html>
     <body>
-        <strong>{{crop_name}}</strong> Add Crop Template
-        <hr>
-        See Varieties
+        <strong>{{crop_name}}</strong> <a href="/addTemplate/{{ crop_infos[0]['crop_id'] }}">Add Crop Template</a>
         <hr>
         {% include 'displaycropinfo.html' %}
         <hr>
