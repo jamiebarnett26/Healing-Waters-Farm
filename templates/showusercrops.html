@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <h2>Added Crops</h2>
+    <body>
+        <hr>
+        {% for crop_info in crop_infos %}
+            <strong>Family:</strong> {{ crop_info['family_name'] }}<br>
+            <strong>Latin Name:</strong> {{ crop_info['latin_name'] }}<br>
+            <strong>Variety:</strong> {{ crop_info['variety_name'] }}<br>
+            <hr>
+        {% endfor %}
+        {% include 'footer.html' %}
+    </body>
+</html>
+

@@ -1,23 +1,18 @@
 {% for crop_info in crop_infos: %}
-    <strong>Type:</strong> {{ crop_info['crop_type'] }}<br>
+    <strong>Family:</strong> {{ crop_info['family_name'] }}<br>
     <strong>Latin Name:</strong> {{ crop_info['latin_name'] }}<br>
-    <strong>Family:</strong> {{ crop_info['family'] }}<br>
-    <strong>Species:</strong> {{ crop_info['species'] }}<br>
-    <strong>Variety:</strong> {{ crop_info['variety'] }}<br>
-    <strong>Seed Spacing (inches):</strong> {{ crop_info['seed_spacing_inches'] }}<br>
-    <strong>Row Spacing (inches):</strong> {{ crop_info['row_spacing_inches'] }}<br>
-    <strong>Seed Spacing (Harvest) (inches):</strong> {{ crop_info['seed_spacing_harvest'] }}<br>
-    <strong>Row Spacing (Harvest) (inches):</strong> {{ crop_info['row_spacing_harvest'] }}<br>
-    <strong>Days to Maturity:</strong> {{ crop_info['days_to_maturity'] }}<br>
-    <strong>Days to Seed Maturity:</strong> {{ crop_info['days_to_seed_maturity'] }}<br>
+    <strong>Variety:</strong> {{ crop_info['variety_name'] }}<br>
+    <strong>Type:</strong> {{ crop_info['crop_type'] }}<br>
+    <strong>Seed Spacing for Harvesting Crops:</strong> {{ crop_info['plant_spacing_harvest'] }}<br>
+    <strong>Row Spacing for Harvesting Crops:</strong> {{ crop_info['row_spacing_harvest'] }}<br>
+    <strong>Seed Spacing for Harvesting Seeds:</strong> {{ crop_info['plant_spacing_seed'] }}<br>
+    <strong>Row Spacing for Harvesting Seeds:</strong> {{ crop_info['row_spacing_seed'] }}<br>
+    <strong>Days to Maturity for Harvesting Crops:</strong> {{ crop_info['days_to_maturity_harvest'] }}<br>
+    <strong>Days to Maturity for Harvesting Seeds:</strong> {{ crop_info['days_to_maturity_seed'] }}<br>
     <strong>Days to Transplantation:</strong> {{ crop_info['days_to_transplantation'] }}<br>
     <strong>Days to Direct Sow:</strong> {{ crop_info['days_to_direct_sow'] }}<br>
-    <strong>Days to Harvest:</strong> {{ crop_info['days_to_harvest'] }}<br>
-    <strong>Days to Seed Harvest:</strong> {{ crop_info['days_to_seed_harvest'] }}<br>
-    <strong>Indoor Seed Starting Date:</strong> {{ crop_info['indoor_seed_starting_date'] }}<br>
-    <strong>Transplanting Date:</strong> {{ crop_info['transplanting_date'] }}<br>
-    <strong>Direct Sow Date:</strong> {{ crop_info['direct_sow_date'] }}<br>
-    <strong>Harvest Date:</strong> {{ crop_info['harvest_date'] }}<br>
-    <strong>Seed Harvest Date:</strong> {{ crop_info['seed_harvest_date'] }}<br>
+    <strong>Days for Harvesting Crops:</strong> {{ crop_info['days_to_harvest'] }}<br>
+    <strong>Days for Harvesting Seeds:</strong> {{ crop_info['days_to_seed_harvest'] }}<br>
     <strong>Frost Sensitivity Rating:</strong> {{ crop_info['frost_sensitivity_rating'] }}<br>
 {% endfor %}
+<hr>

@@ -16,7 +16,7 @@ VALUES (1, NULL, true, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NUL
 INSERT INTO species (family_id, latin_name, species_name) VALUES (1, 'Capsicum Annum', 'Annum');
 
 /* Variety 2, Fish Peppers, Capsicum Annum */
-INSERT INTO variety (species_id, variety_name) VALUES (1, 'Fish Peppers');
+INSERT INTO variety (species_id, variety_name) VALUES (2, 'Fish Peppers');
 
 /* Crop_Info 2, Fish Peppers */
 INSERT INTO crop_infos 

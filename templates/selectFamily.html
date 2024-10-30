@@ -6,12 +6,12 @@
         <strong>Select Family</strong>
         <br>
         <form action="/selectFamily" method="get">
-            <input type="text", name="crop_name", autofocus> <input type="submit" value="Submit">
+            <input type="text", name="family", autofocus> <input type="submit" value="Submit">
         </form>
         <br>
         <hr>
-        {% for crop in crops: %}
-            <a href="/selectSpecies/{{ crop['family'] }}">{{ crop['family'] }}</a>
+        {% for family in families: %}
+            <a href="/selectSpecies/{{ family['family_id'] }}">{{ family['family_name'] }}</a>
             <hr>
         {% endfor %}
         {% include 'footer.html' %}
