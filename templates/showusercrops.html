@@ -4,7 +4,7 @@
     <body>
         <hr>
         {% for crop_info in crop_infos %}
-            <strong>Family:</strong> {{ crop_info['family_name'] }}<br>
+            <strong>Family:</strong> <a href="/calendar">{{ crop_info['family_name'] }}</a><br>
             <strong>Latin Name:</strong> {{ crop_info['latin_name'] }}<br>
             <strong>Variety:</strong> {{ crop_info['variety_name'] }}<br>
             <hr>

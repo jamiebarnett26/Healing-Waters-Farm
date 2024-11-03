@@ -163,3 +163,13 @@ def show_user_crop():
                                       current_time=get_current_time())
     response = flask.make_response(html_code)
     return response
+
+#-----------------------------------------------------------------------
+
+@app.route('/calendar')
+def calendar():
+
+    html_code = flask.render_template('calendar.html')
+    response = flask.make_response(html_code)
+    return response
+
