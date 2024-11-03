@@ -1,13 +1,40 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            .done {
+                text-decoration: line-through;
+            }
+        </style>
+    
+        <script>
+            function toggleDone(checkbox, taskId) {
+                const taskText = document.getElementById('task-' + taskId);
+                taskText.classList.toggle('done', checkbox.checked);
+            }
+        </script>
+    </head>
     <h2>Added Crops</h2>
     <body>
-        <hr>
-        {% for crop_info in crop_infos %}
-            <strong>Family:</strong> <a href="/calendar">{{ crop_info['family_name'] }}</a><br>
-            <strong>Latin Name:</strong> {{ crop_info['latin_name'] }}<br>
-            <strong>Variety:</strong> {{ crop_info['variety_name'] }}<br>
-            <hr>
+        {% for crop_info, todos in crops_with_todos %}
+            <div>
+                <h2>Upcoming task for: <a href="/calendar">{{ crop_info['family_name'] }}</a></h2>
+                <strong>Latin Name:</strong> {{ crop_info['latin_name'] }}<br>
+                <strong>Variety:</strong> {{ crop_info['variety_name'] }}<br>
+                <ul>
+                    {% for todo in todos %}
+                        <li>
+                            <input type="checkbox" {% if todo.done %}checked{% endif %}
+                                   onclick="toggleDone(this, '{{ crop_info.id }}-{{ loop.index0 }}')">
+                            <span id="task-{{ crop_info.id }}-{{ loop.index0 }}" class="{% if todo.done %}done{% endif %}">
+                                {{ todo.task }} - {{ todo.date }}
+                            </span>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <hr>
+            </div>
         {% endfor %}
         {% include 'footer.html' %}
     </body>

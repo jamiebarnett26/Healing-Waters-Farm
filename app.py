@@ -155,11 +155,22 @@ def add_user_crop(crop_info_id):
 def show_user_crop():
     user_crops = database.get_user_crops(1)
     user_crop_infos = []
+    all_todos = []
     for user_crop in user_crops:
         user_crop_infos.append(database.full_crop_info(user_crop['crop_info_id']))
+
+        todos = [
+            {"task": "Start indoor seeding", "date": user_crop['indoor_seed_starting_date'], "done": False},
+            {"task": "Transplant plants from indoor to outdoor", "date": user_crop['transplanting_date'], "done": False},
+            {"task": "Direct sowing", "date": user_crop['direct_sow_date'], "done": False},
+            {"task": "Prepare for harvest", "date": user_crop['harvest_date'], "done": False}
+        ]
+        all_todos.append(todos)
+    
+    crops_with_todos = zip(user_crop_infos, all_todos)
+
     html_code = flask.render_template('showusercrops.html',
-                                      crop_infos=user_crop_infos,
-                                      user_crops=user_crops,
+                                      crops_with_todos=crops_with_todos,  
                                       current_time=get_current_time())
     response = flask.make_response(html_code)
     return response
