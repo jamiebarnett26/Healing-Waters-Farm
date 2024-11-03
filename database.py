@@ -74,7 +74,7 @@ _engine = sqlalchemy.create_engine(_DATABASE_URL)
 #               in the 'search_fields_map' dictionary. 
 #------------------------------------------------------------------------------
 
-def search_field(search_field, search_value):
+def search_field_name(search_field, search_value):
     results = []
     with sqlalchemy.orm.Session(_engine) as session:
         if search_field == 'family':
@@ -107,6 +107,50 @@ def search_field(search_field, search_value):
         if search_field == 'variety':
             query = session.query(Variety).filter(
                 Variety.variety_name.ilike(f"%{search_value}%"),
+            )
+            table = query.all()
+            for row in table:
+                variety = {
+                    'variety_id':row.variety_id,
+                    'species_id':row.species_id,
+                    'variety_name':row.variety_name
+            }
+                results.append(variety)
+    return results
+
+def search_field_id(search_field, search_value):
+    results = []
+    with sqlalchemy.orm.Session(_engine) as session:
+        if search_field == 'family':
+            query = session.query(Family).filter(
+                Family.family_id == search_value
+            )
+            table = query.all()
+            for row in table:
+                family = {
+                    'family_id':row.family_id,
+                    'family_name':row.family_name
+            }
+                results.append(family)
+
+        if search_field == 'species':
+            query = session.query(Species).filter(
+                Species.species_id == search_value,
+            )
+            table = query.all()
+            for row in table:
+                species = {
+                    'species_id':row.species_id,
+                    'family_id':row.family_id,
+                    'latin_name':row.latin_name,
+                    'species_name':row.species_name
+            }
+                results.append(species)
+  
+        
+        if search_field == 'variety':
+            query = session.query(Variety).filter(
+                Variety.variety_id == search_value,
             )
             table = query.all()
             for row in table:
@@ -182,47 +226,63 @@ def crop_info_from_variety(variety_id):
             crop_infos.append(crop_info)
     return crop_infos
 
+def family_from_species(species_id):
+    with sqlalchemy.orm.Session(_engine) as session:
+        query = session.query(Species).filter(
+            Species.species_id == species_id
+        )
+        species_table = query.first()
+        query = session.query(Family).filter(
+            Family.family_id == species_table.family_id
+        )
+        family_table = query.first()
+        return family_table
+
+def species_from_variety(variety_id):
+    with sqlalchemy.orm.Session(_engine) as session:
+        query = session.query(Variety).filter(
+            Variety.variety_id == variety_id
+        )
+        variety_table = query.first()
+        query = session.query(Species).filter(
+            Species.species_id == variety_table.species_id
+        )
+        species_table = query.first()
+        return species_table
+
 def full_crop_info(crop_info_id):
     with sqlalchemy.orm.Session(_engine) as session:
         query = session.query(Crop_Info).filter(
             Crop_Info.crop_info_id == crop_info_id
         )
         info_table = query.first()
-
         query = session.query(Variety).filter(
             Variety.variety_id == info_table.variety_id
         )
         variety_table = query.first()
 
-        query = session.query(Species).filter(
-            Species.species_id == variety_table.species_id
-        )
-        species_table = query.first()
-
-        query = session.query(Family).filter(
-            Family.family_id == species_table.family_id
-        )
-        family_table = query.first()
+        species_table = species_from_variety(info_table.variety_id)
+        family_table = family_from_species(species_table.family_id)
 
         crop_info = {
-                'family_name': family_table.family_name,
-                'latin_name': species_table.latin_name,
-                'variety_name': variety_table.variety_name,
-                'crop_type': info_table.crop_type,
-                'template': info_table.template,
-                'days_to_maturity': info_table.days_to_maturity,
-                'plant_spacing_harvest': info_table.plant_spacing_harvest,
-                'plant_spacing_seed': info_table.plant_spacing_seed,
-                'row_spacing_harvest': info_table.row_spacing_harvest,
-                'row_spacing_seed': info_table.row_spacing_seed, 
-                'days_to_maturity_harvest': info_table.days_to_maturity_harvest,
-                'days_to_maturity_seed': info_table.days_to_maturity_seed,
-                'days_to_transplantation': info_table.days_to_transplantation,
-                'days_to_direct_sow': info_table.days_to_direct_sow,
-                'days_to_harvest': info_table.days_to_harvest,
-                'days_to_seed_harvest': info_table.days_to_seed_harvest,
-                'frost_sensitivity_rating': info_table.frost_sensitivity_rating
-            }
+            'family_name': family_table.family_name,
+            'latin_name': species_table.latin_name,
+            'variety_name': variety_table.variety_name,
+            'crop_type': info_table.crop_type,
+            'template': info_table.template,
+            'days_to_maturity': info_table.days_to_maturity,
+            'plant_spacing_harvest': info_table.plant_spacing_harvest,
+            'plant_spacing_seed': info_table.plant_spacing_seed,
+            'row_spacing_harvest': info_table.row_spacing_harvest,
+            'row_spacing_seed': info_table.row_spacing_seed, 
+            'days_to_maturity_harvest': info_table.days_to_maturity_harvest,
+            'days_to_maturity_seed': info_table.days_to_maturity_seed,
+            'days_to_transplantation': info_table.days_to_transplantation,
+            'days_to_direct_sow': info_table.days_to_direct_sow,
+            'days_to_harvest': info_table.days_to_harvest,
+            'days_to_seed_harvest': info_table.days_to_seed_harvest,
+            'frost_sensitivity_rating': info_table.frost_sensitivity_rating
+        }
         return crop_info
 
 def get_template_crop(species_id):
@@ -236,8 +296,10 @@ def get_template_crop(species_id):
             Crop_Info.variety_id.in_(variety_ids),
             Crop_Info.template == True
         ).first()
-
-    return crop_info_id[0]
+    if crop_info_id is not None:
+        return crop_info_id[0]
+    else:
+        return -1
 
 def get_user_crops(user_id):
      with sqlalchemy.orm.Session(_engine) as session:
@@ -259,7 +321,18 @@ def get_user_crops(user_id):
             }
             user_crops.append(user_crop)
         return user_crops
-    
+
+def add_family(family):
+    with sqlalchemy.orm.Session(_engine) as session:
+        new_family = Family(**family)
+        session.add(new_family)
+        session.commit()
+
+def add_species(species):
+    with sqlalchemy.orm.Session(_engine) as session:
+        new_species = Species(**species)
+        session.add(new_species)
+        session.commit()
 
 def add_variety(variety, crop_info):
     crop_info = {key: (None if value == 'None' else value) for key, value in crop_info.items()}
@@ -267,7 +340,6 @@ def add_variety(variety, crop_info):
         new_variety = Variety(**variety)
         session.add(new_variety)
         session.commit()
-        print(new_variety.variety_id)
 
         crop_info['variety_id'] = new_variety.variety_id
 
@@ -281,7 +353,40 @@ def add_user_crop(user_crop):
         session.add(new_crop)
         session.commit()
 
+def delete_family(family_id):
+    with sqlalchemy.orm.Session(_engine) as session:
+        family_to_delete = session.query(Family).filter_by(family_id=family_id).first()
 
+        species = species_from_family(family_id)
+        for spec in species:
+            delete_species(spec['species_id'])
+
+        session.delete(family_to_delete)
+        session.commit()
+
+def delete_species(species_id):
+    with sqlalchemy.orm.Session(_engine) as session:
+        species_to_delete = session.query(Species).filter_by(species_id=species_id).first()
+
+        varieties = variety_from_species(species_id)
+        for variety in varieties:
+            delete_variety(variety['variety_id'])
+
+        session.delete(species_to_delete)
+        session.commit()
+    
+def delete_variety(variety_id):
+    with sqlalchemy.orm.Session(_engine) as session:
+        variety_to_delete = session.query(Variety).filter_by(variety_id=variety_id).first()
+
+        crop_infos = crop_info_from_variety(variety_id)
+        for crop_info in crop_infos:
+            crop_info_to_delete = session.query(Crop_Info).filter_by(crop_info_id=crop_info['crop_info_id']).first()
+            session.delete(crop_info_to_delete)
+            session.commit()
+
+        session.delete(variety_to_delete)
+        session.commit()
 
 #-----------------------------------------------------------------------
 
