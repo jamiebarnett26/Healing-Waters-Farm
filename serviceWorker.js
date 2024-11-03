@@ -9,18 +9,7 @@ const staticPhoneStore = "phone-store-site-v1"
 
 const assets = [
   "/",
-  "/index.html",
-  "/css/style.css",
-  "/js/app.js",
-  "/images/phone1.jpg",
-  "/images/phone2.jpg",
-  "/images/phone3.jpg",
-  "/images/phone4.jpg",
-  "/images/phone5.jpg",
-  "/images/phone6.jpg",
-  "/images/phone7.jpg",
-  "/images/phone8.jpg",
-  "/images/phone9.jpg",
+  "/index.html"
 ]
 
 // runs immediately after installation: sets up resources needed right away
@@ -41,12 +30,4 @@ self.addEventListener("fetch", fetchEvent => {
     )
   })
 
-  // Register serviceWorker, allows to install web app
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", function() {
-      navigator.serviceWorker
-        .register("/serviceWorker.js")
-        .then(res => console.log("service worker registered"))
-        .catch(err => console.log("service worker not registered", err))
-    })
-  }
+  
