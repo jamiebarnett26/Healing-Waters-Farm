@@ -3,6 +3,7 @@
 
     <head>
         <link rel="manifest" href="../manifest.json" />
+        <link rel="stylesheet" href="/static/styles.css">
     </head>
     <body>
         <hr>
@@ -10,10 +11,11 @@
         <hr>
         Frost warning information
         <hr>
-        <a href="/selectFamily">Start Tracking a new Crop</a>
+        <button id="navigateButton">Start Tracking a New Crop</button>
         <hr>
         Display crop information
         <hr>
         {% include 'footer.html' %}
     </body>
+    <script src="/static/script.js"></script>
 </html>
