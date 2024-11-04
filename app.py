@@ -8,6 +8,7 @@ import flask
 import database
 from datetime import datetime
 
+
 #-----------------------------------------------------------------------
 
 app = flask.Flask(__name__, template_folder='templates')
@@ -187,15 +188,15 @@ def calendar():
 
 #-----------------------------------------------------------------------
 
-@app.route('/manifest.json')
-def serve_manifest():
-    return flask.send_file('manifest.json')
+#@app.route('/manifest.json')
+#def serve_manifest():
+#    return flask.send_file('manifest.json')
     #, mimetype='application/manifest+json'
 
 #-----------------------------------------------------------------------
 
 @app.route('/serviceWorker.js')
 def serve_sw():
-    return flask.send_file('serviceWorker.js', mimetype='application/javascript')
+    return app.send_static_file('serviceWorker.js')
 
 #-----------------------------------------------------------------------

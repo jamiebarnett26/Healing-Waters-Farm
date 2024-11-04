@@ -1,7 +1,7 @@
 {
   "name": "My Crop Manager",
   "short_name": "CropManager",
-  "start_url": "/index.html",
+  "start_url": "/",
   "description": "Manage and track your crop varieties and essential planting information.",
   "background_color": "#FFFFFF",
   "theme_color": "#4CAF50",
@@ -9,7 +9,7 @@
   "display": "standalone",
   "icons": [
     {
-      "src": "/icon/tulip.jpg",
+      "src": "/images/tulip.jpg",
       "type": "image/jpg",
       "sizes": "236×233"
     }
