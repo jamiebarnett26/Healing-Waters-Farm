@@ -27,6 +27,13 @@ def index():
 
 #-----------------------------------------------------------------------
 
+@app.route('/homepage', methods = ["GET"])
+def goHomepage():
+    html_code = flask.render_template('homepage.html')
+    response = flask.make_response(html_code)
+    return response
+
+#-----------------------------------------------------------------------
 @app.route('/selectFamily', methods=['GET'])
 def search_crops():
     family = flask.request.args.get('family')

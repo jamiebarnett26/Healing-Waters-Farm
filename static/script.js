@@ -3,3 +3,7 @@
 document.getElementById('navigateButton').addEventListener('click', function() {
   window.location.href = '/selectFamily';
 });
+
+document.getElementById('homepageButton').addEventListener('click', function() {
+  window.location.href = '/homepage';
+});
