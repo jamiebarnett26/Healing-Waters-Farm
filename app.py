@@ -34,6 +34,14 @@ def goHomepage():
     return response
 
 #-----------------------------------------------------------------------
+
+@app.route('/testpage', methods = ["GET"])
+def testpage():
+    html_code = flask.render_template('testpage.html')
+    response = flask.make_response(html_code)
+    return response
+
+#-----------------------------------------------------------------------
 @app.route('/selectFamily', methods=['GET'])
 def search_crops():
     family = flask.request.args.get('family')

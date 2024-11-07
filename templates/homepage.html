@@ -25,7 +25,9 @@
     <div class = "container-fluid">
         <div class = "row mb-3">
             <div class = "col">
+                
                 <div class="circle-content bg-success text-white">
+                    <img src="../static/sun.png" class = "mb-2" style = "height: 30px">
                     Info 1
                 </div>
             </div>
@@ -42,7 +44,7 @@
         </div>
         <div class = "row">
             <div class = "col-6 mx-auto text-center">
-                <button class = "btn btn-primary w-100" type = "button" id = "test_button"> Press me for jQuery</button>
+                <button class = "btn btn-primary w-100" type = "button" id = "test_button"> Go to test page</button>
             </div>
         </div>
     </div>
@@ -53,10 +55,12 @@
     <script>
         $(document).ready(function() {
             $('#test_button').on('click', function() {
-                alert('jQuery working');
+                window.location.href = '/testpage';
             });
         });
+
     </script>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
  </html>
