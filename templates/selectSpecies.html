@@ -5,8 +5,11 @@
         <br>
         <strong>Select Species</strong>
         <hr>
+        <a href="/createspecies/{{family_id}}">Add New Species</a>
+        <hr>
+        <br>
         {% for spec in species: %}
-            <a href="/selectVariety/{{ spec['species_id'] }}">{{ spec['species_name'] }}</a>
+            <a href="/selectVariety/{{ spec['species_id'] }}">{{ spec['species_name'] }}</a> <a href="/deletespecies/{{ spec['species_id'] }}">Delete Species</a> 
             <hr>
         {% endfor %}
         {% include 'footer.html' %}
