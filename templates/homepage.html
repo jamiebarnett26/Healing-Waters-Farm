@@ -11,26 +11,31 @@
 </head>
 
 <style>
-    .circle {
-      aspect-ratio: 1;
+    .circle-content {
+        aspect-ratio: 1;
+        height: 100%;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
-  </style>
+</style>
 
  <html>
     <div class = "container-fluid">
         <div class = "row mb-3">
             <div class = "col">
-                <div class="h-100 rounded-circle circle bg-success text-white d-flex align-items-center justify-content-center">
+                <div class="circle-content bg-success text-white">
                     Info 1
                 </div>
             </div>
             <div class = "col">
-                <div class="h-100 rounded-circle circle bg-success text-white d-flex align-items-center justify-content-center">
+                <div class="circle-content bg-success text-white">
                     Info 2
                 </div>
             </div>
             <div class = "col">
-                <div class="h-100 rounded-circle circle bg-success text-white d-flex align-items-center justify-content-center">
+                <div class="circle-content bg-success text-white">
                     Info 3
                 </div>
             </div>
