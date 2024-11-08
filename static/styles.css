@@ -7,6 +7,17 @@ body {
   margin: 0;
   padding: 0;
 }
+button {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 5px;
+  background-color: #4CAF50; /* Green background */
+  color: white; /* White text */
+  text-align: center;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
 /* Header styles */
 header {
