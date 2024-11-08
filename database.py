@@ -73,6 +73,11 @@ class Users (Base):
     last_name = sqlalchemy.Column(sqlalchemy.String)
     email = sqlalchemy.Column(sqlalchemy.String, unique=True)
 
+class Admin (Base):
+    __tablename__ = 'admin'
+    admin_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
+    user_id = sqlalchemy.Column(sqlalchemy.Integer)
+
 _engine = sqlalchemy.create_engine(_DATABASE_URL)
 
 
@@ -89,6 +94,15 @@ def add_user(first_name, last_name, email):
             session.commit()
         except IntegrityError:
             session.rollback()
+
+def is_admin(user_id):
+    with sqlalchemy.orm.Session(_engine) as session:
+        query = session.query(Admin).filter_by(user_id=user_id)
+        table = query.first()
+
+        if table:
+            return True
+        return False
 
 #------------------------------------------------------------------------------
 # search_value: This is the value that the user either clicks on or types in.
@@ -411,12 +425,15 @@ def delete_variety(variety_id):
         session.delete(variety_to_delete)
         session.commit()
 
+
 #-----------------------------------------------------------------------
 
 def _test():
 
 
-    print(get_template_crop(1))
+    print(is_admin(1))
+    print(is_admin(3))
+
     # results = search_field('family', '')
     # print(results)
     # results = search_field('species', '')
