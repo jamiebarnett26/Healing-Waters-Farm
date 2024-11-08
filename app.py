@@ -33,7 +33,7 @@ def search_crops():
     if family == None:
         family = ""
     
-    families= database.search_field('family', family)
+    families= database.search_field_name('family', family)
     html_code = flask.render_template('selectFamily.html',
                                       families=families,
                                       current_time=get_current_time())
@@ -48,6 +48,7 @@ def show_species(family_id):
 
     html_code = flask.render_template('selectSpecies.html', 
                                       species=species,
+                                      family_id=family_id,
                                       current_time = get_current_time())
     response = flask.make_response(html_code)
     return response
@@ -84,12 +85,97 @@ def show_crop(variety_id):
     response = flask.make_response(html_code)
     return response
 
+#-----------------------------------------------------------------------
+@app.route('/createfamily', methods=['GET'])
+def create_family():
+    html_code = flask.render_template('createfamily.html',
+                                      current_time=get_current_time())
+    response = flask.make_response(html_code)
+    return response
+    
+
+#-----------------------------------------------------------------------
+
+@app.route('/addfamily', methods=['POST'])
+def add_family():
+    family_name = flask.request.form.get('family_name')
+    family = {'family_name':family_name}
+    database.add_family(family)
+    return index()
+
+#-----------------------------------------------------------------------
+
+@app.route('/deletefamily/<family_id>')
+def delete_family(family_id):
+    database.delete_family(family_id)
+    return index()
+
+#-----------------------------------------------------------------------
+
+@app.route('/deletespecies/<species_id>')
+def delete_species(species_id):
+    database.delete_species(species_id)
+    return index()
+
+#-----------------------------------------------------------------------
+
+@app.route('/deletevariety/<variety_id>')
+def delete_variety(variety_id):
+    database.delete_variety(variety_id)
+    return index()
+
+
+#-----------------------------------------------------------------------
+@app.route('/createspecies/<family_id>', methods=['GET'])
+def create_species(family_id):
+    html_code = flask.render_template('createspecies.html',
+                                      family_id=family_id,
+                                      current_time=get_current_time())
+    response = flask.make_response(html_code)
+    return response
+    
+
+#-----------------------------------------------------------------------
+
+@app.route('/addspecies/<family_id>', methods=['POST'])
+def add_species(family_id):
+    species_name = flask.request.form.get('species_name')
+    latin_name = flask.request.form.get('latin_name')
+    species = {'family_id':family_id, 'species_name':species_name, 'latin_name':latin_name}
+    database.add_species(species)
+    return index()
+
 
 #-----------------------------------------------------------------------
 @app.route('/createvariety/<species_id>', methods=['GET'])
 def create_variety(species_id):
     template_crop_id = database.get_template_crop(species_id)
-    full_crop_info = database.full_crop_info(template_crop_id)
+    if template_crop_id == -1:
+        family_table = database.family_from_species(species_id)
+        species_table = database.search_field_id('species', species_id)
+        print(family_table.family_name)
+        print(species_table)
+        full_crop_info = {
+            'family_name': family_table.family_name,
+            'latin_name': species_table[0]['latin_name'],
+            'variety_name': None,
+            'crop_type': None,
+            'template': None,
+            'days_to_maturity': None,
+            'plant_spacing_harvest': None,
+            'plant_spacing_seed': None,
+            'row_spacing_harvest': None,
+            'row_spacing_seed': None, 
+            'days_to_maturity_harvest': None,
+            'days_to_maturity_seed': None,
+            'days_to_transplantation': None,
+            'days_to_direct_sow': None,
+            'days_to_harvest': None,
+            'days_to_seed_harvest': None,
+            'frost_sensitivity_rating': None
+        }
+    else:
+        full_crop_info = database.full_crop_info(template_crop_id)
     html_code = flask.render_template('createvariety.html',
                                       crop_info=full_crop_info,
                                       species_id=species_id,

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <form action="/addspecies/{{ family_id }}" method="post">
+
+        <strong>Species Name</strong>
+        <input type="text", name="species_name", autofocus> <br>
+        <strong>Latin Name</strong>
+        <input type="text", name="latin_name", autofocus> <br>
+        <input type="submit" value="Add Species">
+    </form>
+    <hr>
+    {% include 'footer.html' %}
+</html>
+
