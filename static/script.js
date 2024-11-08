@@ -3,3 +3,8 @@
 document.getElementById('navigateButton').addEventListener('click', function() {
   window.location.href = '/selectFamily';
 });
+
+// Redirect to login
+document.getElementById('loginButton').addEventListener('click', function() {
+  window.location.href = '/login'
+})

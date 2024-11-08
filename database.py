@@ -5,6 +5,7 @@
 import os
 import sqlalchemy
 import sqlalchemy.orm
+from sqlalchemy.exc import IntegrityError
 import dotenv
 
 #-----------------------------------------------------------------------
@@ -65,7 +66,29 @@ class User_Crop (Base):
     harvest_date = sqlalchemy.Column(sqlalchemy.Date)
     seed_harvest_date = sqlalchemy.Column(sqlalchemy.Date)
 
+class Users (Base):
+    __tablename__ = 'users'
+    user_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
+    first_name = sqlalchemy.Column(sqlalchemy.String)
+    last_name = sqlalchemy.Column(sqlalchemy.String)
+    email = sqlalchemy.Column(sqlalchemy.String, unique=True)
+
 _engine = sqlalchemy.create_engine(_DATABASE_URL)
+
+
+def add_user(first_name, last_name, email):
+    with sqlalchemy.orm.Session(_engine) as session:
+        is_existing_user = session.query(Users).filter_by(email=email).first()
+
+        if is_existing_user:
+            return
+
+        new_user = Users(first_name=first_name, last_name=last_name, email=email)
+        try:
+            session.add(new_user)
+            session.commit()
+        except IntegrityError:
+            session.rollback()
 
 #------------------------------------------------------------------------------
 # search_value: This is the value that the user either clicks on or types in.

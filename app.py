@@ -6,10 +6,28 @@ import time
 import flask
 import database
 from datetime import datetime
+from authlib.integrations.flask_client import OAuth
 
 #-----------------------------------------------------------------------
 
 app = flask.Flask(__name__, template_folder='templates')
+# TODO: Generate a secret random key
+app.secret_key = 'random secret'
+
+# oauth config for google
+oauth = OAuth(app)
+google = oauth.register(
+    name='google',
+    client_id='144993838713-mvb15a64nvp0t5jd7j1spj4vr8pg7hdv.apps.googleusercontent.com',
+    client_secret='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',
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    access_token_params=None,
+    authorize_url='https://accounts.google.com/0/oauth2/auth',
+    authorize_params=None,
+    api_base_url='https://www.googleapis.com/oauth2/v1/',
+    client_kwargs={'scope': 'openid profile email'},
+)
+
 
 #-----------------------------------------------------------------------
 
@@ -24,6 +42,29 @@ def index():
                                       current_time=get_current_time())
     response = flask.make_response(html_code)
     return response
+
+#-----------------------------------------------------------------------
+
+@app.route('/login')
+def login():
+    google = oauth.create_client('google')
+    redirect_uri = flask.url_for('authorize', _external=True)
+    return google.authorize_redirect(redirect_uri)
+
+@app.route('/authorize')
+def authorize():
+    google = oauth.create_client('google')
+    token = google.authorize_access_token()
+    resp = google.get('userinfo', token=token)
+    resp.raise_for_status()
+    user_info = resp.json()
+
+    email = user_info.get('email')
+    first_name = user_info.get('given_name')
+    last_name = user_info.get('family_name')
+    
+    database.add_user(first_name, last_name, email)
+    return flask.redirect('/index')
 
 #-----------------------------------------------------------------------
 
