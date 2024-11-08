@@ -7,6 +7,7 @@ import flask
 import database
 from datetime import datetime
 from authlib.integrations.flask_client import OAuth
+from authlib.integrations.flask_client import OAuth
 
 #-----------------------------------------------------------------------
 
@@ -22,10 +23,10 @@ google = oauth.register(
     client_secret='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',
     access_token_url='https://accounts.google.com/o/oauth2/token',
     access_token_params=None,
-    authorize_url='https://accounts.google.com/0/oauth2/auth',
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
     authorize_params=None,
     api_base_url='https://www.googleapis.com/oauth2/v1/',
-    client_kwargs={'scope': 'openid profile email'},
+    client_kwargs={'scope': 'profile email'}
 )
 
 
@@ -38,11 +39,17 @@ def get_current_time():
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
 def index():
+    first_name = flask.session.get('first_name', None)
+    last_name = flask.session.get('last_name', None)
     html_code = flask.render_template('index.html',
-                                      current_time=get_current_time())
+                                      current_time=get_current_time(),
+                                      first_name=first_name,
+                                      last_name=last_name)
     response = flask.make_response(html_code)
     return response
 
+#-----------------------------------------------------------------------
+# Route end points for login.
 #-----------------------------------------------------------------------
 
 @app.route('/login')
@@ -62,6 +69,9 @@ def authorize():
     email = user_info.get('email')
     first_name = user_info.get('given_name')
     last_name = user_info.get('family_name')
+
+    flask.session['first_name'] = first_name
+    flask.session['last_name'] = last_name
     
     database.add_user(first_name, last_name, email)
     return flask.redirect('/index')
