@@ -10,7 +10,36 @@
 
 </head>
 
+<script>
+    function toggleDone(checkbox, taskId) {
+        const taskText = document.getElementById('task-' + taskId);
+        taskText.classList.toggle('done', checkbox.checked);
+    }
+</script>
+
 <html>
+    <div class="d-flex flex-row flex-nowrap overflow-scroll">
+        {% for crop_info, todos in crops_with_todos %}
+            <div class="card card-body me-2" style="min-width: 75vw; min-height: 300px; background-color: #ce361b;">
+                <h3> 
+                    <a href = "/testpage" class = "text-white"> 
+                        {{ crop_info['variety_name'] }} 
+                    </a>
+                 </h3>
+                {% for todo in todos %}
+                    <input type="checkbox" {% if todo.done %}checked{% endif %}
+                            onclick="toggleDone(this, '{{ crop_info.id }}-{{ loop.index0 }}')">
+                    <span id="task-{{ crop_info.id }}-{{ loop.index0 }}" class="{% if todo.done %}done{% endif %}">
+                        {{ todo.task }} - {{ todo.date }}
+                    </span>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+
+
+
+<!--
     <div class="d-flex flex-row flex-nowrap overflow-scroll">
         <div class="card card-body me-2" style="min-width: 200px; min-height: 300px;">
             Bruh
@@ -28,4 +57,5 @@
             Card
         </div>
     </div>
+-->
 </html>
