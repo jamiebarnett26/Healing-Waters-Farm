@@ -9,7 +9,9 @@
             <input type="text", name="family", autofocus> <input type="submit" value="Submit">
         </form>
         <br>
+        {% if admin %}
         <a href="/createfamily">Add New Family</a>
+        {% endif %}
         <br>
         <hr>
         {% for family in families: %}

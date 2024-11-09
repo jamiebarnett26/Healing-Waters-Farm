@@ -5,7 +5,9 @@
         <br>
         <strong>Select Species</strong>
         <hr>
+        {% if admin %}
         <a href="/createspecies/{{family_id}}">Add New Species</a>
+        {% endif %}
         <hr>
         <br>
         {% for spec in species: %}
