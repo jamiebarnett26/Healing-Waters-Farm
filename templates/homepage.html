@@ -11,13 +11,16 @@
 </head>
 
 <style>
-    .circle-content {
+    .box-content {
         aspect-ratio: 1;
         height: 100%;
-        border-radius: 50%;
+        border-radius: 5%;
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+    .container-bg {
+        background: #757575;
     }
 </style>
 
@@ -25,30 +28,42 @@
     <div class = "container-fluid">
         <div class = "row mb-3">
             <div class = "col d-flex flex-column">
-                <div class="circle-content bg-success text-white flex-column">
+                <div class="box-content bg-success text-white flex-column">
                     <img src="../static/img/sun.png" class = "my-2" style = "height: 15vw">
-                    <h4>75°</h6>
+                    <h4>72°</h6>
                 </div>
             </div>
             <div class = "col d-flex flex-column">
-                <div class="circle-content bg-info text-white flex-column">
+                <div class="box-content bg-info text-white flex-column">
                     <img src="../static/img/umbrella.png" class = "mb-2" style = "height: 15vw">
                     <h4>75%</h4>
                 </div>
             </div>
             <div class = "col d-flex flex-column">
-                <div class="circle-content bg-success text-black flex-column">
+                <div class="box-content bg-success text-black flex-column">
                     <img src="../static/img/sun.png" class = "mb-2" style = "height: 15vw">
                     idk what this is supposed to be
                 </div>
             </div>
         </div>
+    </div>
+    <div class="container-fluid bg-primary rounded-top-5">
+        <h2>Tasks this week:</h2>
+        <div class = "row">
+            <div class = "col-6 mx-auto text-center">
+                <button class = "btn btn-success w-100" type = "button" id = "test_button"> Go to test page</button>
+            </div>
+        </div>
+    </div>
+    <div class="container rounded">
+        <h2>Tasks this week:</h2>
         <div class = "row">
             <div class = "col-6 mx-auto text-center">
                 <button class = "btn btn-primary w-100" type = "button" id = "test_button"> Go to test page</button>
             </div>
         </div>
     </div>
+
 
     <script src=
         "https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js">
