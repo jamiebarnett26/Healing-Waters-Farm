@@ -29,7 +29,7 @@ def index():
 
 @app.route('/homepage', methods = ["GET"])
 def goHomepage():
-    html_code = flask.render_template('homepage.html')
+    html_code = flask.render_template('homepage/homepage.html')
     response = flask.make_response(html_code)
     return response
 
@@ -37,7 +37,7 @@ def goHomepage():
 
 @app.route('/testpage', methods = ["GET"])
 def testpage():
-    html_code = flask.render_template('testpage.html')
+    html_code = flask.render_template('homepage/testpage.html')
     response = flask.make_response(html_code)
     return response
 

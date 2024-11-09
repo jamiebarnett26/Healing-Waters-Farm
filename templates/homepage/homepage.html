@@ -7,10 +7,10 @@
     <script src= 
         "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
     </script>
-
 </head>
 
 <style>
+    /* Creating the box elements for weather */
     .box-content {
         aspect-ratio: 1;
         height: 100%;
@@ -18,11 +18,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-    }
-    .container-bg {
-        background: #757575;
-    }
-
+    } 
+    /* This gets rid of the scrollbar effect */
     ::-webkit-scrollbar {
         display: none;
     }
@@ -46,14 +43,16 @@
                 </div>
             </div>
             <div class = "col d-flex flex-column">
-                <div class="box-content bg-success text-black flex-column">
+                <div class="box-content bg-success text-white flex-column">
                     <img src="../static/img/sun.png" class = "mb-2" style = "height: 15vw">
-                    idk what this is supposed to be
+                    <h4>75%</h4>
                 </div>
             </div>
         </div>
     </div>
 
+
+    <!-- Simply for testing, this button takes you to the test page -->
     <div class="container-fluid bg-primary rounded-top-5 p-0">
         <h2 class = "p-3"> 
             <a href = "/testpage" class = "text-white"> Tasks this week:</a>
@@ -63,12 +62,13 @@
                 <button class = "btn btn-success w-100" type = "button" id = "test_button"> Go to test page</button>
             </div>
         </div>
+    <!----------------- ^Testing^ ----------------->
 
         <div class="container pb-2">
             <h2>
                 <a href = "/testpage"> Crop Tasks: </a>
             </h2>
-            {% include 'cropcards.html' %}
+            {% include 'homepage/cropcards.html' %}
         </div>
     </div>
     
@@ -76,6 +76,9 @@
     <script src=
         "https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js">
     </script>
+
+
+<!-- jQuery functions - just buttons for now -->
     <script>
         $(document).ready(function() {
             $('#test_button').on('click', function() {
