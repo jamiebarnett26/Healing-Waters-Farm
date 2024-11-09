@@ -8,6 +8,14 @@
     <body>
         <hr>
         {% include 'header.html' %}
+        <button id="logoutButton">Logout</button>
+        <h1>
+            {% if user_name %}
+                Welcome, {{ user_name }}!
+            {% else %}
+                Welcome, Guest!
+            {% endif %}
+        </h1>
         <hr>
         Frost warning information
         <hr>

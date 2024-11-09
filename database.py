@@ -5,6 +5,7 @@
 import os
 import sqlalchemy
 import sqlalchemy.orm
+from sqlalchemy.exc import IntegrityError
 import dotenv
 
 #-----------------------------------------------------------------------
@@ -65,7 +66,70 @@ class User_Crop (Base):
     harvest_date = sqlalchemy.Column(sqlalchemy.Date)
     seed_harvest_date = sqlalchemy.Column(sqlalchemy.Date)
 
+class Users (Base):
+    __tablename__ = 'users'
+    user_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
+    first_name = sqlalchemy.Column(sqlalchemy.String)
+    last_name = sqlalchemy.Column(sqlalchemy.String)
+    email = sqlalchemy.Column(sqlalchemy.String, unique=True)
+
+class Admin (Base):
+    __tablename__ = 'admin'
+    admin_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
+    user_id = sqlalchemy.Column(sqlalchemy.Integer)
+
 _engine = sqlalchemy.create_engine(_DATABASE_URL)
+
+
+def add_user(first_name, last_name, email):
+    with sqlalchemy.orm.Session(_engine) as session:
+        is_existing_user = session.query(Users).filter_by(email=email).first()
+
+        if is_existing_user:
+            return
+
+        new_user = Users(first_name=first_name, last_name=last_name, email=email)
+        try:
+            session.add(new_user)
+            session.commit()
+        except IntegrityError:
+            session.rollback()
+
+def get_user(searchvalue, searchfield):
+    with sqlalchemy.orm.Session(_engine) as session:
+        if searchfield == 'email':
+            query = session.query(Users).filter_by(email=searchvalue)
+            
+        else:
+            query = session.query(Users).filter_by(user_id=searchvalue)
+
+        table = query.first()
+        return table
+
+
+def is_admin(user_id):
+    with sqlalchemy.orm.Session(_engine) as session:
+        query = session.query(Admin).filter_by(user_id=user_id)
+        table = query.first()
+
+        if table:
+            return True
+        return False
+
+def get_profiles():
+    with sqlalchemy.orm.Session(_engine) as session:
+        query = session.query(Users)
+        table = query.all()
+        profiles = []
+        for row in table:
+            profile = {
+                'first_name':row.first_name,
+                'last_name':row.last_name,
+                'email':row.email
+            }
+            profiles.append(profile)
+
+        return profiles
 
 #------------------------------------------------------------------------------
 # search_value: This is the value that the user either clicks on or types in.
@@ -388,12 +452,15 @@ def delete_variety(variety_id):
         session.delete(variety_to_delete)
         session.commit()
 
+
 #-----------------------------------------------------------------------
 
 def _test():
 
 
-    print(get_template_crop(1))
+    print(is_admin(1))
+    print(is_admin(3))
+
     # results = search_field('family', '')
     # print(results)
     # results = search_field('species', '')
