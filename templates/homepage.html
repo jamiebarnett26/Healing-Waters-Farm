@@ -22,9 +22,15 @@
     .container-bg {
         background: #757575;
     }
+
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
 </style>
 
  <html>
+    <body>
     <div class = "container-fluid">
         <div class = "row mb-3">
             <div class = "col d-flex flex-column">
@@ -47,24 +53,42 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid bg-primary rounded-top-5">
-        <h2>Tasks this week:</h2>
+
+    <div class="container-fluid bg-primary rounded-top-5 p-0">
+        <h2 class = "p-3"> 
+            <a href = "/testpage" class = "text-white"> Tasks this week:</a>
+        </h2>
         <div class = "row">
             <div class = "col-6 mx-auto text-center">
                 <button class = "btn btn-success w-100" type = "button" id = "test_button"> Go to test page</button>
             </div>
         </div>
-    </div>
-    <div class="container rounded">
-        <h2>Tasks this week:</h2>
-        <div class = "row">
-            <div class = "col-6 mx-auto text-center">
-                <button class = "btn btn-primary w-100" type = "button" id = "test_button"> Go to test page</button>
+
+        <div class="container pb-2">
+            <h2>
+                <a href = "/testpage"> Crop Tasks: </a>
+            </h2>
+            <div class="d-flex flex-row flex-nowrap overflow-scroll">
+                <div class="card card-body me-2" style="min-width: 200px;">
+                    Card
+                </div>
+                <div class="card card-body me-2" style="min-width: 200px;">
+                    Card
+                </div>
+                <div class="card card-body me-2" style="min-width: 200px;">
+                    Card
+                </div>
+                <div class="card card-body me-2" style="min-width: 200px;">
+                    Card
+                </div>
+                <div class="card card-body me-2" style="min-width: 200px;">
+                    Card
+                </div>
             </div>
         </div>
     </div>
-
-
+    
+    
     <script src=
         "https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js">
     </script>
@@ -74,9 +98,9 @@
                 window.location.href = '/testpage';
             });
         });
-
     </script>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
- </html>
+</body>
+</html>
