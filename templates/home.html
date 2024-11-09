@@ -8,15 +8,15 @@
     <body>
         <hr>
         {% include 'header.html' %}
+        <button id="logoutButton">Logout</button>
         <h1>
-            {% if first_name or last_name %}
-                Welcome, {{ first_name }} {{ last_name }}!
+            {% if user_name %}
+                Welcome, {{ user_name }}!
             {% else %}
                 Welcome, Guest!
             {% endif %}
         </h1>
         <hr>
-        <button id="loginButton">Login</button>
         Frost warning information
         <hr>
         <button id="navigateButton">Start Tracking a New Crop</button>

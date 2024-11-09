@@ -95,6 +95,18 @@ def add_user(first_name, last_name, email):
         except IntegrityError:
             session.rollback()
 
+def get_user(searchvalue, searchfield):
+    with sqlalchemy.orm.Session(_engine) as session:
+        if searchfield == 'email':
+            query = session.query(Users).filter_by(email=searchvalue)
+            
+        else:
+            query = session.query(Users).filter_by(user_id=searchvalue)
+
+        table = query.first()
+        return table
+
+
 def is_admin(user_id):
     with sqlalchemy.orm.Session(_engine) as session:
         query = session.query(Admin).filter_by(user_id=user_id)
@@ -103,6 +115,21 @@ def is_admin(user_id):
         if table:
             return True
         return False
+
+def get_profiles():
+    with sqlalchemy.orm.Session(_engine) as session:
+        query = session.query(Users)
+        table = query.all()
+        profiles = []
+        for row in table:
+            profile = {
+                'first_name':row.first_name,
+                'last_name':row.last_name,
+                'email':row.email
+            }
+            profiles.append(profile)
+
+        return profiles
 
 #------------------------------------------------------------------------------
 # search_value: This is the value that the user either clicks on or types in.

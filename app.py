@@ -8,27 +8,13 @@ import database
 from datetime import datetime
 from authlib.integrations.flask_client import OAuth
 from authlib.integrations.flask_client import OAuth
+from top import app
+import auth
+import users
 
 #-----------------------------------------------------------------------
 
-app = flask.Flask(__name__, template_folder='templates')
-# TODO: Generate a secret random key
-app.secret_key = 'random secret'
-
-# oauth config for google
-oauth = OAuth(app)
-google = oauth.register(
-    name='google',
-    client_id='144993838713-mvb15a64nvp0t5jd7j1spj4vr8pg7hdv.apps.googleusercontent.com',
-    client_secret='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',
-    access_token_url='https://accounts.google.com/o/oauth2/token',
-    access_token_params=None,
-    authorize_url='https://accounts.google.com/o/oauth2/auth',
-    authorize_params=None,
-    api_base_url='https://www.googleapis.com/oauth2/v1/',
-    client_kwargs={'scope': 'profile email'}
-)
-
+auth = flask.Blueprint('auth', __name__)
 
 #-----------------------------------------------------------------------
 
@@ -37,49 +23,53 @@ def get_current_time():
 
 #-----------------------------------------------------------------------
 @app.route('/', methods=['GET'])
-@app.route('/index', methods=['GET'])
 def index():
-    first_name = flask.session.get('first_name', None)
-    last_name = flask.session.get('last_name', None)
-    html_code = flask.render_template('index.html',
-                                      current_time=get_current_time(),
-                                      first_name=first_name,
-                                      last_name=last_name)
+    user_id = flask.request.cookies.get('user_id')
+    if not user_id:
+        return flask.redirect('/login')
+    
+    user = database.get_user(user_id, 'user_id')
+    if user:
+        return flask.redirect('/home')
+    else:
+        return flask.redirect('/login')
+
+@app.route('/home', methods=['GET'])
+def home():
+    user_id = flask.request.cookies.get('user_id')
+    admin = flask.request.cookies.get('admin')
+    app.logger.info(admin)
+
+    if not user_id:
+        return flask.redirect('/login')
+    user = database.get_user(user_id, 'user_id')
+    if not user:
+        return flask.redirect('/login')
+     
+    user_name = user.first_name + " " + user.last_name
+   
+    html_code = flask.render_template('home.html',
+                                      user_name=user_name,
+                                      admin=admin,
+                                      current_time=get_current_time())
     response = flask.make_response(html_code)
     return response
 
 #-----------------------------------------------------------------------
 # Route end points for login.
 #-----------------------------------------------------------------------
-
-@app.route('/login')
-def login():
-    google = oauth.create_client('google')
-    redirect_uri = flask.url_for('authorize', _external=True)
-    return google.authorize_redirect(redirect_uri)
-
-@app.route('/authorize')
-def authorize():
-    google = oauth.create_client('google')
-    token = google.authorize_access_token()
-    resp = google.get('userinfo', token=token)
-    resp.raise_for_status()
-    user_info = resp.json()
-
-    email = user_info.get('email')
-    first_name = user_info.get('given_name')
-    last_name = user_info.get('family_name')
-
-    flask.session['first_name'] = first_name
-    flask.session['last_name'] = last_name
-    
-    database.add_user(first_name, last_name, email)
-    return flask.redirect('/index')
-
-#-----------------------------------------------------------------------
+@app.route('/profile_list', methods=['GET'])
+def profile_list():
+    profiles = database.get_profiles()
+    html_code = flask.render_template('profile_list.html',
+                                      profiles=profiles,
+                                      current_time=get_current_time())
+    response = flask.make_response(html_code)
+    return response
 
 @app.route('/selectFamily', methods=['GET'])
 def search_crops():
+    admin = flask.request.cookies.get('admin')
     family = flask.request.args.get('family')
     if family == None:
         family = ""
@@ -87,6 +77,7 @@ def search_crops():
     families= database.search_field_name('family', family)
     html_code = flask.render_template('selectFamily.html',
                                       families=families,
+                                      admin = admin,
                                       current_time=get_current_time())
     response = flask.make_response(html_code)
     return response
@@ -96,10 +87,12 @@ def search_crops():
 @app.route('/selectSpecies/<family_id>', methods=['GET'])
 def show_species(family_id):
     species = database.species_from_family(family_id)
+    admin = flask.request.cookies.get('admin')
 
     html_code = flask.render_template('selectSpecies.html', 
                                       species=species,
                                       family_id=family_id,
+                                      admin = admin,
                                       current_time = get_current_time())
     response = flask.make_response(html_code)
     return response
@@ -108,12 +101,14 @@ def show_species(family_id):
 
 @app.route('/selectVariety/<species_id>', methods=['GET'])
 def show_variety(species_id):
+    admin = flask.request.cookies.get('admin')
     varieties = database.variety_from_species(species_id)
     
     html_code = flask.render_template(
         'selectVariety.html',
         varieties=varieties,
         species_id=species_id,
+        admin=admin,
         current_time=get_current_time()
     )
     
@@ -124,6 +119,7 @@ def show_variety(species_id):
 
 @app.route('/showcrop/<variety_id>', methods=['GET'])
 def show_crop(variety_id):
+    admin = flask.request.cookies.get('admin')
     crop_infos = database.crop_info_from_variety(variety_id)
     full_crop_infos = []
     for crop_info in crop_infos:
@@ -131,6 +127,7 @@ def show_crop(variety_id):
         full_crop_infos.append(full_crop_info)
     html_code = flask.render_template('showcrop.html',
                                       crop_info_id=crop_info['crop_info_id'],
+                                      admin=admin,
                                       crop_infos=full_crop_infos,
                                       current_time=get_current_time())
     response = flask.make_response(html_code)
@@ -139,7 +136,9 @@ def show_crop(variety_id):
 #-----------------------------------------------------------------------
 @app.route('/createfamily', methods=['GET'])
 def create_family():
+    admin = flask.request.cookies.get('admin')
     html_code = flask.render_template('createfamily.html',
+                                      admin=admin,
                                       current_time=get_current_time())
     response = flask.make_response(html_code)
     return response
@@ -152,34 +151,36 @@ def add_family():
     family_name = flask.request.form.get('family_name')
     family = {'family_name':family_name}
     database.add_family(family)
-    return index()
+    return home()
 
 #-----------------------------------------------------------------------
 
 @app.route('/deletefamily/<family_id>')
 def delete_family(family_id):
     database.delete_family(family_id)
-    return index()
+    return home()
 
 #-----------------------------------------------------------------------
 
 @app.route('/deletespecies/<species_id>')
 def delete_species(species_id):
     database.delete_species(species_id)
-    return index()
+    return home()
 
 #-----------------------------------------------------------------------
 
 @app.route('/deletevariety/<variety_id>')
 def delete_variety(variety_id):
     database.delete_variety(variety_id)
-    return index()
+    return home()
 
 
 #-----------------------------------------------------------------------
 @app.route('/createspecies/<family_id>', methods=['GET'])
 def create_species(family_id):
+    admin = flask.request.cookies.get('admin')
     html_code = flask.render_template('createspecies.html',
+                                      admin=admin,
                                       family_id=family_id,
                                       current_time=get_current_time())
     response = flask.make_response(html_code)
@@ -194,12 +195,13 @@ def add_species(family_id):
     latin_name = flask.request.form.get('latin_name')
     species = {'family_id':family_id, 'species_name':species_name, 'latin_name':latin_name}
     database.add_species(species)
-    return index()
+    return home()
 
 
 #-----------------------------------------------------------------------
 @app.route('/createvariety/<species_id>', methods=['GET'])
 def create_variety(species_id):
+    admin = flask.request.cookies.get('admin')
     template_crop_id = database.get_template_crop(species_id)
     if template_crop_id == -1:
         family_table = database.family_from_species(species_id)
@@ -229,6 +231,7 @@ def create_variety(species_id):
         full_crop_info = database.full_crop_info(template_crop_id)
     html_code = flask.render_template('createvariety.html',
                                       crop_info=full_crop_info,
+                                      admin=admin,
                                       species_id=species_id,
                                       current_time=get_current_time())
     response = flask.make_response(html_code)
@@ -263,17 +266,19 @@ def add_variety(species_id):
                  }
 
     database.add_variety(variety, crop_info)
-    return index()
-
-#-----------------------------------------------------------------------
+    return home()
 
 @app.route('/addusercrop/<crop_info_id>')
 def add_user_crop(crop_info_id):
+    user_id = flask.request.cookies.get('user_id')
+    if not user_id:
+        return flask.redirect('/login')
+    
 
     indoor_seed_starting_date = datetime.now()
     
     user_crop = {
-        'user_id': 1,
+        'user_id': user_id,
         'crop_info_id': crop_info_id,
         'indoor_seed_starting_date': indoor_seed_starting_date,
         'transplanting_date': None,
@@ -284,13 +289,18 @@ def add_user_crop(crop_info_id):
 
     database.add_user_crop(user_crop)
 
-    return index()
+    return home()
 
 #-----------------------------------------------------------------------
 
 @app.route('/showusercrops')
 def show_user_crop():
-    user_crops = database.get_user_crops(1)
+    admin = flask.request.cookies.get('admin')
+    user_id = flask.request.cookies.get('user_id')
+    if not user_id:
+        return flask.redirect('/login')
+    
+    user_crops = database.get_user_crops(user_id)
     user_crop_infos = []
     all_todos = []
     for user_crop in user_crops:
@@ -307,6 +317,7 @@ def show_user_crop():
     crops_with_todos = zip(user_crop_infos, all_todos)
 
     html_code = flask.render_template('showusercrops.html',
+                                      admin=admin,
                                       crops_with_todos=crops_with_todos,  
                                       current_time=get_current_time())
     response = flask.make_response(html_code)
@@ -316,8 +327,10 @@ def show_user_crop():
 
 @app.route('/calendar')
 def calendar():
-
-    html_code = flask.render_template('calendar.html')
+    admin = flask.request.cookies.get('admin')
+    html_code = flask.render_template('calendar.html', admin=admin)
     response = flask.make_response(html_code)
     return response
+
+
 

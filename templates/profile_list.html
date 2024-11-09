@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        {% include 'header.html' %}
+        {% for profile in profiles %}
+            <Strong>{{profile.first_name}} {{profile.last_name}}</Strong> <br>
+            {{profile.email}}
+            <hr>
+        {% endfor %}
+        {% include 'footer.html' %}
+    </body>
+</html>
+

@@ -5,6 +5,6 @@ document.getElementById('navigateButton').addEventListener('click', function() {
 });
 
 // Redirect to login
-document.getElementById('loginButton').addEventListener('click', function() {
-  window.location.href = '/login'
+document.getElementById('logoutButton').addEventListener('click', function() {
+  window.location.href = '/logout'
 })
