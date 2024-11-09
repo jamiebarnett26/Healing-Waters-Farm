@@ -11,6 +11,7 @@ from authlib.integrations.flask_client import OAuth
 from top import app
 import auth
 import users
+import sys
 
 #-----------------------------------------------------------------------
 
@@ -25,7 +26,9 @@ def get_current_time():
 @app.route('/', methods=['GET'])
 def index():
     user_id = flask.request.cookies.get('user_id')
-    if not user_id:
+    print(str(user_id), file=sys.stderr)
+    
+    if user_id is None:
         return flask.redirect('/login')
     
     user = database.get_user(user_id, 'user_id')

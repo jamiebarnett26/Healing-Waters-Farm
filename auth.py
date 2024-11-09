@@ -3,9 +3,11 @@ from top import app, oauth
 import flask
 from flask import redirect
 import database
+import sys
 
 @app.route('/login')
 def login():
+    print('Login', file=sys.stderr)
     google = oauth.create_client('google')
     redirect_uri = flask.url_for('authorize_login', _external=True)
     return google.authorize_redirect(redirect_uri)
@@ -73,8 +75,8 @@ def authorize_signup():
 
 @app.route('/logout')
 def logout():
-    # Clear session data
     flask.session.clear()
-    resp = flask.make_response(flask.redirect('/'))
-    resp.set_cookie('user_id', '', expires=0) 
+    resp = flask.make_response(flask.redirect('https://accounts.google.com/Logout'))
+    resp.set_cookie('user_id', '', expires=0)
+    resp.set_cookie('admin', '', expires=0)
     return resp
