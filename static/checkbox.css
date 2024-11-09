@@ -1,4 +1,8 @@
 
+/* Taken from https://getcssscan.com/css-checkboxes-examples 
+    Credit to Alvaro Trigo
+*/
+
   .checkbox-wrapper-61 input[type="checkbox"] {
     visibility: hidden;
     display: none;
@@ -12,9 +16,21 @@
 
   .checkbox-wrapper-61 {
     position: relative;
-    display: block;
+    display: flex;
     overflow: hidden;
   }
+
+  .checkbox-wrapper-61 .label {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-wrapper-61 .checkbox-text {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px; /* Adds space between the checkbox and text */
+}
+
   .checkbox-wrapper-61 .check {
     width: 50px;
     height: 50px;

@@ -36,7 +36,7 @@ def getCardInfo():
 
         todos = [
             {"task": "Start indoor seeding", "date": user_crop['indoor_seed_starting_date'], "done": False},
-            {"task": "Transplant plants from indoor to outdoor", "date": user_crop['transplanting_date'], "done": False},
+            {"task": "Transplant plants outdoors", "date": user_crop['transplanting_date'], "done": False},
             {"task": "Direct sowing", "date": user_crop['direct_sow_date'], "done": False},
             {"task": "Prepare for harvest", "date": user_crop['harvest_date'], "done": False}
         ]
