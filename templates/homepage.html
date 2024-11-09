@@ -14,7 +14,7 @@
     .box-content {
         aspect-ratio: 1;
         height: 100%;
-        border-radius: 5%;
+        border-radius: 25%;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -68,23 +68,7 @@
             <h2>
                 <a href = "/testpage"> Crop Tasks: </a>
             </h2>
-            <div class="d-flex flex-row flex-nowrap overflow-scroll">
-                <div class="card card-body me-2" style="min-width: 200px;">
-                    Card
-                </div>
-                <div class="card card-body me-2" style="min-width: 200px;">
-                    Card
-                </div>
-                <div class="card card-body me-2" style="min-width: 200px;">
-                    Card
-                </div>
-                <div class="card card-body me-2" style="min-width: 200px;">
-                    Card
-                </div>
-                <div class="card card-body me-2" style="min-width: 200px;">
-                    Card
-                </div>
-            </div>
+            {% include 'cropcards.html' %}
         </div>
     </div>
     
