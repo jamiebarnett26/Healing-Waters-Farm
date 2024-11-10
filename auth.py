@@ -15,7 +15,7 @@ def login():
 @app.route('/signup')
 def signup():
     google = oauth.create_client('google')
-    redirect_uri = flask.url_for('authorize_signup', _external=True)
+    redirect_uri = flask.url_for('authorize_signin', _external=True)
     return google.authorize_redirect(redirect_uri)
 
 @app.route('/authorize_login')
@@ -44,8 +44,8 @@ def authorize_login():
     
     return redirect('signup')
     
-@app.route('/authorize_signup')
-def authorize_signup():
+@app.route('/authorize_signin')
+def authorize_signin():
     google = oauth.create_client('google')
     token = google.authorize_access_token()
     resp = google.get('userinfo', token=token)
@@ -64,7 +64,6 @@ def authorize_signup():
     if user:
         return flask.redirect('/login')
     database.add_user(first_name, last_name, email)
-    user = database.get_user(email)
     resp = flask.make_response(flask.redirect('/home'))
     resp.set_cookie('user_id', str(user.user_id))
     resp.set_cookie('admin', str(False))
