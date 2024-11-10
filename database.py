@@ -113,9 +113,8 @@ def is_admin(user_id):
         table = query.first()
 
         if table:
-            return True
-        return False
-
+            return 'true'
+        return 'false'
 def get_profiles():
     with sqlalchemy.orm.Session(_engine) as session:
         query = session.query(Users)

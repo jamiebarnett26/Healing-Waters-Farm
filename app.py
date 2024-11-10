@@ -38,7 +38,7 @@ def index():
 @app.route('/home', methods=['GET'])
 def home():
     user_id = flask.request.cookies.get('user_id')
-    admin = flask.request.cookies.get('admin')
+    admin = flask.request.cookies.get('admin') == 'true'
     app.logger.info(admin)
 
     if not user_id:
@@ -61,8 +61,10 @@ def home():
 #-----------------------------------------------------------------------
 @app.route('/profile_list', methods=['GET'])
 def profile_list():
+    admin = flask.request.cookies.get('admin') == 'true'
     profiles = database.get_profiles()
     html_code = flask.render_template('profile_list.html',
+                                      admin=admin,
                                       profiles=profiles,
                                       current_time=get_current_time())
     response = flask.make_response(html_code)
@@ -70,7 +72,7 @@ def profile_list():
 
 @app.route('/selectFamily', methods=['GET'])
 def search_crops():
-    admin = flask.request.cookies.get('admin')
+    admin = flask.request.cookies.get('admin') == 'true'
     family = flask.request.args.get('family')
     if family == None:
         family = ""
@@ -88,7 +90,7 @@ def search_crops():
 @app.route('/selectSpecies/<family_id>', methods=['GET'])
 def show_species(family_id):
     species = database.species_from_family(family_id)
-    admin = flask.request.cookies.get('admin')
+    admin = flask.request.cookies.get('admin') == 'true'
 
     html_code = flask.render_template('selectSpecies.html', 
                                       species=species,
@@ -102,7 +104,7 @@ def show_species(family_id):
 
 @app.route('/selectVariety/<species_id>', methods=['GET'])
 def show_variety(species_id):
-    admin = flask.request.cookies.get('admin')
+    admin = flask.request.cookies.get('admin') == 'true'
     varieties = database.variety_from_species(species_id)
     
     html_code = flask.render_template(
@@ -120,7 +122,7 @@ def show_variety(species_id):
 
 @app.route('/showcrop/<variety_id>', methods=['GET'])
 def show_crop(variety_id):
-    admin = flask.request.cookies.get('admin')
+    admin = flask.request.cookies.get('admin') == 'true'
     crop_infos = database.crop_info_from_variety(variety_id)
     full_crop_infos = []
     for crop_info in crop_infos:
@@ -137,7 +139,7 @@ def show_crop(variety_id):
 #-----------------------------------------------------------------------
 @app.route('/createfamily', methods=['GET'])
 def create_family():
-    admin = flask.request.cookies.get('admin')
+    admin = flask.request.cookies.get('admin') == 'true'
     html_code = flask.render_template('createfamily.html',
                                       admin=admin,
                                       current_time=get_current_time())
@@ -179,7 +181,7 @@ def delete_variety(variety_id):
 #-----------------------------------------------------------------------
 @app.route('/createspecies/<family_id>', methods=['GET'])
 def create_species(family_id):
-    admin = flask.request.cookies.get('admin')
+    admin = flask.request.cookies.get('admin') == 'true'
     html_code = flask.render_template('createspecies.html',
                                       admin=admin,
                                       family_id=family_id,
@@ -202,7 +204,7 @@ def add_species(family_id):
 #-----------------------------------------------------------------------
 @app.route('/createvariety/<species_id>', methods=['GET'])
 def create_variety(species_id):
-    admin = flask.request.cookies.get('admin')
+    admin = flask.request.cookies.get('admin') == 'true'
     template_crop_id = database.get_template_crop(species_id)
     if template_crop_id == -1:
         family_table = database.family_from_species(species_id)
@@ -296,7 +298,7 @@ def add_user_crop(crop_info_id):
 
 @app.route('/showusercrops')
 def show_user_crop():
-    admin = flask.request.cookies.get('admin')
+    admin = flask.request.cookies.get('admin') == 'true'
     user_id = flask.request.cookies.get('user_id')
     if not user_id:
         return flask.redirect('/login')
@@ -328,7 +330,7 @@ def show_user_crop():
 
 @app.route('/calendar')
 def calendar():
-    admin = flask.request.cookies.get('admin')
+    admin = flask.request.cookies.get('admin') == 'true'
     html_code = flask.render_template('calendar.html', admin=admin)
     response = flask.make_response(html_code)
     return response

@@ -39,7 +39,7 @@ def authorize_login():
         resp = flask.make_response(flask.redirect('/home'))
         resp.set_cookie('user_id', str(user.user_id))
         admin = database.is_admin(user.user_id)
-        resp.set_cookie('admin', str(admin))
+        resp.set_cookie('admin', admin)
         return resp
     
     return redirect('signup')
@@ -67,7 +67,7 @@ def authorize_signin():
     user = database.get_user(email, 'email')
     resp = flask.make_response(flask.redirect('/home'))
     resp.set_cookie('user_id', str(user.user_id))
-    resp.set_cookie('admin', str(False))
+    resp.set_cookie('admin', 'false')
     return resp
     
 
