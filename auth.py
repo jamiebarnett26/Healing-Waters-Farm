@@ -43,7 +43,7 @@ def authorize_login():
         return resp
     
     return redirect('signup')
-    
+     
 @app.route('/authorize_signin')
 def authorize_signin():
     google = oauth.create_client('google')
@@ -63,8 +63,7 @@ def authorize_signin():
     user = database.get_user(email, 'email')
     if user:
         return flask.redirect('/login')
-    database.add_user(first_name, last_name, email)
-    user = database.get_user(email, 'email')
+    user = database.add_user(first_name, last_name, email)
     resp = flask.make_response(flask.redirect('/home'))
     resp.set_cookie('user_id', str(user.user_id))
     resp.set_cookie('admin', 'false')
