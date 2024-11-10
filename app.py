@@ -47,7 +47,7 @@ def getCardInfo():
     return crops_with_todos
 
 #-----------------------------------------------------------------------
-
+# helper method to get varieties and latin names as lists for user crops
 def get_crop_varieties_and_latin(user_id):
     user_crops = database.get_user_crops(1)
     user_crop_infos = []
@@ -81,11 +81,9 @@ def getHomePage():
 
 #-----------------------------------------------------------------------
 # Request from homepage by selecting a crop, directs to indv CropPage_task.html
-@app.route('/cropPage', methods = ["GET"])
-def cropPage():
-
-
-    html_code = flask.render_template('indvCropPage/cropPage_tasks.html')
+@app.route('/cropPage/<variety_name>', methods = ["GET"])
+def cropPage(variety_name):
+    html_code = flask.render_template('indvCropPage/cropPage_tasks.html', variety_name = variety_name)
     response = flask.make_response(html_code)
     return response
 
