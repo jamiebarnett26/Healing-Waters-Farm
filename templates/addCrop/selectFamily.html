@@ -69,17 +69,11 @@
         {% include 'footer.html' %}
 
         <script>
-           
-           $(document).ready(function(){
-                $("#Variety").toggle();
+            $(document).ready(function() {
+                $("#hide").click(function(){
+                    $("#myElement").slideUp();
+                });
             });
-
-            $(document).ready(function(){
-                $("#click").click(function(){
-                $("p").slideUp();
-                $("#Varitey").toggle();
-            });
-        });
         </script>
     </body>
 </html>

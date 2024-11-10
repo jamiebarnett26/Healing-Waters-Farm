@@ -84,18 +84,25 @@ _engine = sqlalchemy.create_engine(_DATABASE_URL)
 def add_user(first_name, last_name, email):
     with sqlalchemy.orm.Session(_engine) as session:
         is_existing_user = session.query(Users).filter_by(email=email).first()
-
         if is_existing_user:
-            return
-
+            print("User already exists with email:", email)
+            return is_existing_user
+        
         new_user = Users(first_name=first_name, last_name=last_name, email=email)
         try:
             session.add(new_user)
-            session.commit()
-        except IntegrityError:
+            session.commit()  # Commit the transaction
+            print("New user committed:", email)
+        except IntegrityError as e:
             session.rollback()
+            print("IntegrityError encountered:", e)
+            return None
         
-        return get_user(email, 'email')
+        # Fetch the newly added user in the same session
+        user = session.query(Users).filter_by(email=email).first()
+        return user
+
+
 
 def get_user(searchvalue, searchfield):
     with sqlalchemy.orm.Session(_engine) as session:
