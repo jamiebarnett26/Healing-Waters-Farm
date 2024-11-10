@@ -64,6 +64,7 @@ def authorize_signin():
     if user:
         return flask.redirect('/login')
     database.add_user(first_name, last_name, email)
+    user = database.get_user(email, 'email')
     resp = flask.make_response(flask.redirect('/home'))
     resp.set_cookie('user_id', str(user.user_id))
     resp.set_cookie('admin', str(False))
