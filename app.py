@@ -17,6 +17,8 @@ def get_current_time():
     return time.asctime(time.localtime())
 
 #-----------------------------------------------------------------------
+# Start of app, outputs login page
+
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
 def index():
@@ -25,6 +27,17 @@ def index():
     return response
 
 #-----------------------------------------------------------------------
+# Request from index login button, directs to homepage.html
+@app.route('/homepage', methods = ["GET"])
+def goHomepage():
+    crops_with_todos = getCardInfo()
+    html_code = flask.render_template('homepage/homepage.html', crops_with_todos=crops_with_todos)
+    response = flask.make_response(html_code)
+    return response
+
+
+#-----------------------------------------------------------------------
+# Request from hompage, returns oldIndex page 
 @app.route('/oldIndex', methods=['GET'])
 def getHomePage():
     html_code = flask.render_template('oldIndex.html',
@@ -34,6 +47,7 @@ def getHomePage():
 
 
 #-----------------------------------------------------------------------
+# Request from hompage, returns crop to do list for cards
 def getCardInfo():
     user_crops = database.get_user_crops(1)
     user_crop_infos = []
@@ -54,15 +68,13 @@ def getCardInfo():
     return crops_with_todos
 
 #-----------------------------------------------------------------------
-
+# Request from homepage card titles, directs to individual crop page
 @app.route('/homepage', methods = ["GET"])
 def goHomepage():
     crops_with_todos = getCardInfo()
     html_code = flask.render_template('homepage/homepage.html', crops_with_todos=crops_with_todos)
     response = flask.make_response(html_code)
     return response
-
-#-----------------------------------------------------------------------
 
 @app.route('/cropPage', methods = ["GET"])
 def testpage():
