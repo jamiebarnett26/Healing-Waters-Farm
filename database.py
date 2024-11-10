@@ -94,6 +94,8 @@ def add_user(first_name, last_name, email):
             session.commit()
         except IntegrityError:
             session.rollback()
+        
+        return get_user(email, 'email')
 
 def get_user(searchvalue, searchfield):
     with sqlalchemy.orm.Session(_engine) as session:
@@ -113,9 +115,8 @@ def is_admin(user_id):
         table = query.first()
 
         if table:
-            return True
-        return False
-
+            return 'true'
+        return 'false'
 def get_profiles():
     with sqlalchemy.orm.Session(_engine) as session:
         query = session.query(Users)

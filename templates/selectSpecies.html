@@ -11,7 +11,7 @@
         <hr>
         <br>
         {% for spec in species: %}
-            <a href="/selectVariety/{{ spec['species_id'] }}">{{ spec['species_name'] }}</a> <a href="/deletespecies/{{ spec['species_id'] }}">Delete Species</a> 
+            <a href="/selectVariety/{{ spec['species_id'] }}">{{ spec['species_name'] }}</a> {% if admin %} <a href="/deletespecies/{{ spec['species_id'] }}">Delete Species</a> {% endif %}
             <hr>
         {% endfor %}
         {% include 'footer.html' %}

@@ -8,3 +8,4 @@ document.getElementById('navigateButton').addEventListener('click', function() {
 document.getElementById('logoutButton').addEventListener('click', function() {
   window.location.href = '/logout'
 })
+

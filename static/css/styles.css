@@ -49,15 +49,29 @@ main {
 }
 
 /* Footer styles */
-footer {
-  background: #333333;
-  color: #ffffff;
+.footer {
+  display: flex;
+  font-size: 5vw;  /* Adjust the font size relative to viewport width */
+  background-color: #52c35f;
+  color: white;
   text-align: center;
-  padding: 10px 0;
-  position: fixed;
+  justify-content: center;
+  align-items: center;
+  line-height: 1.2;  /* Adjust line-height for better vertical alignment */
+  position: fixed;   /* Fix the footer to the bottom of the viewport */
   left: 0;
   bottom: 0;
-  width: 100%;
+  height: 10vh;  /* Set height as a percentage of viewport height */
+  width: 100%;   /* Full width of the viewport */
+  padding: 0 5vw; /* Add some padding to make the content responsive */
+}
+
+/* Optionally, for smaller screens */
+@media (max-width: 600px) {
+  .footer {
+    font-size: 8vw;  /* Increase font size on smaller screens */
+    height: 15vh;    /* Slightly increase the height on small screens */
+  }
 }
 
 /* Styling specific classes */

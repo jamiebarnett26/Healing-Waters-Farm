@@ -15,7 +15,7 @@
         <br>
         <hr>
         {% for family in families: %}
-            <a href="/selectSpecies/{{ family['family_id'] }}">{{ family['family_name'] }}</a> <a href="/deletefamily/{{ family['family_id'] }}">Delete Family</a> 
+            <a href="/selectSpecies/{{ family['family_id'] }}">{{ family['family_name'] }}</a> {% if admin %} <a href="/deletefamily/{{ family['family_id'] }}">Delete Family</a> {% endif %}
             <hr>
         {% endfor %}
         {% include 'footer.html' %}
