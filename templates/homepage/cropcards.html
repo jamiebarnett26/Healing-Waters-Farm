@@ -23,10 +23,10 @@
     <body>
     <div class="d-flex flex-row flex-nowrap overflow-scroll">
         {% for crop_info, todos in crops_with_todos %}
-            <div class="card card-body me-2" style="min-width: 75vw; min-height: 300px; background-color: #309F5E">
+            <div class="card card-body m-2 me-1" style="min-width: 75vw; min-height: 300px; background-color: #309F5E">
                 <h3> 
                     <a href = "/testpage" class = "text-white"> 
-                        {{ crop_info['variety_name'] }} 
+                        <em style = "font-size: 6.5vw"> {{ crop_info['variety_name'] }} </em>
                     </a>
                 </h3>
                 {% set outer_loop = loop %}
@@ -44,8 +44,8 @@
                             </svg> 
                             <!-- End of content taken from checkbox.css source -->
                             <div class = "checkbox-text text-white">
-                                <h4> {{ todo.task }} </h4>
-                                <h6> {{ todo.date }} </h6>
+                                <h5> {{ todo.task }} </h4>
+                                <h6 style = "opacity: 70%;"> {{ todo.date }} </h6>
                             </div>
                         </label>
                 </div>
