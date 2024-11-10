@@ -8,6 +8,37 @@ body {
   padding: 0;
 }
 
+/* Fonts */
+@font-face {
+  font-family: 'NotoSans';
+  src: url('/static/fonts/NotoSans-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NotoSans';
+  src: url('/static/fonts/NotoSans-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NotoSans';
+  src: url('/static/fonts/NotoSans-BlackItalic.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'NotoSans';
+  src: url('/static/fonts/NotoSans-Italic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+}
+
+
+/* --------------------------------------
 /* Header styles */
 header {
   background: #333333;

@@ -22,54 +22,77 @@ def get_current_time():
     return time.asctime(time.localtime())
 
 #-----------------------------------------------------------------------
+# Start of app, outputs login page
 @app.route('/', methods=['GET'])
 def index():
-    user_id = flask.request.cookies.get('user_id')
-    
-    # Instead of redirecting immediately, consider rendering a welcome page.
-    if user_id:
-        user = database.get_user(user_id, 'user_id')
-        if user:
-            return flask.redirect('/home')
-    
-    # Show a simple welcome or landing page if no user_id is found.
-    return flask.redirect('/login')
+    html_code = flask.render_template('index.html')
+    response = flask.make_response(html_code)
+    return response
 
-@app.route('/home', methods=['GET'])
-def home():
-    user_id = flask.request.cookies.get('user_id')
-    admin = flask.request.cookies.get('admin') == 'true'
-    app.logger.info(admin)
+#-----------------------------------------------------------------------
+# Helper function, returns crop to do list for cards
+def getCardInfo():
+    user_crops = database.get_user_crops(1)
+    user_crop_infos = []
+    all_todos = []
+    for user_crop in user_crops:
+        user_crop_infos.append(database.full_crop_info(user_crop['crop_info_id']))
 
-    if not user_id:
-        return flask.redirect('/login')
-    user = database.get_user(user_id, 'user_id')
-    if not user:
-        return flask.redirect('/login')
-     
-    user_name = user.first_name + " " + user.last_name
-   
-    html_code = flask.render_template('home.html',
-                                      user_name=user_name,
-                                      admin=admin,
+        todos = [
+            {"task": "Start indoor seeding", "date": user_crop['indoor_seed_starting_date'], "done": False},
+            {"task": "Transplant plants outdoors", "date": user_crop['transplanting_date'], "done": False},
+            {"task": "Direct sowing", "date": user_crop['direct_sow_date'], "done": False},
+            {"task": "Prepare for harvest", "date": user_crop['harvest_date'], "done": False}
+        ]
+        all_todos.append(todos)
+    
+    crops_with_todos = zip(user_crop_infos, all_todos)
+    
+    return crops_with_todos
+
+#-----------------------------------------------------------------------
+# helper method to get varieties and latin names as lists for user crops
+def get_crop_varieties_and_latin(user_id):
+    user_crops = database.get_user_crops(1)
+    user_crop_infos = []
+    variety_names = []
+    latin_names = []
+    for user_crop in user_crops:
+        user_crop_infos.append(database.full_crop_info(user_crop['crop_info_id']))
+        variety_names.append(user_crop_infos['variety_name'])
+        latin_names.append(user_crop_infos['latin_name'])
+
+    return zip(variety_names, latin_names)
+
+#-----------------------------------------------------------------------
+# Request from index login button, directs to homepage.html
+@app.route('/homepage', methods = ["GET"])
+def goHomepage():
+    crops_with_todos = getCardInfo()
+    html_code = flask.render_template('homepage/homepage.html', crops_with_todos=crops_with_todos)
+    response = flask.make_response(html_code)
+    return response
+
+
+#-----------------------------------------------------------------------
+# Request from hompage, directs to oldIndex.html
+@app.route('/oldIndex', methods=['GET'])
+def getHomePage():
+    html_code = flask.render_template('oldIndex.html',
                                       current_time=get_current_time())
     response = flask.make_response(html_code)
     return response
 
 #-----------------------------------------------------------------------
-# Route end points for login.
-#-----------------------------------------------------------------------
-@app.route('/profile_list', methods=['GET'])
-def profile_list():
-    admin = flask.request.cookies.get('admin') == 'true'
-    profiles = database.get_profiles()
-    html_code = flask.render_template('profile_list.html',
-                                      admin=admin,
-                                      profiles=profiles,
-                                      current_time=get_current_time())
+# Request from homepage by selecting a crop, directs to indv CropPage_task.html
+@app.route('/cropPage/<variety_name>', methods = ["GET"])
+def cropPage(variety_name):
+    html_code = flask.render_template('indvCropPage/cropPage_tasks.html', variety_name = variety_name)
     response = flask.make_response(html_code)
     return response
 
+#-----------------------------------------------------------------------
+# Request from homepage by adding crop card, directs to selectFamily.html
 @app.route('/selectFamily', methods=['GET'])
 def search_crops():
     admin = flask.request.cookies.get('admin') == 'true'
@@ -78,7 +101,7 @@ def search_crops():
         family = ""
     
     families= database.search_field_name('family', family)
-    html_code = flask.render_template('selectFamily.html',
+    html_code = flask.render_template('addCrop/selectFamily.html',
                                       families=families,
                                       admin = admin,
                                       current_time=get_current_time())
@@ -92,7 +115,7 @@ def show_species(family_id):
     species = database.species_from_family(family_id)
     admin = flask.request.cookies.get('admin') == 'true'
 
-    html_code = flask.render_template('selectSpecies.html', 
+    html_code = flask.render_template('addCrop/selectSpecies.html', 
                                       species=species,
                                       family_id=family_id,
                                       admin = admin,
@@ -108,7 +131,7 @@ def show_variety(species_id):
     varieties = database.variety_from_species(species_id)
     
     html_code = flask.render_template(
-        'selectVariety.html',
+        'addCrop/selectVariety.html',
         varieties=varieties,
         species_id=species_id,
         admin=admin,
