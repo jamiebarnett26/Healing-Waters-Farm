@@ -315,6 +315,7 @@ def species_from_variety(variety_id):
         species_table = query.first()
         return species_table
 
+
 def full_crop_info(crop_info_id):
     with sqlalchemy.orm.Session(_engine) as session:
         query = session.query(Crop_Info).filter(
