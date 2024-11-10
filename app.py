@@ -47,6 +47,20 @@ def getCardInfo():
     return crops_with_todos
 
 #-----------------------------------------------------------------------
+
+def get_crop_varieties_and_latin(user_id):
+    user_crops = database.get_user_crops(1)
+    user_crop_infos = []
+    variety_names = []
+    latin_names = []
+    for user_crop in user_crops:
+        user_crop_infos.append(database.full_crop_info(user_crop['crop_info_id']))
+        variety_names.append(user_crop_infos['variety_name'])
+        latin_names.append(user_crop_infos['latin_name'])
+
+    return zip(variety_names, latin_names)
+
+#-----------------------------------------------------------------------
 # Request from index login button, directs to homepage.html
 @app.route('/homepage', methods = ["GET"])
 def goHomepage():

@@ -74,7 +74,9 @@
         // For buttons with crop names
         $(document).ready(function() {
             $('[id^=card-button]').on('click', function() {
-                window.location.href = '/cropPage';
+                var varietyName = $(this).attr('id').split('card-button-')[1];
+
+                window.location.href = '/cropPage' + varietyName;
             });
         });
 
