@@ -77,7 +77,7 @@ def goHomepage():
 #-----------------------------------------------------------------------
 # Request from hompage, directs to oldIndex.html
 @app.route('/oldIndex', methods=['GET'])
-def getHomePage():
+def oldIndex():
     html_code = flask.render_template('oldIndex.html',
                                       current_time=get_current_time())
     response = flask.make_response(html_code)
