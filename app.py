@@ -33,7 +33,7 @@ def index():
             return flask.redirect('/home')
     
     # Show a simple welcome or landing page if no user_id is found.
-    return flask.render_template('index.html')
+    return flask.redirect('/login')
 
 @app.route('/home', methods=['GET'])
 def home():
