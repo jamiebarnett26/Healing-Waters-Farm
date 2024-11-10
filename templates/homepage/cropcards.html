@@ -52,9 +52,11 @@
                 {% set outer_loop = loop %}
 
                 {% for todo in todos %}
+                    <!-- For some very strange reason, the checkboxes won't work unless I explicitly call the loop.index before the template. I think it is a jinja issue but this seems to be the only answer without rewriting everything without nested loops -->
+                    <span style="display: none;">{{ loop.index }}</span>
                     {% include 'homepage/checkbox.html' %}
                     <hr>
-            {% endfor %}
+                {% endfor %}
             </div>
         {% endfor %}
         
