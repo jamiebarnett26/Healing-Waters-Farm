@@ -2,6 +2,15 @@ import flask
 from authlib.integrations.flask_client import OAuth
 app = flask.Flask(__name__, template_folder='templates')
 
+
+@app.route('/manifest.json')
+def serve_manifest():
+    return flask.send_from_directory('.', 'manifest.json')
+
+@app.route('/serviceWorker.js')
+def serve_serviceWorker():
+    return flask.send_from_directory('.', 'serviceWorker.js')
+
 # TODO: Generate a secret random key
 app.secret_key = 'random secret'
 

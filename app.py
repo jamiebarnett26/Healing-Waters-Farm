@@ -10,7 +10,6 @@ from authlib.integrations.flask_client import OAuth
 from authlib.integrations.flask_client import OAuth
 from top import app
 import auth
-import users
 import sys
 
 #-----------------------------------------------------------------------
