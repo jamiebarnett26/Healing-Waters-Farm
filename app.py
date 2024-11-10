@@ -2,10 +2,12 @@
 # Wildflower Farm App
 #-----------------------------------------------------------------------
 
+
 import time
-import flask
+import flask 
 import database
 from datetime import datetime
+
 from authlib.integrations.flask_client import OAuth
 from authlib.integrations.flask_client import OAuth
 from top import app
@@ -335,5 +337,17 @@ def calendar():
     response = flask.make_response(html_code)
     return response
 
+#-----------------------------------------------------------------------
 
+#@app.route('/manifest.json')
+#def serve_manifest():
+#    return flask.send_file('manifest.json')
+    #, mimetype='application/manifest+json'
 
+#-----------------------------------------------------------------------
+
+@app.route('/serviceWorker.js')
+def serve_sw():
+    return app.send_static_file('serviceWorker.js')
+
+#-----------------------------------------------------------------------

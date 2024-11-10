@@ -1,19 +1,18 @@
 {
-  "lang": "en-us",
   "name": "My Crop Manager",
   "short_name": "CropManager",
-  "description": "Manage and track your crop varieties and essential planting information.",
-  "scope": "/",
   "start_url": "/",
+  "description": "Manage and track your crop varieties and essential planting information.",
   "background_color": "#FFFFFF",
   "theme_color": "#4CAF50",
   "orientation": "any",
   "display": "standalone",
   "icons": [
     {
-      "src": "/icon/tulip.jpg",
+      "src": "/images/tulip.jpg",
       "type": "image/jpg",
-      "sizes": "236x233"
+      "sizes": "236×233"
     }
   ]
+  
 }
