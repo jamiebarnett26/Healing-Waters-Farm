@@ -30,3 +30,12 @@ self.addEventListener("fetch", fetchEvent => {
     })
   );
 });
+
+// In service-worker.js
+self.addEventListener('fetch', function(event) {
+  if (event.request.url.includes('/home') || event.request.url.includes('/')) {
+    event.respondWith(fetch(event.request)); // Always fetch fresh content
+  } else {
+    event.respondWith(caches.match(event.request)); // For static assets
+  }
+});
