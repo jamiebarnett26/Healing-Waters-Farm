@@ -76,6 +76,7 @@ def cropPage():
     return response
 
 #-----------------------------------------------------------------------
+# Request from homepage by adding crop card, directs to selectFamily.html
 @app.route('/selectFamily', methods=['GET'])
 def search_crops():
     family = flask.request.args.get('family')
