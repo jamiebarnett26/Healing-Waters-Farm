@@ -15,30 +15,71 @@
      </script>
      
     <!-- CSS Internal Styling -->
+     <style>
+        .container {
+                color: rgb(114, 161, 138);
+                font-family: Georgia, 'Times New Roman', Times, serif;
+                text-align: center;
+            }
+        .p {
+            color: rgb(255, 255, 255);
+                font-family: Georgia, 'Times New Roman', Times, serif;
+        }
+     </style>
 
     </head>
     <body>
 
-        <strong>Select Family</strong>
-        <br>
-        <form action="/selectFamily" method="get">
-            <input type="text", name="family", autofocus> <input type="submit" value="Submit">
-        </form>
-        <br>
-        <a href="/createfamily">Add New Family</a>
-        <br>
+        <div class="container">
+            <br>
+            <h1>Select Family</h1>
+            <form action="/selectFamily" method="get">
+                <input type="text", name="family", autofocus> <input type="submit" value="Submit">
+            </form>
+        </div>
+
+         <!-- Card  -->
+        <div class="card card-body m-2 mb-3" style="min-width: 75vw; height: 100vw; background-color: #517D5A">
+            <h3>   
+                <div class="card-title d-flex justify-content-center align-items-center">
+                    <!-- Select Family Text  -->
+                    <p id="Family">
+                        {% for family in families: %}
+                        <br>
+                        <button id="click" type="button" class="btn btn-outline-light">{{ family['family_name'] }}</button>  <a href="/deletefamily/{{ family['family_id'] }}">Delete Family</a> 
+                        <br>
+                        {% endfor %}
+                        <br>
+                        <a href="/createfamily">Add New Family</a>
+                    </p>
+
+                    <!-- Select Variety Text  -->
+                    <p id="Variety">
+                        HELLOOOOO
+                    </p>
+                </div>
+            </h3>
+        </div>
+
+        <!-- Variety  -->
+
+    
         <hr>
-        {% for family in families: %}
-            <a href="/selectSpecies/{{ family['family_id'] }}">{{ family['family_name'] }}</a> <a href="/deletefamily/{{ family['family_id'] }}">Delete Family</a> 
-            <hr>
-        {% endfor %}
+
         {% include 'footer.html' %}
 
         <script>
-            $(document).ready(function(){
-            $("#hide").click(function(){
-                $("#myElement").slideUp();
+           
+           $(document).ready(function(){
+                $("#Variety").toggle();
             });
+
+            $(document).ready(function(){
+                $("#click").click(function(){
+                $("p").slideUp();
+                $("#Varitey").toggle();
+            });
+        });
         </script>
     </body>
 </html>
