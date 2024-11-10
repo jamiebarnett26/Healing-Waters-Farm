@@ -1,7 +1,9 @@
 const staticPhoneStore = "phone-store-site-v1"; // Versioned cache name
 
 const assets = [
-
+  "/static/css/styles.css",
+  "/static/js/script.js",
+  "/manifest.json"
 ];
 
 self.addEventListener("install", installEvent => {
