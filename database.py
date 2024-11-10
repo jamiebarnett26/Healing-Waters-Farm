@@ -91,19 +91,17 @@ def add_user(first_name, last_name, email):
         new_user = Users(first_name=first_name, last_name=last_name, email=email)
         try:
             session.add(new_user)
-            session.commit()
+            session.commit()  # Commit the transaction
             print("New user committed:", email)
         except IntegrityError as e:
             session.rollback()
             print("IntegrityError encountered:", e)
             return None
         
-        user = get_user(email, 'email')
-        if user:
-            print("User retrieved after commit:", user.email)
-        else:
-            print("User not found after commit.")
+        # Fetch the newly added user in the same session
+        user = session.query(Users).filter_by(email=email).first()
         return user
+
 
 
 def get_user(searchvalue, searchfield):
