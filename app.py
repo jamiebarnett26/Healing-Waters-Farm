@@ -25,16 +25,15 @@ def get_current_time():
 @app.route('/', methods=['GET'])
 def index():
     user_id = flask.request.cookies.get('user_id')
-    print(str(user_id), file=sys.stderr)
     
-    if user_id is None:
-        return flask.redirect('/login')
+    # Instead of redirecting immediately, consider rendering a welcome page.
+    if user_id:
+        user = database.get_user(user_id, 'user_id')
+        if user:
+            return flask.redirect('/home')
     
-    user = database.get_user(user_id, 'user_id')
-    if user:
-        return flask.redirect('/home')
-    else:
-        return flask.redirect('/login')
+    # Show a simple welcome or landing page if no user_id is found.
+    return flask.render_template('index.html')
 
 @app.route('/home', methods=['GET'])
 def home():
