@@ -83,7 +83,7 @@ def search_crops():
         family = ""
     
     families= database.search_field_name('family', family)
-    html_code = flask.render_template('selectFamily.html',
+    html_code = flask.render_template('addCrop/selectFamily.html',
                                       families=families,
                                       current_time=get_current_time())
     response = flask.make_response(html_code)
@@ -95,7 +95,7 @@ def search_crops():
 def show_species(family_id):
     species = database.species_from_family(family_id)
 
-    html_code = flask.render_template('selectSpecies.html', 
+    html_code = flask.render_template('addCrop/selectSpecies.html', 
                                       species=species,
                                       family_id=family_id,
                                       current_time = get_current_time())
@@ -109,7 +109,7 @@ def show_variety(species_id):
     varieties = database.variety_from_species(species_id)
     
     html_code = flask.render_template(
-        'selectVariety.html',
+        'addCrop/selectVariety.html',
         varieties=varieties,
         species_id=species_id,
         current_time=get_current_time()
