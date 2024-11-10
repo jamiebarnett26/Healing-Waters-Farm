@@ -9,8 +9,8 @@
     <style>
         /* Custom style for crop icons */
         .crop-icon {
-            max-width: 150px; /* Adjust this value to control the width */
-            max-height: 150px; /* Adjust this value to control the height */
+            max-width: 150px;
+            max-height: 150px;
         }
     </style>
 </head>
@@ -18,46 +18,18 @@
     <div class="container py-4">
         <h1 class="text-center mb-4">My Crops</h1>
         <div class="row row-cols-2 g-3">
-            <div class="col">
-                <button class="btn btn-light w-100">
-                    <img src="/static/icon/tomato.png" class="img-fluid crop-icon" alt="Tomato">
-                    <div class="mt-2">Tomato</div>
-                </button>
-            </div>
-            <div class="col">
-                <button class="btn btn-light w-100">
-                    <img src="/static/icon/corn.png" class="img-fluid crop-icon" alt="Corn">
-                    <div class="mt-2">Corn</div>
-                </button>
-            </div>
-            <div class="col">
-                <button class="btn btn-light w-100">
-                    <img src="/static/icon/carrot.png" class="img-fluid crop-icon" alt="Carrot">
-                    <div class="mt-2">Carrot</div>
-                </button>
-            </div>
-            <div class="col">
-                <button class="btn btn-light w-100">
-                    <img src="/static/icon/pepper.png" class="img-fluid crop-icon" alt="Pepper">
-                    <div class="mt-2">Pepper</div>
-                </button>
-            </div>
-            <div class="col">
-                <button class="btn btn-light w-100">
-                    <img src="/static/icon/grain.png" class="img-fluid crop-icon" alt="Grain">
-                    <div class="mt-2">Grain</div>
-                </button>
-            </div>
-            <div class="col">
-                <button class="btn btn-light w-100">
-                    <img src="/static/icon/beet.png" class="img-fluid crop-icon" alt="Beet">
-                    <div class="mt-2">Beet</div>
-                </button>
-            </div>
-            <!-- Additional crops can be added in similar divs -->
+            {% for variety_name, latin_name in crops %}
+                <div class="col">
+                    <a href="/crop/{{ variety_name }}" class="btn btn-light w-100">
+                        <!-- Placeholder image; you can customize to dynamically load specific images -->
+                        <img src="/static/icon/{{ variety_name | lower }}.png" class="img-fluid crop-icon" alt="{{ variety_name }}">
+                        <div class="mt-2">{{ variety_name }}</div>
+                        <small class="text-muted">{{ latin_name }}</small>
+                    </a>
+                </div>
+            {% endfor %}
         </div>
         <div class="mt-4">
-            <!-- Updated to navigate to selectFamily -->
             <a href="/selectFamily" class="btn btn-secondary w-100">Add Crop</a>
         </div>
     </div>
@@ -66,8 +38,3 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHj/GD76VjFqGaabiE/H6jnOE/Ia5nlxQ+24n3y1PwTxeyJz7s4e+4O" crossorigin="anonymous"></script>
 </body>
 </html>
-
-
-
-
-

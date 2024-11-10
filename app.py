@@ -55,7 +55,7 @@ def getCardInfo():
 #-----------------------------------------------------------------------
 # helper method to get varieties and latin names as lists for user crops
 def get_crop_varieties_and_latin(user_id):
-    user_crops = database.get_user_crops(1)
+    user_crops = database.get_user_crops(user_id)
     user_crop_infos = []
     variety_names = []
     latin_names = []
@@ -321,35 +321,14 @@ def add_user_crop(crop_info_id):
 
 #-----------------------------------------------------------------------
 
-@app.route('/showusercrops')
-def show_user_crop():
-    admin = flask.request.cookies.get('admin') == 'true'
+@app.route('/showusercrops', methods=['GET'])
+def my_crops():
     user_id = flask.request.cookies.get('user_id')
     if not user_id:
         return flask.redirect('/login')
-    
-    user_crops = database.get_user_crops(user_id)
-    user_crop_infos = []
-    all_todos = []
-    for user_crop in user_crops:
-        user_crop_infos.append(database.full_crop_info(user_crop['crop_info_id']))
+    crops = get_crop_varieties_and_latin(user_id)
+    return flask.render_template('showusercrops.html', crops=crops)
 
-        todos = [
-            {"task": "Start indoor seeding", "date": user_crop['indoor_seed_starting_date'], "done": False},
-            {"task": "Transplant plants from indoor to outdoor", "date": user_crop['transplanting_date'], "done": False},
-            {"task": "Direct sowing", "date": user_crop['direct_sow_date'], "done": False},
-            {"task": "Prepare for harvest", "date": user_crop['harvest_date'], "done": False}
-        ]
-        all_todos.append(todos)
-    
-    crops_with_todos = zip(user_crop_infos, all_todos)
-
-    html_code = flask.render_template('showusercrops.html',
-                                      admin=admin,
-                                      crops_with_todos=crops_with_todos,  
-                                      current_time=get_current_time())
-    response = flask.make_response(html_code)
-    return response
 
 #-----------------------------------------------------------------------
 
