@@ -20,13 +20,20 @@ def get_current_time():
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
 def index():
-    html_code = flask.render_template('index.html',
-                                      current_time=get_current_time())
+    html_code = flask.render_template('index.html')
     response = flask.make_response(html_code)
     return response
 
 #-----------------------------------------------------------------------
+@app.route('/oldIndex', methods=['GET'])
+def getHomePage():
+    html_code = flask.render_template('oldIndex.html',
+                                      current_time=get_current_time())
+    response = flask.make_response(html_code)
+    return response
 
+
+#-----------------------------------------------------------------------
 def getCardInfo():
     user_crops = database.get_user_crops(1)
     user_crop_infos = []
@@ -45,6 +52,8 @@ def getCardInfo():
     crops_with_todos = zip(user_crop_infos, all_todos)
     
     return crops_with_todos
+
+#-----------------------------------------------------------------------
 
 @app.route('/homepage', methods = ["GET"])
 def goHomepage():
