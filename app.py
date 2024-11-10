@@ -64,9 +64,9 @@ def goHomepage():
 
 #-----------------------------------------------------------------------
 
-@app.route('/testpage', methods = ["GET"])
+@app.route('/cropPage', methods = ["GET"])
 def testpage():
-    html_code = flask.render_template('homepage/testpage.html')
+    html_code = flask.render_template('indvCropPage/cropPage_task.html')
     response = flask.make_response(html_code)
     return response
 
