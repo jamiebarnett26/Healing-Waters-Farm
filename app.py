@@ -27,9 +27,16 @@ def get_current_time():
 # Start of app, outputs login page
 @app.route('/', methods=['GET'])
 def index():
-    html_code = flask.render_template('index.html')
-    response = flask.make_response(html_code)
-    return response
+    user_id = flask.request.cookies.get('user_id')
+
+    # Instead of redirecting immediately, consider rendering a welcome page.
+    if user_id:
+        user = database.get_user(user_id, 'user_id')
+        if user:
+            return flask.redirect('/home')
+
+    # Show a simple welcome or landing page if no user_id is found.
+    return flask.redirect('/login')
 
 @app.route('/home', methods=['GET'])
 def home():
@@ -69,7 +76,11 @@ def profile_list():
 #-----------------------------------------------------------------------
 # Helper function, returns crop to do list for cards
 def getCardInfo():
-    user_crops = database.get_user_crops(1)
+    #user_id = flask.request.cookies.get('user_id')
+    #if not user_id:
+     #   return flask.redirect('/login')
+
+    user_crops = database.get_user_crops(user_id=1)
     user_crop_infos = []
     all_todos = []
     for user_crop in user_crops:
@@ -91,6 +102,8 @@ def getCardInfo():
 # helper method to get varieties and latin names as lists for user crops
 def get_crop_varieties_and_latin(user_id):
     user_crops = database.get_user_crops(user_id)
+
+    # add in login stuff
     user_crop_infos = []
     variety_names = []
     latin_names = []
