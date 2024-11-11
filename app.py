@@ -50,8 +50,8 @@ def getCardInfo():
     #user_id = flask.request.cookies.get('user_id')
     #if not user_id:
      #   return flask.redirect('/login')
-
-    user_crops = database.get_user_crops(user_id=1)
+    user_id = flask.request.cookies.get('user_id')
+    user_crops = database.get_user_crops(user_id)
     user_crop_infos = []
     all_todos = []
     variety_id = []
