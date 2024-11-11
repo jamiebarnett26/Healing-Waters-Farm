@@ -12,3 +12,4 @@ document.getElementById('logoutButton').addEventListener('click', function() {
 document.getElementById('homepageButton').addEventListener('click', function() {
   window.location.href = '/homepage';
 });
+

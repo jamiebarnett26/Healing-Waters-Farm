@@ -19,6 +19,20 @@
         "https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js">
     </script>
 
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/serviceWorker.js')
+                .then(function(registration) {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                })
+                .catch(function(error) {   
+                    console.log('Service Worker registration failed:', error);
+                });
+            });
+        }
+    </script>
+
     <!-- Page Specific CSS -->
     <style>
         /* This gets rid of the scrollbar effect */
