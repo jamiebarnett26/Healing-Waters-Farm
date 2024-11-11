@@ -12,6 +12,14 @@
             max-width: 150px;
             max-height: 150px;
         }
+        /* Custom green button style */
+        .btn-custom-green {
+            background-color: #517D5A;
+            color: white;
+        }
+        .btn-custom-green:hover {
+            background-color: #436A4A;
+        }
     </style>
 </head>
 <body>
@@ -22,7 +30,7 @@
                 <div class="col">
                     <a href="/crop/{{ variety_name }}" class="btn btn-light w-100">
                         <!-- Placeholder image; you can customize to dynamically load specific images -->
-                        <img src="/static/icon/{{ variety_name | lower }}.png" class="img-fluid crop-icon" alt="{{ variety_name }}">
+                        <img src="/static/icon/corn.png" class="img-fluid crop-icon" alt="{{ variety_name }}">
                         <div class="mt-2">{{ variety_name }}</div>
                         <small class="text-muted">{{ latin_name }}</small>
                     </a>
@@ -30,7 +38,7 @@
             {% endfor %}
         </div>
         <div class="mt-4">
-            <a href="/selectFamily" class="btn btn-secondary w-100">Add Crop</a>
+            <a href="/selectFamily" class="btn btn-custom-green w-100">Add Crop</a>
         </div>
     </div>
 
@@ -38,3 +46,4 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHj/GD76VjFqGaabiE/H6jnOE/Ia5nlxQ+24n3y1PwTxeyJz7s4e+4O" crossorigin="anonymous"></script>
 </body>
 </html>
+

@@ -44,8 +44,6 @@ def manual_login():
     response = flask.make_response(html_code)
     return response
 
-<<<<<<< HEAD
-=======
 #-----------------------------------------------------------------------
 # Request from index login button, directs to homepage.html
 @app.route('/homepage', methods = ["GET"])
@@ -105,7 +103,6 @@ def profile_list():
     response = flask.make_response(html_code)
     return response
 
->>>>>>> 9213637c382559673abcb679aaa90b36cbd156ba
 #-----------------------------------------------------------------------
 # Helper function, returns crop to do list for cards
 def getCardInfo():
