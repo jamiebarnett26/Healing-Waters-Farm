@@ -49,7 +49,7 @@
                    <p>
                        {% for family in families: %}
                        <br>
-                       <a  href="/selectSpecies/{{ family['family_id'] }}">{{ family['family_name'] }}</a> <a href="/deletefamily/{{ family['family_id'] }}">Delete Family</a>
+                       <a  href="/selectSpecies/{{ family['family_id'] }}">{{ family['family_name'] }}</a> {% if admin %} <a href="/deletefamily/{{ family['family_id'] }}">Delete Family</a>{% endif %}
                        <br>
                        {% endfor %}
                        <br>

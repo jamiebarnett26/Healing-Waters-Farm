@@ -38,7 +38,7 @@
 
         <!-- This button takes you to old homepage -->
             <div class = "col mx-auto text-center p-3">
-                <button class = "btn btn-dark w-100" type = "button" id = "test_button"> Go to old home page</button>
+                <button class = "btn btn-dark w-100" type = "button" id = "test_button"> Logout </button>
             </div>
         <!----------------- ^Testing^ ----------------->
 
@@ -68,6 +68,13 @@
                         Community
                     </div>
                 </div>
+                {% if admin %}
+                    <div class="col">
+                        <div class="btn btn-dark">
+                            Profiles
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </footer>
@@ -76,12 +83,15 @@
     <script>
         $(document).ready(function() {
             $('#test_button').on('click', function() {
-                window.location.href = '/oldIndex';
+                window.location.href = '/logout';
             });
 
             // redirects "My Crops" button to showusercrops page
             $('.btn-dark:contains("My Crops")').on('click', function() {
                 window.location.href = '/showusercrops';
+            });
+            $('.btn-dark:contains("Profiles")').on('click', function() {
+                window.location.href = '/profile_list';
             });
         });
     </script>

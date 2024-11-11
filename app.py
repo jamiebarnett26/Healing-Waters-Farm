@@ -33,7 +33,7 @@ def index():
     if user_id:
         user = database.get_user(user_id, 'user_id')
         if user:
-            return flask.redirect('/manual_login')
+            return flask.redirect('/login')
 
     # Show a simple welcome or landing page if no user_id is found.
     return flask.redirect('/login')
@@ -59,9 +59,7 @@ def getCardInfo():
         user_crop_infos.append(database.full_crop_info(user_crop['crop_info_id']))
 
         variety_name = user_crop_infos[i]['variety_name']
-        print(variety_name)
         variety_dict = database.search_field_name("variety", variety_name)
-        print(variety_dict)
         variety_id.append(variety_dict[0]['variety_id'])
         
 
@@ -112,7 +110,7 @@ def show_crop(variety_id):
         full_crop_info = database.full_crop_info(crop_info['crop_info_id'])
         full_crop_infos.append(full_crop_info)
     html_code = flask.render_template('showcrop.html',
-                                      crop_info_id=crop_info['crop_info_id'],
+                                      crop_info_id=crop_infos[0]['crop_info_id'],
                                       admin=admin,
                                       crop_infos=full_crop_infos,
                                       current_time=get_current_time())
@@ -174,8 +172,8 @@ def get_crop_varieties_and_latin(user_id):
     latin_names = []
     for user_crop in user_crops:
         user_crop_infos.append(database.full_crop_info(user_crop['crop_info_id']))
-        variety_names.append(user_crop_infos['variety_name'])
-        latin_names.append(user_crop_infos['latin_name'])
+        variety_names.append(user_crop_infos[0]['variety_name'])
+        latin_names.append(user_crop_infos[0]['latin_name'])
 
     return zip(variety_names, latin_names)
 
@@ -321,7 +319,6 @@ def create_variety(species_id):
     if template_crop_id == -1:
         family_table = database.family_from_species(species_id)
         species_table = database.search_field_id('species', species_id)
-        print(family_table.family_name)
         print(species_table)
         full_crop_info = {
             'family_name': family_table.family_name,

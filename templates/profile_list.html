@@ -2,6 +2,7 @@
 <html>
     <body>
         {% include 'header.html' %}
+        <hr>
         {% for profile in profiles %}
             <Strong>{{profile.first_name}} {{profile.last_name}}</Strong> <br>
             {{profile.email}}
