@@ -422,3 +422,8 @@ def serve_sw():
     return app.send_static_file('serviceWorker.js')
 
 #-----------------------------------------------------------------------
+@app.route('/showcrop/<int:crop_info_id>')
+def showcrop(crop_info_id):
+    crop_infos = [database.full_crop_info(crop_info_id)]  # Retrieve specific crop info
+    crops_with_todos = getCardInfo()  # Get crop and task details
+    return flask.render_template('showcrop.html', crop_infos=crop_infos, crops_with_todos=crops_with_todos)
