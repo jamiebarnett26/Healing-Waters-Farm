@@ -33,11 +33,41 @@ def index():
     if user_id:
         user = database.get_user(user_id, 'user_id')
         if user:
-            return flask.redirect('/home')
+            return flask.redirect('/manual_login')
 
     # Show a simple welcome or landing page if no user_id is found.
     return flask.redirect('/login')
 
+@app.route('/manual_login')
+def manual_login():
+    html_code = flask.render_template('manual_login.html')
+    response = flask.make_response(html_code)
+    return response
+
+#-----------------------------------------------------------------------
+# Request from index login button, directs to homepage.html
+@app.route('/homepage', methods = ["GET"])
+def homepage():
+    user_id = flask.request.cookies.get('user_id')
+    admin = flask.request.cookies.get('admin') == 'true'
+    app.logger.info(admin)
+
+    if not user_id:
+        return flask.redirect('/login')
+    user = database.get_user(user_id, 'user_id')
+    if not user:
+        return flask.redirect('/login')
+     
+    user_name = user.first_name + " " + user.last_name
+
+    crops_with_todos = getCardInfo()
+    html_code = flask.render_template('homepage/homepage.html',
+                                      user_name=user_name,
+                                      admin=admin,
+                                      crops_with_todos=crops_with_todos,)
+    response = flask.make_response(html_code)
+    return response
+    
 @app.route('/home', methods=['GET'])
 def home():
     user_id = flask.request.cookies.get('user_id')
@@ -113,15 +143,6 @@ def get_crop_varieties_and_latin(user_id):
         latin_names.append(user_crop_infos['latin_name'])
 
     return zip(variety_names, latin_names)
-
-#-----------------------------------------------------------------------
-# Request from index login button, directs to homepage.html
-@app.route('/homepage', methods = ["GET"])
-def goHomepage():
-    crops_with_todos = getCardInfo()
-    html_code = flask.render_template('homepage/homepage.html', crops_with_todos=crops_with_todos)
-    response = flask.make_response(html_code)
-    return response
 
 
 #-----------------------------------------------------------------------
