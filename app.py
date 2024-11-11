@@ -31,41 +31,6 @@ def index():
     response = flask.make_response(html_code)
     return response
 
-@app.route('/home', methods=['GET'])
-def home():
-    user_id = flask.request.cookies.get('user_id')
-    admin = flask.request.cookies.get('admin') == 'true'
-    app.logger.info(admin)
-
-    if not user_id:
-        return flask.redirect('/login')
-    user = database.get_user(user_id, 'user_id')
-    if not user:
-        return flask.redirect('/login')
-     
-    user_name = user.first_name + " " + user.last_name
-   
-    html_code = flask.render_template('home.html',
-                                      user_name=user_name,
-                                      admin=admin,
-                                      current_time=get_current_time())
-    response = flask.make_response(html_code)
-    return response
-
-#-----------------------------------------------------------------------
-# Route end points for login.
-#-----------------------------------------------------------------------
-@app.route('/profile_list', methods=['GET'])
-def profile_list():
-    admin = flask.request.cookies.get('admin') == 'true'
-    profiles = database.get_profiles()
-    html_code = flask.render_template('profile_list.html',
-                                      admin=admin,
-                                      profiles=profiles,
-                                      current_time=get_current_time())
-    response = flask.make_response(html_code)
-    return response
-
 #-----------------------------------------------------------------------
 # Helper function, returns crop to do list for cards
 def getCardInfo():
