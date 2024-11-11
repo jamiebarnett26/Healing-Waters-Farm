@@ -63,16 +63,61 @@
 
     <!-- HTML Code -->
     <body>
-        <hr>
-        {% include 'header.html' %}
-        <hr>
-        Frost warning information
-        <hr>
-        <button id="navigateButton">Start Tracking a New Crop</button>
-        <hr>
-        Display crop information
-        <hr>
-        {% include 'footer.html' %}
+
+        <div>
+            <div class="container">
+                <div class="logo">
+                    <img src="./static/img/logoTemp.png" alt="Farm Logo">
+                </div>
+            </div>
+        </div>
+        
+         <!-- Text -->
+        <h4> <strong> Healing Waters </strong> </h4>
+        <br>
+        <br>
+        <h3> Login </h3>
+
+        <br>
+  
+      
+        <div class="container">
+
+            <div class="row">
+                <div class="col-4">
+                    <label for="inputEmail" class="col">Email</label>
+                </div>
+                <div class="col-6">
+                    <input type="email" class="form-control" id="inputEmail">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-4">
+                    <label for="inputPassword" class="col-4">Password</label>
+                </div>
+                <div class="col-6">
+                    <input type="password" class="form-control" id="inputPassword">
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <br>
+        <div>
+            <button type="button" class="btn btn-primary" id="login_Button" >Login</button>
+        </div>
+        
+       
+        <!-- jQuery functions - just buttons for now -->
+        <script>
+            $(document).ready(function() {
+                $('#login_Button').on('click', function() {
+                    window.location.href = '/homepage';
+            });
+        });
+        </script>
+           
     </body>
 
 

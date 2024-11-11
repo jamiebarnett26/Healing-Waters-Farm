@@ -72,11 +72,16 @@
         </div>
     </footer>
 
-<!-- jQuery functions - just buttons for now -->
+<!-- jQuery functions - button links -->
     <script>
         $(document).ready(function() {
             $('#test_button').on('click', function() {
                 window.location.href = '/oldIndex';
+            });
+
+            // redirects "My Crops" button to showusercrops page
+            $('.btn-dark:contains("My Crops")').on('click', function() {
+                window.location.href = '/showusercrops';
             });
         });
     </script>

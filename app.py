@@ -27,14 +27,93 @@ def get_current_time():
 # Start of app, outputs login page
 @app.route('/', methods=['GET'])
 def index():
-    html_code = flask.render_template('index.html')
+    user_id = flask.request.cookies.get('user_id')
+
+    # Instead of redirecting immediately, consider rendering a welcome page.
+    if user_id:
+        user = database.get_user(user_id, 'user_id')
+        if user:
+            return flask.redirect('/manual_login')
+
+    # Show a simple welcome or landing page if no user_id is found.
+    return flask.redirect('/login')
+
+@app.route('/manual_login')
+def manual_login():
+    html_code = flask.render_template('manual_login.html')
+    response = flask.make_response(html_code)
+    return response
+
+<<<<<<< HEAD
+=======
+#-----------------------------------------------------------------------
+# Request from index login button, directs to homepage.html
+@app.route('/homepage', methods = ["GET"])
+def homepage():
+    user_id = flask.request.cookies.get('user_id')
+    admin = flask.request.cookies.get('admin') == 'true'
+    app.logger.info(admin)
+
+    if not user_id:
+        return flask.redirect('/login')
+    user = database.get_user(user_id, 'user_id')
+    if not user:
+        return flask.redirect('/login')
+     
+    user_name = user.first_name + " " + user.last_name
+
+    crops_with_todos = getCardInfo()
+    html_code = flask.render_template('homepage/homepage.html',
+                                      user_name=user_name,
+                                      admin=admin,
+                                      crops_with_todos=crops_with_todos,)
+    response = flask.make_response(html_code)
+    return response
+    
+@app.route('/home', methods=['GET'])
+def home():
+    user_id = flask.request.cookies.get('user_id')
+    admin = flask.request.cookies.get('admin') == 'true'
+    app.logger.info(admin)
+
+    if not user_id:
+        return flask.redirect('/login')
+    user = database.get_user(user_id, 'user_id')
+    if not user:
+        return flask.redirect('/login')
+     
+    user_name = user.first_name + " " + user.last_name
+   
+    html_code = flask.render_template('home.html',
+                                      user_name=user_name,
+                                      admin=admin,
+                                      current_time=get_current_time())
     response = flask.make_response(html_code)
     return response
 
 #-----------------------------------------------------------------------
+# Route end points for login.
+#-----------------------------------------------------------------------
+@app.route('/profile_list', methods=['GET'])
+def profile_list():
+    admin = flask.request.cookies.get('admin') == 'true'
+    profiles = database.get_profiles()
+    html_code = flask.render_template('profile_list.html',
+                                      admin=admin,
+                                      profiles=profiles,
+                                      current_time=get_current_time())
+    response = flask.make_response(html_code)
+    return response
+
+>>>>>>> 9213637c382559673abcb679aaa90b36cbd156ba
+#-----------------------------------------------------------------------
 # Helper function, returns crop to do list for cards
 def getCardInfo():
-    user_crops = database.get_user_crops(1)
+    #user_id = flask.request.cookies.get('user_id')
+    #if not user_id:
+     #   return flask.redirect('/login')
+
+    user_crops = database.get_user_crops(user_id=1)
     user_crop_infos = []
     all_todos = []
     for user_crop in user_crops:
@@ -56,6 +135,8 @@ def getCardInfo():
 # helper method to get varieties and latin names as lists for user crops
 def get_crop_varieties_and_latin(user_id):
     user_crops = database.get_user_crops(user_id)
+
+    # add in login stuff
     user_crop_infos = []
     variety_names = []
     latin_names = []
@@ -65,15 +146,6 @@ def get_crop_varieties_and_latin(user_id):
         latin_names.append(user_crop_infos['latin_name'])
 
     return zip(variety_names, latin_names)
-
-#-----------------------------------------------------------------------
-# Request from index login button, directs to homepage.html
-@app.route('/homepage', methods = ["GET"])
-def goHomepage():
-    crops_with_todos = getCardInfo()
-    html_code = flask.render_template('homepage/homepage.html', crops_with_todos=crops_with_todos)
-    response = flask.make_response(html_code)
-    return response
 
 
 #-----------------------------------------------------------------------
@@ -353,3 +425,8 @@ def serve_sw():
     return app.send_static_file('serviceWorker.js')
 
 #-----------------------------------------------------------------------
+@app.route('/showcrop/<int:crop_info_id>')
+def showcrop(crop_info_id):
+    crop_infos = [database.full_crop_info(crop_info_id)]  # Retrieve specific crop info
+    crops_with_todos = getCardInfo()  # Get crop and task details
+    return flask.render_template('showcrop.html', crop_infos=crop_infos, crops_with_todos=crops_with_todos)

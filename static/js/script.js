@@ -4,14 +4,11 @@ document.getElementById('navigateButton').addEventListener('click', function() {
   window.location.href = '/selectFamily';
 });
 
-<<<<<<< HEAD:static/js/script.js
 // Redirect to login
 document.getElementById('logoutButton').addEventListener('click', function() {
   window.location.href = '/logout'
 })
 
-=======
 document.getElementById('homepageButton').addEventListener('click', function() {
   window.location.href = '/homepage';
 });
->>>>>>> origin/homepage:static/script.js
