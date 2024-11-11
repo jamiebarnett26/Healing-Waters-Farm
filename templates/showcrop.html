@@ -1,11 +1,109 @@
 <!DOCTYPE html>
-<html>
-    <body>
-        <strong>{{crop_infos[0]['variety_name']}}</strong> <a href="/addusercrop/{{ crop_info_id }}">Add Crop Template</a>
-        <hr>
-        {% include 'displaycropinfo.html' %}
-        <hr>
-        {% include 'footer.html' %}
-    </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Details</title>
+    <!-- Bootstrap CSS from CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        /* Custom styles */
+        .page-title {
+            font-size: 2rem;
+            color: #3a3a3a;
+        }
+        .action-button {
+            color: #fff;
+            text-decoration: none;
+        }
+        .content-section, .task-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            color: #343a40;
+        }
+        .divider {
+            border-top: 2px solid #e9ecef;
+            margin: 1rem 0;
+        }
+        .task-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .task-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .task-item .done {
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+    </style>
+    <script>
+        function toggleDone(checkbox, taskId) {
+            const taskText = document.getElementById('task-' + taskId);
+            taskText.classList.toggle('done', checkbox.checked);
+        }
+    </script>
+</head>
+<body>
+    <div class="container py-4">
+        <h1 class="page-title text-center mb-4">{{ crop_infos[0]['variety_name'] }}</h1>
+        <div class="text-end">
+            <a href="/selectFamily" class="btn btn-success action-button">Add Crop Template</a>
+        </div>
+        
+        <div class="content-section">
+            <!-- Include dynamic crop information here -->
+            {% include 'displaycropinfo.html' %}
+        </div>
+        
+        <!-- Static Task List Section -->
+        <div class="task-section">
+            <h2 class="section-title">Task List</h2>
+            <ul class="task-list">
+                <li class="task-item">
+                    <input type="checkbox" onclick="toggleDone(this, 'task1')">
+                    <span id="task-task1">Water plants daily</span>
+                </li>
+                <li class="task-item">
+                    <input type="checkbox" onclick="toggleDone(this, 'task2')">
+                    <span id="task-task2">Weed the garden bed</span>
+                </li>
+                <li class="task-item">
+                    <input type="checkbox" onclick="toggleDone(this, 'task3')">
+                    <span id="task-task3">Fertilize soil every two weeks</span>
+                </li>
+                <li class="task-item">
+                    <input type="checkbox" onclick="toggleDone(this, 'task4')">
+                    <span id="task-task4">Check for pests and diseases</span>
+                </li>
+                <li class="task-item">
+                    <input type="checkbox" onclick="toggleDone(this, 'task5')">
+                    <span id="task-task5">Harvest when ready</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="divider"></div>
+        
+        <footer>
+            {% include 'footer.html' %}
+        </footer>
+    </div>
+
+    <!-- Bootstrap JS and Popper.js via CDN -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHj/GD76VjFqGaabiE/H6jnOE/Ia5nlxQ+24n3y1PwTxeyJz7s4e+4O" crossorigin="anonymous"></script>
+</body>
 </html>
+
+
+
+
+
 
