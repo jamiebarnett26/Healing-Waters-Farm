@@ -2,7 +2,6 @@
 # Wildflower Farm App
 #-----------------------------------------------------------------------
 
-
 import time
 import flask 
 import database
@@ -38,6 +37,8 @@ def index():
     # Show a simple welcome or landing page if no user_id is found.
     return flask.redirect('/login')
 
+#-----------------------------------------------------------------------
+# Currently not in use - loads manual login page
 @app.route('/manual_login')
 def manual_login():
     html_code = flask.render_template('manual_login.html')
@@ -76,7 +77,7 @@ def getCardInfo():
     return crops_with_todos
 
 #-----------------------------------------------------------------------
-# Request from index login button, directs to homepage.html
+# Loads main page of app
 @app.route('/homepage', methods = ["GET"])
 def homepage():
     user_id = flask.request.cookies.get('user_id')
@@ -100,7 +101,7 @@ def homepage():
     return response
 
 #-----------------------------------------------------------------------
-
+# Loads the My Crops page (Showcasing all crops)
 @app.route('/showcrop/<variety_id>', methods=['GET'])
 def show_crop(variety_id):
     admin = flask.request.cookies.get('admin') == 'true'
@@ -150,7 +151,10 @@ def show_crop(variety_id):
 
 #-----------------------------------------------------------------------
 # Route end points for login.
+
+
 #-----------------------------------------------------------------------
+# Admin functionality of seeing all profiles, loads profile_list.html
 @app.route('/profile_list', methods=['GET'])
 def profile_list():
     admin = flask.request.cookies.get('admin') == 'true'
@@ -162,6 +166,7 @@ def profile_list():
     response = flask.make_response(html_code)
     return response
 
+#-----------------------------------------------------------------------
 # helper method to get varieties and latin names as lists for user crops
 def get_crop_varieties_and_latin(user_id):
     user_crops = database.get_user_crops(user_id)
@@ -267,26 +272,21 @@ def add_family():
     return homepage()
 
 #-----------------------------------------------------------------------
-
+# functionality to delete
 @app.route('/deletefamily/<family_id>')
 def delete_family(family_id):
     database.delete_family(family_id)
     return homepage()
-
-#-----------------------------------------------------------------------
 
 @app.route('/deletespecies/<species_id>')
 def delete_species(species_id):
     database.delete_species(species_id)
     return homepage()
 
-#-----------------------------------------------------------------------
-
 @app.route('/deletevariety/<variety_id>')
 def delete_variety(variety_id):
     database.delete_variety(variety_id)
     return homepage()
-
 
 #-----------------------------------------------------------------------
 @app.route('/createspecies/<family_id>', methods=['GET'])
