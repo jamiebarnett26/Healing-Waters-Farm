@@ -184,11 +184,10 @@ def get_crop_varieties_and_latin(user_id):
 
 
 #-----------------------------------------------------------------------
-# Request from hompage, directs to oldIndex.html
-@app.route('/oldIndex', methods=['GET'])
+# Rdirects to account.html
+@app.route('/account', methods=['GET'])
 def oldIndex():
-    html_code = flask.render_template('oldIndex.html',
-                                      current_time=get_current_time())
+    html_code = flask.render_template('account.html')
     response = flask.make_response(html_code)
     return response
 
