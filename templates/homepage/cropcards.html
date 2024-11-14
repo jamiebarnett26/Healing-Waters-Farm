@@ -47,7 +47,7 @@
                                 {{ crop_info['variety_name'] }} 
                             </em>
                         </button>
-                        <img src = "./static/img/info.png" alt="info logo" style="width:8vw;height:8vw;" >
+                        <img id="infoButton-{{crop_info['variety_name']}}" src = "./static/img/info.png" alt="info logo" style="width:8vw;height:8vw;" >
                     </div>
                 </h3>
                 {% set outer_loop = loop %}
@@ -78,6 +78,15 @@
                 var varietyId = $(this).attr('id').split('card-button-')[1];
 
                 window.location.href = '/showcrop/' + varietyId;
+            });
+        });
+
+        // For info button
+        $(document).ready(function() {
+            $('[id^=infoButton]').on('click', function() {
+                console.log("CLICK")
+                var varietyId = $(this).attr('id').split('card-button-')[1];
+
             });
         });
 
