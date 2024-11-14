@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+    <form action="/posteditfamily/{{ family['family_id'] }}" method="post">
+        <strong>Family Name</strong>
+        <input type="text" name="family_name", value="{{ family['family_name'] }}" autofocus> <br>
+        <input type="submit" value="Edit Family">
+    </form>
+    <hr>
+    {% include 'footer.html' %}
+</html>
+

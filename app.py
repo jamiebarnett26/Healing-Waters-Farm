@@ -11,6 +11,7 @@ from authlib.integrations.flask_client import OAuth
 from authlib.integrations.flask_client import OAuth
 from top import app
 import auth
+import crop_infos
 import sys
 
 #-----------------------------------------------------------------------
@@ -101,6 +102,28 @@ def homepage():
     return response
 
 #-----------------------------------------------------------------------
+# Admin functionality of seeing all profiles, loads profile_list.html
+@app.route('/profile_list', methods=['GET'])
+def profile_list():
+    admin = flask.request.cookies.get('admin') == 'true'
+    profiles = database.get_profiles()
+    html_code = flask.render_template('profile_list.html',
+                                      admin=admin,
+                                      profiles=profiles,
+                                      current_time=get_current_time())
+    response = flask.make_response(html_code)
+    return response
+
+
+#-----------------------------------------------------------------------
+# Request from homepage by selecting a crop, directs to indv CropPage_task.html
+@app.route('/cropPage/<variety_name>', methods = ["GET"])
+def cropPage(variety_name):
+    html_code = flask.render_template('indvCropPage/cropPage_tasks.html', variety_name = variety_name)
+    response = flask.make_response(html_code)
+    return response
+
+#-----------------------------------------------------------------------
 # Loads the My Crops page (Showcasing all crops)
 @app.route('/showcrop/<variety_id>', methods=['GET'])
 def show_crop(variety_id):
@@ -119,266 +142,7 @@ def show_crop(variety_id):
     return response
 
 #-----------------------------------------------------------------------
-    
-# @app.route('/home', methods=['GET'])
-# def home():
-#     user_id = flask.request.cookies.get('user_id')
-#     admin = flask.request.cookies.get('admin') == 'true'
-#     app.logger.info(admin)
 
-#     if not user_id:
-#         return flask.redirect('/login')
-#     user = database.get_user(user_id, 'user_id')
-#     if not user:
-#         return flask.redirect('/login')
-     
-#     user_name = user.first_name + " " + user.last_name
-   
-#     html_code = flask.render_template('home.html',
-#                                       user_name=user_name,
-#                                       admin=admin,
-#                                       current_time=get_current_time())
-#     response = flask.make_response(html_code)
-#     return response
-
-
-#-----------------------------------------------------------------------
-# @app.route('/showcrop/<int:crop_info_id>')
-# def showcrop(crop_info_id):
-#     crop_infos = [database.full_crop_info(crop_info_id)]  # Retrieve specific crop info
-#     crops_with_todos = getCardInfo()  # Get crop and task details
-#     return flask.render_template('showcrop.html', crop_infos=crop_infos, crops_with_todos=crops_with_todos)
-
-#-----------------------------------------------------------------------
-# Route end points for login.
-
-
-#-----------------------------------------------------------------------
-# Admin functionality of seeing all profiles, loads profile_list.html
-@app.route('/profile_list', methods=['GET'])
-def profile_list():
-    admin = flask.request.cookies.get('admin') == 'true'
-    profiles = database.get_profiles()
-    html_code = flask.render_template('profile_list.html',
-                                      admin=admin,
-                                      profiles=profiles,
-                                      current_time=get_current_time())
-    response = flask.make_response(html_code)
-    return response
-
-#-----------------------------------------------------------------------
-# helper method to get varieties and latin names as lists for user crops
-def get_crop_varieties_and_latin(user_id):
-    user_crops = database.get_user_crops(user_id)
-
-    # add in login stuff
-    user_crop_infos = []
-    variety_names = []
-    latin_names = []
-    for user_crop in user_crops:
-        user_crop_infos.append(database.full_crop_info(user_crop['crop_info_id']))
-        variety_names.append(user_crop_infos[0]['variety_name'])
-        latin_names.append(user_crop_infos[0]['latin_name'])
-
-    return zip(variety_names, latin_names)
-
-
-#-----------------------------------------------------------------------
-# Request from hompage, directs to oldIndex.html
-@app.route('/oldIndex', methods=['GET'])
-def oldIndex():
-    html_code = flask.render_template('oldIndex.html',
-                                      current_time=get_current_time())
-    response = flask.make_response(html_code)
-    return response
-
-#-----------------------------------------------------------------------
-# Request from homepage by selecting a crop, directs to indv CropPage_task.html
-@app.route('/cropPage/<variety_name>', methods = ["GET"])
-def cropPage(variety_name):
-    html_code = flask.render_template('indvCropPage/cropPage_tasks.html', variety_name = variety_name)
-    response = flask.make_response(html_code)
-    return response
-
-#-----------------------------------------------------------------------
-# Request from homepage by adding crop card, directs to selectFamily.html
-@app.route('/selectFamily', methods=['GET'])
-def search_crops():
-    admin = flask.request.cookies.get('admin') == 'true'
-    family = flask.request.args.get('family')
-    if family == None:
-        family = ""
-    
-    families= database.search_field_name('family', family)
-    html_code = flask.render_template('addCrop/selectFamily.html',
-                                      families=families,
-                                      admin = admin,
-                                      current_time=get_current_time())
-    response = flask.make_response(html_code)
-    return response
-
-#-----------------------------------------------------------------------
-
-@app.route('/selectSpecies/<family_id>', methods=['GET'])
-def show_species(family_id):
-    species = database.species_from_family(family_id)
-    admin = flask.request.cookies.get('admin') == 'true'
-
-    html_code = flask.render_template('addCrop/selectSpecies.html', 
-                                      species=species,
-                                      family_id=family_id,
-                                      admin = admin,
-                                      current_time = get_current_time())
-    response = flask.make_response(html_code)
-    return response
-
-#-----------------------------------------------------------------------
-
-@app.route('/selectVariety/<species_id>', methods=['GET'])
-def show_variety(species_id):
-    admin = flask.request.cookies.get('admin') == 'true'
-    varieties = database.variety_from_species(species_id)
-    
-    html_code = flask.render_template(
-        'addCrop/selectVariety.html',
-        varieties=varieties,
-        species_id=species_id,
-        admin=admin,
-        current_time=get_current_time()
-    )
-    
-    response = flask.make_response(html_code)
-    return response
-
-#-----------------------------------------------------------------------
-
-@app.route('/createfamily', methods=['GET'])
-def create_family():
-    admin = flask.request.cookies.get('admin') == 'true'
-    html_code = flask.render_template('createfamily.html',
-                                      admin=admin,
-                                      current_time=get_current_time())
-    response = flask.make_response(html_code)
-    return response
-    
-
-#-----------------------------------------------------------------------
-
-@app.route('/addfamily', methods=['POST'])
-def add_family():
-    family_name = flask.request.form.get('family_name')
-    family = {'family_name':family_name}
-    database.add_family(family)
-    return homepage()
-
-#-----------------------------------------------------------------------
-# functionality to delete
-@app.route('/deletefamily/<family_id>')
-def delete_family(family_id):
-    database.delete_family(family_id)
-    return homepage()
-
-@app.route('/deletespecies/<species_id>')
-def delete_species(species_id):
-    database.delete_species(species_id)
-    return homepage()
-
-@app.route('/deletevariety/<variety_id>')
-def delete_variety(variety_id):
-    database.delete_variety(variety_id)
-    return homepage()
-
-#-----------------------------------------------------------------------
-@app.route('/createspecies/<family_id>', methods=['GET'])
-def create_species(family_id):
-    admin = flask.request.cookies.get('admin') == 'true'
-    html_code = flask.render_template('createspecies.html',
-                                      admin=admin,
-                                      family_id=family_id,
-                                      current_time=get_current_time())
-    response = flask.make_response(html_code)
-    return response
-    
-
-#-----------------------------------------------------------------------
-
-@app.route('/addspecies/<family_id>', methods=['POST'])
-def add_species(family_id):
-    species_name = flask.request.form.get('species_name')
-    latin_name = flask.request.form.get('latin_name')
-    species = {'family_id':family_id, 'species_name':species_name, 'latin_name':latin_name}
-    database.add_species(species)
-    return homepage()
-
-
-#-----------------------------------------------------------------------
-@app.route('/createvariety/<species_id>', methods=['GET'])
-def create_variety(species_id):
-    admin = flask.request.cookies.get('admin') == 'true'
-    template_crop_id = database.get_template_crop(species_id)
-    if template_crop_id == -1:
-        family_table = database.family_from_species(species_id)
-        species_table = database.search_field_id('species', species_id)
-        print(species_table)
-        full_crop_info = {
-            'family_name': family_table.family_name,
-            'latin_name': species_table[0]['latin_name'],
-            'variety_name': None,
-            'crop_type': None,
-            'template': None,
-            'days_to_maturity': None,
-            'plant_spacing_harvest': None,
-            'plant_spacing_seed': None,
-            'row_spacing_harvest': None,
-            'row_spacing_seed': None, 
-            'days_to_maturity_harvest': None,
-            'days_to_maturity_seed': None,
-            'days_to_transplantation': None,
-            'days_to_direct_sow': None,
-            'days_to_harvest': None,
-            'days_to_seed_harvest': None,
-            'frost_sensitivity_rating': None
-        }
-    else:
-        full_crop_info = database.full_crop_info(template_crop_id)
-    html_code = flask.render_template('createvariety.html',
-                                      crop_info=full_crop_info,
-                                      admin=admin,
-                                      species_id=species_id,
-                                      current_time=get_current_time())
-    response = flask.make_response(html_code)
-    return response
-
-#-----------------------------------------------------------------------
-
-@app.route('/addvariety/<species_id>', methods=['POST'])
-def add_variety(species_id):
-    variety_name = flask.request.form.get('variety_name')
-    crop_type = flask.request.form.get('crop_type_name')
-    plant_spacing_harvest = flask.request.form.get('plant_spacing_harvest')
-    row_spacing_harvest = flask.request.form.get('row_spacing_harvest')
-    plant_spacing_seed = flask.request.form.get('plant_spacing_seed')
-    row_spacing_seed = flask.request.form.get('row_spacing_seed')
-    days_to_maturity_harvest = flask.request.form.get('days_to_maturity_harvest')
-    days_to_maturity_seed = flask.request.form.get('days_to_maturity_seed')
-    days_to_transplantation = flask.request.form.get('days_to_transplantation')
-    days_to_direct_sow = flask.request.form.get('days_to_direct_sow')
-    days_to_harvest = flask.request.form.get('days_to_harvest')
-    days_to_seed_harvest = flask.request.form.get('days_to_seed_harvest')
-    frost_sensitivity_rating = flask.request.form.get('frost_sensitivity_rating')
-
-    variety = {'species_id':species_id, 'variety_name':variety_name}
-
-    crop_info = {'crop_type':crop_type, 'template':False, 'plant_spacing_harvest':plant_spacing_harvest,
-                 'plant_spacing_seed':plant_spacing_seed, 'row_spacing_harvest':row_spacing_harvest,
-                 'row_spacing_seed':row_spacing_seed, 'days_to_maturity_harvest':days_to_maturity_harvest,
-                 'days_to_maturity_seed':days_to_maturity_seed, 'days_to_transplantation':days_to_transplantation,
-                 'days_to_direct_sow':days_to_direct_sow, 'days_to_harvest':days_to_harvest, 'days_to_seed_harvest':days_to_seed_harvest,
-                 'frost_sensitivity_rating':frost_sensitivity_rating
-                 }
-
-    database.add_variety(variety, crop_info)
-    return homepage()
 
 @app.route('/addusercrop/<crop_info_id>')
 def add_user_crop(crop_info_id):
@@ -409,8 +173,12 @@ def my_crops():
     user_id = flask.request.cookies.get('user_id')
     if not user_id:
         return flask.redirect('/login')
-    crops = get_crop_varieties_and_latin(user_id)
-    return flask.render_template('showusercrops.html', crops=crops)
+    user_crops = database.get_user_crops(user_id)
+    user_crop_infos = []
+    for user_crop in user_crops:
+        user_crop_info = database.full_crop_info(user_crop['crop_info_id'])
+        user_crop_infos.append(user_crop_info)
+    return flask.render_template('showusercrops.html', crops=user_crop_infos)
 
 
 #-----------------------------------------------------------------------
@@ -421,13 +189,6 @@ def calendar():
     html_code = flask.render_template('calendar.html', admin=admin)
     response = flask.make_response(html_code)
     return response
-
-#-----------------------------------------------------------------------
-
-#@app.route('/manifest.json')
-#def serve_manifest():
-#    return flask.send_file('manifest.json')
-    #, mimetype='application/manifest+json'
 
 #-----------------------------------------------------------------------
 

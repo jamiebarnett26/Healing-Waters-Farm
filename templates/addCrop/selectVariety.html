@@ -44,7 +44,7 @@
                     <p>
                     {% for variety in varieties %}
                     <br>
-                        <a href="/showcrop/{{ variety['variety_id'] }}">{{ variety['variety_name'] }}</a>   {% if admin %} <a href="/deletevariety/{{ variety['variety_id'] }}">Delete Variety</a> {% endif %}
+                        <a href="/showcrop/{{ variety['variety_id'] }}">{{ variety['variety_name'] }}</a>   {% if admin %} <a href="/deletevariety/{{ variety['variety_id'] }}">Delete Variety</a> <a href="/editvariety/{{ variety['variety_id'] }}">Edit Variety</a>{% endif %}
                     <br>
                     {% endfor %}
                     <br>

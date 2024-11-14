@@ -46,7 +46,7 @@
       
                     {% for spec in species: %}
                         <br>
-                        <a href="/selectVariety/{{ spec['species_id'] }}">{{ spec['species_name'] }}</a> {% if admin %} <a href="/deletespecies/{{ spec['species_id'] }}">Delete Species</a> {% endif %}
+                        <a href="/selectVariety/{{ spec['species_id'] }}">{{ spec['species_name'] }}</a> {% if admin %} <a href="/deletespecies/{{ spec['species_id'] }}">Delete Species</a> <a href="/editspecies/{{ spec['species_id'] }}">Edit Species</a>{% endif %}
                         <br>
                     {% endfor %}
                     <br>

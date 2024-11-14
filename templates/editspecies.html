@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+    <form action="/posteditspecies/{{ species['species_id'] }}" method="post">
+        <strong>Species Name</strong>
+        <input type="text" name="species_name", value="{{ species['species_name'] }}" autofocus> <br>
+        <strong>Latin Name</strong>
+        <input type="text" name="latin_name", value="{{ species['latin_name'] }}" autofocus> <br>
+        <input type="submit" value="Edit species">
+    </form>
+    <hr>
+    {% include 'footer.html' %}
+</html>
+

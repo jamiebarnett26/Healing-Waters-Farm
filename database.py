@@ -420,6 +420,41 @@ def add_variety(variety, crop_info):
         session.add(new_crop_info)
         session.commit()
 
+def edit_family(family_id, updated_data):
+    with sqlalchemy.orm.Session(_engine) as session:
+        family = session.query(Family).get(family_id)
+        if family:
+            for key, value in updated_data.items():
+                setattr(family, key, value)
+            session.commit()
+
+def edit_species(species_id, updated_data):
+    with sqlalchemy.orm.Session(_engine) as session:
+        species = session.query(Species).get(species_id)
+        if species:
+            for key, value in updated_data.items():
+                setattr(species, key, value)
+            session.commit()
+
+def edit_variety(variety_id, updated_data_variety, updated_data_crop):
+    for field in updated_data_crop:
+        if updated_data_crop.get(field) == "":
+            updated_data_crop[field] = None 
+
+    with sqlalchemy.orm.Session(_engine) as session:
+        crop_info = session.query(Crop_Info).get(variety_id)
+        variety = session.query(Variety).get(variety_id)
+        if crop_info:
+            for key, value in updated_data_crop.items():
+                setattr(crop_info, key, value)
+                session.commit()
+        if variety:
+            for key, value in updated_data_variety.items():
+                setattr(variety, key, value)
+                session.commit()
+
+
+
 def add_user_crop(user_crop):
     with sqlalchemy.orm.Session(_engine) as session:
         new_crop = User_Crop(**user_crop)
