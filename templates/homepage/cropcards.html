@@ -84,8 +84,8 @@
         // For info button
         $(document).ready(function() {
             $('[id^=infoButton]').on('click', function() {
-                console.log("CLICK")
-                var varietyId = $(this).attr('id').split('card-button-')[1];
+                var familyClicked = $(this).attr('id').split('infoButton-')[1];
+                console.log(familyClicked);
 
             });
         });
