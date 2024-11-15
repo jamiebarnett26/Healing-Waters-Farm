@@ -68,14 +68,14 @@ def getCardInfo():
         variety_dict = database.search_field_name("variety", variety_name)
         variety_id.append(variety_dict[0]['variety_id'])
         
-        todos = getWeeklyTasks(user_crop)
+        todos = getWeeklyTasks(user_crop, full_crop_info['frost_sensitivity_rating'])
         all_todos.append(todos)
     
     crops_with_todos = zip(user_crop_infos, all_todos, variety_id)
     
     return crops_with_todos
 
-def getWeeklyTasks(user_crop):
+def getWeeklyTasks(user_crop, frost_rating):
     today = datetime.date.today()
     enddate = today + datetime.timedelta(days=7)
     todos = []
@@ -89,8 +89,22 @@ def getWeeklyTasks(user_crop):
         todos.append({"task": "Prepare for harvest", "date": user_crop['harvest_date'], "done": False})
     if user_crop['seed_harvest_date'] <= enddate:
         todos.append({"task": "Prepare for seed harvest", "date": user_crop['seed_harvest_date'], "done": False})
+    if frost_rating > 1 and inFrost():
+        todos.append({"task": "This plant is frost-sensitive and you are in a frost!", "date": today, "done": False})
 
     return todos
+
+def inFrost():
+    today = datetime.datetime.today()
+    
+    # Create datetime objects for October 20 and April 21 of the current year
+    oct_20 = datetime.datetime(today.year, 10, 20)
+    apr_21 = datetime.datetime(today.year+1, 4, 21)
+    
+    print(apr_21, file=sys.stderr)
+    print(oct_20, file=sys.stderr)
+    # Check if today is between the two dates
+    return oct_20 <= today <= apr_21
 
 
 
