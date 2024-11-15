@@ -1,49 +1,53 @@
-/* Family 1 Peppers, Hot */
+BEGIN;
+
+-- Insert Family 1
 INSERT INTO family (family_name) VALUES ('Peppers, Hot');
 
-/* Species 1, Capsicum Baccatum, Peppers Hot */
+-- Insert Species 1
 INSERT INTO species (family_id, latin_name, species_name) VALUES (1, 'Capsicum baccatum', 'Baccatum');
 
-/* Variety 1, Aji Amarillo, Capsicum Baccatum */
+-- Insert Variety 1
 INSERT INTO variety (species_id, variety_name) VALUES (1, 'Aji Amarillo');
 
-/* Crop_Info 1, Aji Amarillo */
+-- Insert Crop_Info 1
 INSERT INTO crop_infos 
 (variety_id, crop_type, template, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES (1, NULL, true, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+VALUES (1, NULL, true, 20, NULL, NULL, NULL, NULL, 20, 20, 20, 20, 20, 20, NULL);
 
-/* Species 2, Capsicum Annum, Peppers Hot */
+-- Insert Species 2
 INSERT INTO species (family_id, latin_name, species_name) VALUES (1, 'Capsicum Annum', 'Annum');
 
-/* Variety 2, Fish Peppers, Capsicum Annum */
+-- Insert Variety 2
 INSERT INTO variety (species_id, variety_name) VALUES (2, 'Fish Peppers');
 
-/* Crop_Info 2, Fish Peppers */
+-- Insert Crop_Info 2
 INSERT INTO crop_infos 
 (variety_id, crop_type, template, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES (2, NULL, true, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+VALUES (2, NULL, true, 20, NULL, NULL, NULL, NULL, 20, 20, 20, 20, 20, 20, NULL);
 
-/* Species 3, Capsicum Chinense, Peppers Hot */
+-- Insert Species 3
 INSERT INTO species (family_id, latin_name, species_name) VALUES (1, 'Capsicum Chinense', 'Chinense');
 
-/* Variety 3, Red Scotch Bonnet, Capsicum Chinense */
+-- Insert Variety 3
 INSERT INTO variety (species_id, variety_name) VALUES (3, 'Red Scotch Bonnet');
 
-/* Crop_Info 3, Red Scotch Bonnet */
+-- Insert Crop_Info 3
 INSERT INTO crop_infos 
 (variety_id, crop_type, template, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES (3, NULL, true, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+VALUES (3, NULL, true, 20, NULL, NULL, NULL, NULL, 20, 20, 20, 20, 20, 20, NULL);
 
-/* Family 2 Beans */
+-- Insert Family 2
 INSERT INTO family (family_name) VALUES ('Beans');
 
-/* Species 4, Phaseolus vulgaris, Beans */
+-- Insert Species 4
 INSERT INTO species (family_id, latin_name, species_name) VALUES (2, 'Phaseolus vulgaris', 'Vulgaris');
 
-/* Variety 4, Mbombo Beans, Phaseolus Vulgaris */
+-- Insert Variety 4
 INSERT INTO variety (species_id, variety_name) VALUES (4, 'Mbombo Beans');
 
-/* Crop_Info 4, Mbombo Beans */
+-- Insert Crop_Info 4
 INSERT INTO crop_infos 
 (variety_id, crop_type, template, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES (4, NULL, true, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+VALUES (4, NULL, true, 20, NULL, NULL, NULL, NULL, 20, 20, 20, 20, 20, 20, NULL);
+
+COMMIT;

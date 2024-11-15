@@ -5,7 +5,7 @@
 import time
 import flask 
 import database
-from datetime import datetime
+import datetime
 
 from authlib.integrations.flask_client import OAuth
 from authlib.integrations.flask_client import OAuth
@@ -57,25 +57,42 @@ def getCardInfo():
     user_crop_infos = []
     all_todos = []
     variety_id = []
+
     for i, user_crop in enumerate(user_crops):
-        user_crop_infos.append(database.full_crop_info(user_crop['crop_info_id']))
+        full_crop_info = database.full_crop_info(user_crop['crop_info_id'])
+        if full_crop_info == -1:
+            break
+        user_crop_infos.append(full_crop_info)
 
         variety_name = user_crop_infos[i]['variety_name']
         variety_dict = database.search_field_name("variety", variety_name)
         variety_id.append(variety_dict[0]['variety_id'])
         
-
-        todos = [
-            {"task": "Start indoor seeding", "date": user_crop['indoor_seed_starting_date'], "done": False},
-            {"task": "Transplant plants outdoors", "date": user_crop['transplanting_date'], "done": False},
-            {"task": "Direct sowing", "date": user_crop['direct_sow_date'], "done": False},
-            {"task": "Prepare for harvest", "date": user_crop['harvest_date'], "done": False}
-        ]
+        todos = getWeeklyTasks(user_crop)
         all_todos.append(todos)
     
     crops_with_todos = zip(user_crop_infos, all_todos, variety_id)
     
     return crops_with_todos
+
+def getWeeklyTasks(user_crop):
+    today = datetime.date.today()
+    enddate = today + datetime.timedelta(days=7)
+    todos = []
+    if user_crop['indoor_seed_starting_date'] <= enddate:
+        todos.append({"task": "Start indoor seeding", "date": user_crop['indoor_seed_starting_date'], "done": False})
+    if user_crop['transplanting_date'] <= enddate:
+        todos.append({"task": "Transplant plants outdoors", "date": user_crop['transplanting_date'], "done": False})
+    if user_crop['direct_sow_date'] <= enddate:
+        todos.append({"task": "Direct sowing", "date": user_crop['direct_sow_date'], "done": False})
+    if user_crop['harvest_date'] <= enddate:
+        todos.append({"task": "Prepare for harvest", "date": user_crop['harvest_date'], "done": False})
+    if user_crop['seed_harvest_date'] <= enddate:
+        todos.append({"task": "Prepare for seed harvest", "date": user_crop['seed_harvest_date'], "done": False})
+
+    return todos
+
+
 
 #-----------------------------------------------------------------------
 # Loads main page of app
@@ -97,7 +114,7 @@ def homepage():
     html_code = flask.render_template('homepage/homepage.html',
                                       user_name=user_name,
                                       admin=admin,
-                                      crops_with_todos=crops_with_todos,)
+                                      crops_with_todos=crops_with_todos)
     response = flask.make_response(html_code)
     return response
 
@@ -133,6 +150,7 @@ def show_crop(variety_id):
     for crop_info in crop_infos:
         full_crop_info = database.full_crop_info(crop_info['crop_info_id'])
         full_crop_infos.append(full_crop_info)
+    
     html_code = flask.render_template('showcrop.html',
                                       crop_info_id=crop_infos[0]['crop_info_id'],
                                       admin=admin,
@@ -149,17 +167,23 @@ def add_user_crop(crop_info_id):
     user_id = flask.request.cookies.get('user_id')
     if not user_id:
         return flask.redirect('/login')
+    crop_info = database.search_field_id('crop_info', crop_info_id)[0]
 
-    indoor_seed_starting_date = datetime.now()
+    date1 = datetime.datetime.now()
+    date2 = date1 + datetime.timedelta(days=crop_info['days_to_transplantation'])
+    date3 = date2 + datetime.timedelta(crop_info['days_to_direct_sow'])
+    date4 = date3 + datetime.timedelta(crop_info['days_to_harvest'])
+    date5 = date3 + datetime.timedelta(crop_info['days_to_seed_harvest'])
+    
     
     user_crop = {
         'user_id': user_id,
         'crop_info_id': crop_info_id,
-        'indoor_seed_starting_date': indoor_seed_starting_date,
-        'transplanting_date': None,
-        'direct_sow_date': None,
-        'harvest_date': None,
-        'seed_harvest_date': None
+        'indoor_seed_starting_date': date1,
+        'transplanting_date': date2,
+        'direct_sow_date': date3,
+        'harvest_date': date4,
+        'seed_harvest_date': date5
     }
 
     database.add_user_crop(user_crop)

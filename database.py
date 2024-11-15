@@ -232,6 +232,32 @@ def search_field_id(search_field, search_value):
                     'variety_name':row.variety_name
             }
                 results.append(variety)
+        
+        if search_field == 'crop_info':
+            query = session.query(Crop_Info).filter(
+                Crop_Info.crop_info_id == search_value,
+            )
+            table = query.all()
+            for row in table:
+                crop_info = {
+                'crop_info_id': row.crop_info_id,  # Use ':' instead of '='
+                'variety_id': row.variety_id,
+                'crop_type': row.crop_type,
+                'template': row.template,
+                'days_to_maturity': row.days_to_maturity,
+                'plant_spacing_harvest': row.plant_spacing_harvest,
+                'plant_spacing_seed': row.plant_spacing_seed,
+                'row_spacing_harvest': row.row_spacing_harvest,
+                'row_spacing_seed': row.row_spacing_seed, 
+                'days_to_maturity_harvest': row.days_to_maturity_harvest,
+                'days_to_maturity_seed': row.days_to_maturity_seed,
+                'days_to_transplantation': row.days_to_transplantation,
+                'days_to_direct_sow': row.days_to_direct_sow,
+                'days_to_harvest': row.days_to_harvest,
+                'days_to_seed_harvest': row.days_to_seed_harvest,
+                'frost_sensitivity_rating': row.frost_sensitivity_rating
+            }
+                results.append(crop_info)
     return results
 
 def species_from_family(family_id):
@@ -329,6 +355,8 @@ def full_crop_info(crop_info_id):
             Crop_Info.crop_info_id == crop_info_id
         )
         info_table = query.first()
+        if not info_table:
+            return -1
         query = session.query(Variety).filter(
             Variety.variety_id == info_table.variety_id
         )
