@@ -38,7 +38,7 @@
             
             <div class="container" style="width:40vw; height:50vh;" margins: auto>
                 <div class="row">
-                    <div class="col" style="width:70vw;">
+                    <div class="col" style="width:70vw; height:20vh">
                     <p>
                         <div class="row"> Email </div>
                         <br>
@@ -49,7 +49,7 @@
                     </p>
                     </div>
                     
-                    <div class="col" style="width:7vw;">
+                    <div class="col" style="width:7vw; height:20vh">
                     <p>
                         <div class="row"> example.email@hey.com </div>
                         <br>
@@ -60,8 +60,11 @@
                     </p>
                     </div>
                 </div>
-        
+                <button class = "btn btn-dark w-100" type = "button" id = "test_button"> Logout </button>
             </div>
+         
+                
+            
             
 
           </div>
@@ -70,6 +73,16 @@
       </div>
 
       {% include 'footer.html' %}
+
+      <!-- jQuery functions - button links -->
+    <script>
+        $(document).ready(function() {
+            $('#test_button').on('click', function() {
+                window.location.href = '/logout';
+            });
+
+        });
+    </script>
       
 </body>
 </html>

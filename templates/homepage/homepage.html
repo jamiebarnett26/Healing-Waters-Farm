@@ -51,11 +51,7 @@
     </div>
     <div class="container-fluid bg-success-subtle rounded-top-5 p-0 pb-5">
 
-        <!-- This button takes you to old homepage -->
-            <div class = "col mx-auto text-center p-3">
-                <button class = "btn btn-dark w-100" type = "button" id = "test_button"> Logout </button>
-            </div>
-        <!----------------- ^Testing^ ----------------->
+
 
         <div class="container-fluid p-0">
             <h1 style = "font-size: 10vw;">
@@ -67,14 +63,5 @@
 
     {% include 'footer.html' %}
 
-<!-- jQuery functions - button links -->
-    <script>
-        $(document).ready(function() {
-            $('#test_button').on('click', function() {
-                window.location.href = '/logout';
-            });
-
-        });
-    </script>
 </body>
 </html>
