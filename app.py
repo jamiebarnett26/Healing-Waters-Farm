@@ -76,6 +76,19 @@ def getCardInfo():
     
     return crops_with_todos
 
+@app.route('/edit_task', methods = ['POST'])
+def editTask():
+    user_id = flask.request.cookies.get('user_id')
+    data = flask.request.get_json()
+    date_field = data.get('date_field')
+    new_date = data.get('new_date')
+    try: 
+        database.edit_user_crops(user_id, date_field, new_date)
+        return flask.jsonify({'success': True, 'message': 'Date updated successfully'})
+    except Exception as e:
+        return flask.jsonify({'success': False, 'message': str(e)}), 500
+
+
 #-----------------------------------------------------------------------
 # Loads main page of app
 @app.route('/homepage', methods = ["GET"])
