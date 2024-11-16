@@ -171,16 +171,16 @@ def profile_list():
 def get_crop_varieties_and_latin(user_id):
     user_crops = database.get_user_crops(user_id)
 
-    # add in login stuff
-    user_crop_infos = []
-    variety_names = []
-    latin_names = []
+    crop_data = []
     for user_crop in user_crops:
-        user_crop_infos.append(database.full_crop_info(user_crop['crop_info_id']))
-        variety_names.append(user_crop_infos[0]['variety_name'])
-        latin_names.append(user_crop_infos[0]['latin_name'])
+        crop_info = database.full_crop_info(user_crop['crop_info_id'])
+        variety_id = crop_info['variety_id']  # Assuming this field exists in your database schema
+        variety_name = crop_info['variety_name']
+        latin_name = crop_info['latin_name']
+        crop_data.append((variety_id, variety_name, latin_name))
 
-    return zip(variety_names, latin_names)
+    return crop_data
+
 
 
 #-----------------------------------------------------------------------
