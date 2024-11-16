@@ -65,34 +65,7 @@
         </div>
     </div>
 
-    <footer class="footer fixed-bottom" style = "background-color: white; border-top: 2px solid black; height: 15vw">
-        <div class="container text-center p-0">
-            <div class="row p-0">
-                <div class="col">
-                    <div class="btn btn-dark">
-                        My Crops
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="btn btn-dark">
-                        Account
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="btn btn-dark">
-                        Community
-                    </div>
-                </div>
-                {% if admin %}
-                    <div class="col">
-                        <div class="btn btn-dark">
-                            Profiles
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </footer>
+    {% include 'footer.html' %}
 
 <!-- jQuery functions - button links -->
     <script>
@@ -101,16 +74,6 @@
                 window.location.href = '/logout';
             });
 
-            // redirects "My Crops" button to showusercrops page
-            $('.btn-dark:contains("My Crops")').on('click', function() {
-                window.location.href = '/showusercrops';
-            });
-            $('.btn-dark:contains("Profiles")').on('click', function() {
-                window.location.href = '/profile_list';
-            });
-            $('.btn-dark:contains("Account")').on('click', function() {
-                window.location.href = '/account';
-            });
         });
     </script>
 </body>

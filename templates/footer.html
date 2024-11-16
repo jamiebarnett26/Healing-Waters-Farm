@@ -1,3 +1,64 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <footer class="footer fixed-bottom" style = "background-color: white; border-top: 2px solid black; height: 15vw">
+        <div class="container text-center p-0">
+            <div class="row p-0">
+                <div class="col">
+                    <div class="btn btn-dark">
+                        My Crops
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="btn btn-dark">
+                        Account
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="btn btn-dark">
+                        Home
+                    </div>
+                </div>
+                {% if admin %}
+                    <div class="col">
+                        <div class="btn btn-dark">
+                            Profiles
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </footer>
 
-<a href="/showusercrops">My Crops</a> | <a href="/homepage">Home</a> | Announcements 
-{% if admin %} | <a href="/profile_list">Profiles</a> {% endif %}
+    <!-- jQuery functions - button links -->
+    <script>
+        $(document).ready(function() {
+          
+            // redirects "My Crops" button to showusercrops page
+            $('.btn-dark:contains("My Crops")').on('click', function() {
+                window.location.href = '/showusercrops';
+            });
+            $('.btn-dark:contains("Profiles")').on('click', function() {
+                window.location.href = '/profile_list';
+            });
+            $('.btn-dark:contains("Account")').on('click', function() {
+                window.location.href = '/account';
+            });
+            $('.btn-dark:contains("Home")').on('click', function() {
+                window.location.href = '/homepage';
+            });
+        });
+    </script>
+
+</body>
+</html>
+
+
+
+<!-- <a href="/showusercrops">My Crops</a> | <a href="/homepage">Home</a> | Announcements 
+{% if admin %} | <a href="/profile_list">Profiles</a> {% endif %} -->
