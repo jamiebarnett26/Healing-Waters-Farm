@@ -329,15 +329,26 @@ def full_crop_info(crop_info_id):
             Crop_Info.crop_info_id == crop_info_id
         )
         info_table = query.first()
+        if not info_table:
+            return None  # Ensure you handle None to avoid AttributeError
+
         query = session.query(Variety).filter(
             Variety.variety_id == info_table.variety_id
         )
         variety_table = query.first()
+        if not variety_table:
+            return None  # Similarly, handle None for variety_table
 
         species_table = species_from_variety(info_table.variety_id)
+        if not species_table:
+            return None  # Check for None before proceeding to avoid crashes
+
         family_table = family_from_species(species_table.family_id)
+        if not family_table:
+            return None
 
         crop_info = {
+            'variety_id': variety_table.variety_id,  # Include variety_id explicitly
             'family_name': family_table.family_name,
             'latin_name': species_table.latin_name,
             'variety_name': variety_table.variety_name,
@@ -347,7 +358,7 @@ def full_crop_info(crop_info_id):
             'plant_spacing_harvest': info_table.plant_spacing_harvest,
             'plant_spacing_seed': info_table.plant_spacing_seed,
             'row_spacing_harvest': info_table.row_spacing_harvest,
-            'row_spacing_seed': info_table.row_spacing_seed, 
+            'row_spacing_seed': info_table.row_spacing_seed,
             'days_to_maturity_harvest': info_table.days_to_maturity_harvest,
             'days_to_maturity_seed': info_table.days_to_maturity_seed,
             'days_to_transplantation': info_table.days_to_transplantation,
@@ -357,6 +368,7 @@ def full_crop_info(crop_info_id):
             'frost_sensitivity_rating': info_table.frost_sensitivity_rating
         }
         return crop_info
+
 
 def get_template_crop(species_id):
     with sqlalchemy.orm.Session(_engine) as session:
