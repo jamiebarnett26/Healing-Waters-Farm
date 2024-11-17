@@ -32,9 +32,6 @@
             <input type="text", id="textInput", autofocus> <input type="submit" value="Submit">
 
         </div>
-
-
-
             <!-- Card(Background)  -->
             <div class="card card-body m-2 mb-3" style="min-width: 75vw; height: 100vw; background-color: #517D5A">
                 <h3>   
@@ -43,17 +40,9 @@
 
                             <div id="resultsDiv">  </div>
 
-                            <!-- {% for family in families: %}
-                            <br>
-                            <button id="family_{{family['family_id']}}" type="button" class="btn btn-outline-light">{{ family['family_name'] }}</button>  <a href="/deletefamily/{{ family['family_id'] }}">Delete Family</a> 
-                            <br>
-                            {% endfor %} -->
-
                             <br>
                             <a href="/createfamily">Add New Family</a>
-                        </p>
-
-                        
+                        </p>  
                     </div>
                 </h3>
             </div>
@@ -63,10 +52,8 @@
 
 
 
-        <!-- Link to Mustache -->
-        <script src=
-        "https://cdn.jsdelivr.net/npm/mustache@4.2.0/mustache.min.js">
-     </script>
+    <!-- Link to Mustache -->
+    <script src="https://cdn.jsdelivr.net/npm/mustache@4.2.0/mustache.min.js"></script>
         
 
     <script> 
@@ -80,8 +67,6 @@
                               {{family_name}}
                            </button>
             {{/family}}
-  
-
     `;
     
     let request = null;
@@ -113,21 +98,21 @@
                alert('Error: Failed to fetch data from server');
             }
 
-        let familyId = $('#textInput').val();
-        let encodedFamilyId = encodeURIComponent(familyId);
+            let familyId = $('#textInput').val();
+            let encodedFamilyId = encodeURIComponent(familyId);
 
-        let url = '/selectCropSpecification?family=' + encodedFamilyId;
+            let url = '/selectCropSpecification?family=' + encodedFamilyId;
 
-        if (request !== null) {
-            console.log("ABOORT");
-            request.abort();
-        }
-        request = new XMLHttpRequest();
-        request.onload = handleResponse;
-        request.onerror = handleError;
-        request.open('GET', url);
-        request.send();
-        console.log("send AJAX");
+            if (request !== null) {
+                console.log("ABOORT");
+                request.abort();
+            }
+            request = new XMLHttpRequest();
+            request.onload = handleResponse;
+            request.onerror = handleError;
+            request.open('GET', url);
+            request.send();
+            console.log("send AJAX");
     }
 
 
@@ -145,15 +130,12 @@
                'input', debouncedGetResults);
         getFamilyResults();
         console.log("setup");
-
-
     }
 
     // call setup
      document.addEventListener('DOMContentLoaded', setup);
 
     </script>
-    
  
     </body>
 </html>
