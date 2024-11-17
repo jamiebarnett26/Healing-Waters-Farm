@@ -145,6 +145,33 @@ def profile_list():
     response = flask.make_response(html_code)
     return response
 
+<<<<<<< HEAD
+=======
+#-----------------------------------------------------------------------
+# helper method to get varieties and latin names as lists for user crops
+def get_crop_varieties_and_latin(user_id):
+    user_crops = database.get_user_crops(user_id)
+
+    # add in login stuff
+    user_crop_infos = []
+    variety_names = []
+    latin_names = []
+    for user_crop in user_crops:
+        user_crop_infos.append(database.full_crop_info(user_crop['crop_info_id']))
+        variety_names.append(user_crop_infos[0]['variety_name'])
+        latin_names.append(user_crop_infos[0]['latin_name'])
+
+    return zip(variety_names, latin_names)
+
+
+#-----------------------------------------------------------------------
+# Rdirects to account.html
+@app.route('/account', methods=['GET'])
+def oldIndex():
+    html_code = flask.render_template('account.html')
+    response = flask.make_response(html_code)
+    return response
+>>>>>>> 942d5c2779d4e01ea04a9d30a72fc02fce2e45b7
 
 #-----------------------------------------------------------------------
 # Request from homepage by selecting a crop, directs to indv CropPage_task.html

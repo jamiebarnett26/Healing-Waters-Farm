@@ -47,6 +47,8 @@
                                 {{ crop_info['variety_name'] }} 
                             </em>
                         </button>
+                        <!-- info icon -->
+                        <img id="infoButton-{{crop_info['variety_name']}}" src = "./static/img/info.png" alt="info logo" style="width:8vw;height:8vw;" >
                     </div>
                 </h3>
                 {% set outer_loop = loop %}
@@ -67,8 +69,28 @@
                 <img src="../static/img/plus.svg" class = "mb-2" style = "height: 30vw;">
             </div>
         </div>
-
     </div>
+
+
+     <!-- modal popup -->
+    <div class="modal" tabindex="-1" id="infoModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title"> Crop Information </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              
+
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
     <script>
         // For buttons with crop names
@@ -78,6 +100,37 @@
 
                 window.location.href = '/showcrop/' + varietyId;
             });
+        });
+
+        
+        $(document).ready(function() {
+            // When infoButton clicked -> show modal
+            $('[id^=infoButton]').on('click', function() {
+                var familyClicked = $(this).attr('id').split('infoButton-')[1];
+                console.log(familyClicked);
+
+                $("#infoModal").modal('show');
+
+            });
+
+        //     // When modal show -> get family info
+        //     $('#infoModal').on('show.bs.modal', function(event) {
+        //         // 1) get button title
+        //         var title = $(event.realtedTarget).data('title');
+        //         $this.find('.modal-title').html(title);
+
+        //         var familyId = $(this).attr("id").split("_")[1];
+
+        //         // 2) send AJAX Request
+        //         let encodedFamily = encodeURIComponent(familyId);
+        //         let url = '/selectSpecies?familyid=' +  encodedFamily;
+        //         let request = new XMLHttpRequest();
+        //         request.onload = handleResponse;
+        //         request.onerror = handleError;
+        //         request.open('GET', url);
+        //         request.send();   
+
+        //     });
         });
 
         // For last button to add crop
