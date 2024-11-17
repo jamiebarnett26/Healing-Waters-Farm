@@ -250,9 +250,9 @@ def search_crops():
 @app.route('/selectCropSpecification', methods=['GET'])
 def show_species():
     family = flask.request.args.get('family', '')
-    specie = flask.request.args.get('family', '')
+    species = flask.request.args.get('species', '')
 
-    if specie != '':
+    if species != '':
         species = database.search_field_name('species', specie)
         json_doc = json.dumps(species)
 
