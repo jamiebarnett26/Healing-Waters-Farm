@@ -80,22 +80,49 @@ def getCardInfo():
     
     return crops_with_todos
 
+
+@app.route('/edit_task', methods = ['POST'])
+def editTask():
+    user_id = flask.request.cookies.get('user_id')
+    data = flask.request.get_json()
+    user_crop_id = data.get('user_crop_id')
+    date_field = data.get('date_field')
+    new_date = data.get('new_date')
+    try: 
+        database.edit_user_tasks(user_id, user_crop_id, date_field, new_date)
+        return flask.jsonify({'success': True, 'message': 'Date updated successfully'})
+    except Exception as e:
+        return flask.jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/add_task', methods = ['POST'])
+def addTask():
+    user_id = flask.request.cookies.get('user_id')
+    data = flask.request.get_json()
+    user_crop_id = data.get('user_crop_id')
+    task_name = data.get('new_task')
+    task_date = data.get('new_date')
+    try: 
+        database.add_task(user_id, user_crop_id, task_name, task_date)
+        return flask.jsonify({'success': True, 'message': 'Task added successfully'})
+    except Exception as e:
+        return flask.jsonify({'success': False, 'message': str(e)}), 500
+
 def getWeeklyTasks(user_crop, frost_rating):
     today = datetime.date.today()
     enddate = today + datetime.timedelta(days=7)
     todos = []
     if user_crop['indoor_seed_starting_date'] <= enddate:
-        todos.append({"task": "Start indoor seeding", "date": user_crop['indoor_seed_starting_date'], "done": False})
+        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Start indoor seeding", "date": user_crop['indoor_seed_starting_date'], "done": False})
     if user_crop['transplanting_date'] <= enddate:
-        todos.append({"task": "Transplant plants outdoors", "date": user_crop['transplanting_date'], "done": False})
+        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Transplant plants outdoors", "date": user_crop['transplanting_date'], "done": False})
     if user_crop['direct_sow_date'] <= enddate:
-        todos.append({"task": "Direct sowing", "date": user_crop['direct_sow_date'], "done": False})
+        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Direct sowing", "date": user_crop['direct_sow_date'], "done": False})
     if user_crop['harvest_date'] <= enddate:
-        todos.append({"task": "Prepare for harvest", "date": user_crop['harvest_date'], "done": False})
+        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Prepare for harvest", "date": user_crop['harvest_date'], "done": False})
     if user_crop['seed_harvest_date'] <= enddate:
-        todos.append({"task": "Prepare for seed harvest", "date": user_crop['seed_harvest_date'], "done": False})
+        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Prepare for seed harvest", "date": user_crop['seed_harvest_date'], "done": False})
     if frost_rating > 1 and inFrost():
-        todos.append({"task": "This plant is frost-sensitive and you are in a frost!", "date": today, "done": False})
+        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "This plant is frost-sensitive and you are in a frost!", "date": today, "done": False})
 
     return todos
 
