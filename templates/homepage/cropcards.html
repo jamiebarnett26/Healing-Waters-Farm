@@ -54,28 +54,40 @@
                 {% set outer_loop = loop %}
 
                 {% for todo in todos %}
-                    <!-- For some very strange reason, the checkboxes won't work unless I explicitly call the loop.index before the template. I think it is a jinja issue but this seems to be the only answer without rewriting everything without nested loops -->
-                    <span style="display: none;">{{ loop.index }}</span>
-                    {% include 'homepage/checkbox.html' %}
-                    <hr>
+                <!-- Call the loop index -->
+                <span style="display: none;">{{ loop.index }}</span>
+                {% include 'homepage/checkbox.html' %}
+                <hr>
                 {% endfor %}
-                <button id="edit-button" onclick="showEditForm()">Edit Task</button>
-                <div id="edit-form" style="display: none;">
+
+                <!-- Edit Tasks and Forms -->
+                <button id="edit-button-{{todos[0]['user_crop_id']}}" onclick="showEditForm({{ todos[0]['user_crop_id'] }})">Edit Task</button>
+                <div id="edit-form-{{todos[0]['user_crop_id']}}" style="display: none;">
                     <h3>Select a task to edit</h3>
-                    <label for="taskDropdown"></label>
-                    <select id="taskDropdown">
+                    <label for="taskDropdown-{{todos[0]['user_crop_id']}}">Task:</label>
+                    <select id="taskDropdown-{{todos[0]['user_crop_id']}}">
                         <option value="indoor_seed_starting_date">Start indoor seeding</option>
                         <option value="transplanting_date">Transplant plants outdoors</option>
                         <option value="direct_sow_date">Direct sowing</option>
                         <option value="harvest_date">Prepare for harvest</option>
                     </select>
-                    <label for="taskDateInput">New Date:</label>
-                    <input type="date" id="taskDateInput">
-                    <button id="save-edit-button">Save</button>
-                    <button id="cancel-edit-button">Cancel</button>
-                </div>   
-                <button id="add-button" onclick="showAddForm()">Add Task</button>
-                             
+                    <label for="taskDateInput-{{todos[0]['user_crop_id']}}">New Date:</label>
+                    <input type="date" id="taskDateInput-{{todos[0]['user_crop_id']}}">
+                    <button onclick="submitEdit({{ todos[0]['user_crop_id'] }})">Save</button>
+                    <button onclick="cancelEdit({{ todos[0]['user_crop_id'] }})">Cancel</button>
+                </div>  
+
+                <!-- Add Tasks and Forms -->
+                <button id="add-button-{{todos[0]['user_crop_id']}}" onclick="showAddForm({{ todos[0]['user_crop_id'] }})">Add Task</button>
+                <div id="add-form-{{todos[0]['user_crop_id']}}" style="display: none;">
+                    <h3>Add a task</h3>
+                    <label for="newTaskInput-{{todos[0]['user_crop_id']}}">New Task:</label>
+                    <input type="text" id="newTaskInput-{{todos[0]['user_crop_id']}}">
+                    <label for="addTaskDate-{{todos[0]['user_crop_id']}}">Date:</label>
+                    <input type="date" id="addTaskDate-{{todos[0]['user_crop_id']}}">
+                    <button onclick="submitAdd({{ todos[0]['user_crop_id'] }})">Save</button>
+                    <button onclick="cancelAdd({{ todos[0]['user_crop_id'] }})">Cancel</button>
+                </div>                
             </div>
         {% endfor %}
         
@@ -109,48 +121,87 @@
       </div>
 
     <script>
-        // Show the edit form when the "Edit Task" button is clicked
-        $(document).ready(function () {
-            $('#edit-button').on('click', function () {
-                $('#edit-form').show();
-            });
+        function showEditForm(userCropId) {
+            document.getElementById(`edit-form-${userCropId}`).style.display = 'block';
+        }
 
-            $('#cancel-edit-button').on('click', function () {
-                $('#edit-form').hide();
-            });
+        function cancelEdit(userCropId) {
+            document.getElementById(`edit-form-${userCropId}`).style.display = 'none';
+        }
 
+        function submitEdit(userCropId) {
+            const taskField = document.getElementById(`taskDropdown-${userCropId}`).value;
+            const newDate = document.getElementById(`taskDateInput-${userCropId}`).value;
 
-            $('#save-edit-button').on('click', function () {
-                let selectedTask = $('#taskDropdown').val(); 
-                let newDate = $('#taskDateInput').val(); 
+            if (!taskField || !newDate) {
+                alert("Please select a task and a date!");
+                return;
+            }
 
-                if (!selectedTask || !newDate) {
-                    alert("Please select a task and a date!");
-                    return;
-                }
-
-                // Send the data to the backend via AJAX
-                $.ajax({
-                    url: '/edit_task', 
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        date_field: selectedTask, 
-                        new_date: newDate 
-                    }),
-                    success: function (response) {
-                        if (response.success) {
-                            location.reload();
-                        } else {
-                            alert("Failed to update task: " + response.message);
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        alert("An error occurred while updating the task: " + error);
+            // Send AJAX request to edit the task
+            $.ajax({
+                url: '/edit_task',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    user_crop_id: userCropId,
+                    date_field: taskField,
+                    new_date: newDate
+                }),
+                success: function (response) {
+                    if (response.success) {
+                        //TODO: Use AJAX to update dynamically instead of reloading page
+                        location.reload(); 
+                    } else {
+                        alert("Failed to update task: " + response.message);
                     }
-                });
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred while updating the task: " + error);
+                }
             });
-        });
+        }
+        function showAddForm(userCropId) {
+            document.getElementById(`add-form-${userCropId}`).style.display = 'block';
+}
+
+        function cancelAdd(userCropId) {
+            document.getElementById(`add-form-${userCropId}`).style.display = 'none';
+        }
+
+        function submitAdd(userCropId) {
+            const newTask = document.getElementById(`newTaskInput-${userCropId}`).value;
+            const taskDate = document.getElementById(`addTaskDate-${userCropId}`).value;
+
+            if (!newTask || !taskDate) {
+                alert("Please enter a task name and date!");
+                return;
+            }
+
+            // Send AJAX request to add the task
+            $.ajax({
+                url: '/add_task',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    user_crop_id: userCropId,
+                    new_task: newTask,
+                    new_date: taskDate
+                }),
+                success: function (response) {
+                    if (response.success) {
+                        //TODO: Use AJAX to update dynamically instead of reloading page
+                        location.reload(); 
+                    } else {
+                        alert("Failed to add task: " + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred while adding the task: " + error);
+                }
+            });
+        }
+
 
 
         // For buttons with crop names

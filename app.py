@@ -56,20 +56,34 @@ def getCardInfo():
     user_crop_infos = []
     all_todos = []
     variety_id = []
+
     for i, user_crop in enumerate(user_crops):
         user_crop_infos.append(database.full_crop_info(user_crop['crop_info_id']))
-
+        
         variety_name = user_crop_infos[i]['variety_name']
         variety_dict = database.search_field_name("variety", variety_name)
         variety_id.append(variety_dict[0]['variety_id'])
         
 
         todos = [
-            {"task": "Start indoor seeding", "date": user_crop['indoor_seed_starting_date'], "done": False},
-            {"task": "Transplant plants outdoors", "date": user_crop['transplanting_date'], "done": False},
-            {"task": "Direct sowing", "date": user_crop['direct_sow_date'], "done": False},
-            {"task": "Prepare for harvest", "date": user_crop['harvest_date'], "done": False}
+            {"user_crop_id": user_crop['user_crop_id'], 
+             "task": "Start indoor seeding", 
+             "date": user_crop['indoor_seed_starting_date'], 
+             "done": False},
+            {"user_crop_id": user_crop['user_crop_id'], 
+             "task": "Transplant plants outdoors", 
+             "date": user_crop['transplanting_date'], 
+             "done": False},
+            {"user_crop_id": user_crop['user_crop_id'],
+             "task": "Direct sowing", 
+             "date": user_crop['direct_sow_date'], 
+             "done": False},
+            {"user_crop_id": user_crop['user_crop_id'],
+             "task": "Prepare for harvest", 
+             "date": user_crop['harvest_date'], 
+             "done": False}
         ]
+        database.get_user_added_tasks(user_crops[i]['user_crop_id'], todos)
         all_todos.append(todos)
     
     crops_with_todos = zip(user_crop_infos, all_todos, variety_id)
@@ -80,11 +94,25 @@ def getCardInfo():
 def editTask():
     user_id = flask.request.cookies.get('user_id')
     data = flask.request.get_json()
+    user_crop_id = data.get('user_crop_id')
     date_field = data.get('date_field')
     new_date = data.get('new_date')
     try: 
-        database.edit_user_crops(user_id, date_field, new_date)
+        database.edit_user_tasks(user_id, user_crop_id, date_field, new_date)
         return flask.jsonify({'success': True, 'message': 'Date updated successfully'})
+    except Exception as e:
+        return flask.jsonify({'success': False, 'message': str(e)}), 500
+    
+@app.route('/add_task', methods = ['POST'])
+def addTask():
+    user_id = flask.request.cookies.get('user_id')
+    data = flask.request.get_json()
+    user_crop_id = data.get('user_crop_id')
+    task_name = data.get('new_task')
+    task_date = data.get('new_date')
+    try: 
+        database.add_task(user_id, user_crop_id, task_name, task_date)
+        return flask.jsonify({'success': True, 'message': 'Task added successfully'})
     except Exception as e:
         return flask.jsonify({'success': False, 'message': str(e)}), 500
 
