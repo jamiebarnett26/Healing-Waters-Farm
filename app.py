@@ -247,41 +247,33 @@ def search_crops():
     return flask.send_file('templates/addCrop/selectFamily.html')
 #-----------------------------------------------------------------------
 
-@app.route('/selectCropSpecification', methods=['GET'])
-def show_species():
+@app.route('/showFamily', methods=['GET'])
+def show_family():
     family = flask.request.args.get('family', '')
-    species = flask.request.args.get('species', '')
-
-    if species != '':
-        species = database.search_field_name('species', specie)
-        json_doc = json.dumps(species)
-
-    
-    else:
-        families = database.search_field_name('family', family)
-        json_doc = json.dumps(families)
+    families = database.search_field_name('family', family)
+    json_doc = json.dumps(families)
         
     response = flask.make_response(json_doc)
     response.headers['Content-Type'] = 'application/json'
     return response
 
+
+
 #-----------------------------------------------------------------------
 
-@app.route('/selectVariety/<species_id>', methods=['GET'])
-def show_variety(species_id):
-    admin = flask.request.cookies.get('admin') == 'true'
-    varieties = database.variety_from_species(species_id)
+@app.route('/showSpeces', methods=['GET'])
+def show_species(familyId):
+    #admin = flask.request.cookies.get('admin') == 'true'
+    print("HELLLO")
     
-    html_code = flask.render_template(
-        'addCrop/selectVariety.html',
-        varieties=varieties,
-        species_id=species_id,
-        admin=admin,
-        current_time=get_current_time()
-    )
-    
-    response = flask.make_response(html_code)
+    familyId = flask.request.args.get('family', '')
+    species = database.species_from_family(familyId)
+    json_doc = json.dumps(species)
+
+    response = flask.make_response(json_doc)
+    response.headers['Content-Type'] = 'application/json'
     return response
+
 
 #-----------------------------------------------------------------------
 

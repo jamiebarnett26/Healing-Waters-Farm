@@ -38,7 +38,11 @@
                     <div class="card-title d-flex justify-content-center align-items-center">
                         <p class="card-text">
 
-                            <div id="resultsDiv">  </div>
+                            <div id="familyDiv">  </div>
+
+                            <div id="speciesDiv">  </div>
+
+
 
                             <select class="form-select" id="templateSpeciesList" aria-label="Default select Family" disabled>
                                 <option selected>Open this select menu</option>
@@ -73,7 +77,7 @@
                 <select class="form-select" id="templateFamilyList" aria-label="Default select Family">
                 <option selected>Open this select menu</option>
                 {{#family}}
-                <option value="1">{{family_name}}</option>
+                <option value={{family_id}}>{{family_name}}</option>
                 {{/family}}
                 </select>
     `;
@@ -109,7 +113,7 @@
             return;
             }
             let response = JSON.parse(this.response);
-            let divNode = document.getElementById('resultsDiv');
+            let divNode = document.getElementById('familyDiv');
             divNode.innerHTML = '';
             let buttonList = makeCropList(response);
             divNode.innerHTML = buttonList;
@@ -123,7 +127,7 @@
         let familyId = $('#textInput').val();
         let encodedFamilyId = encodeURIComponent(familyId);
 
-        let url = '/selectCropSpecification?family=' + encodedFamilyId;
+        let url = '/showFamily?family=' + encodedFamilyId;
 
         if (request !== null) {
             console.log("ABOORT");
@@ -138,7 +142,7 @@
 
      
 
-    function getSpeciesResults() {
+    function getSpeciesResults(familyId) {
 
         function makeCropList(species) {
             let map = {species: species};
@@ -153,7 +157,7 @@
             return;
             }
             let response = JSON.parse(this.response);
-            let divNode = document.getElementById('resultsDiv');
+            let divNode = document.getElementById('speciesDiv');
             divNode.innerHTML = '';
             let buttonList = makeCropList(response);
             divNode.innerHTML = buttonList;
@@ -164,10 +168,11 @@
             }
 
         // Start of function
-        let specieId = $('#textInput').val();
-        let encodedSpeciesId = encodeURIComponent(specieId);
+        //let specieId = $('#textInput').val();
+        let encodedFamilyId = encodeURIComponent(familyId);
 
-        let url = '/selectCropSpecification?species=' + encodedSpeciesId;
+        let url = '/showSpecies?family=' + encodedFamilyId;
+
 
         if (request !== null) {
             console.log("ABOORT");
@@ -204,19 +209,17 @@
 
     $(document).on('change', '#templateFamilyList', function() {
         var selectedValue = $(this).val();
+        console.log(selectedValue);
 
-        //SEND AJAX REQUEST
+        getSpeciesResults(selectedValue);
         
 
         
-        if (selectedValue != null) {
-        // Disable the species dropdown if a family is selected
-        $('#templateSpeciesList').prop('disabled', false);
-        } else {
-        // Enable the species dropdown if no family is selected
-        $('#templateSpeciesList').prop('disabled', true);
-        }
-        console.log('Selected value: ' + selectedValue);
+        // if (selectedValue != null) {
+        // // Disable the species dropdown if a family is selected
+        // $('#templateSpeciesList').prop('disabled', false);
+        // } 
+        // console.log('Selected value: ' + selectedValue);
     });
 
     </script>
