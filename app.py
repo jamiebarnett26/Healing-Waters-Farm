@@ -244,7 +244,6 @@ def cropPage(variety_name):
 #-----------------------------------------------------------------------
 @app.route('/selectFamily', methods=['GET'])
 def search_crops():
-
     return flask.send_file('templates/addCrop/selectFamily.html')
 #-----------------------------------------------------------------------
 

@@ -40,6 +40,14 @@
 
                             <div id="resultsDiv">  </div>
 
+                            <select class="form-select" id="templateSpeciesList" aria-label="Default select Family" disabled>
+                                <option selected>Open this select menu</option>
+                       
+                                <option value="1">One</option>
+                                <option value="1">Two</option>
+                              
+                                </select>
+
                             <br>
                             <a href="/createfamily">Add New Family</a>
                         </p>  
@@ -47,6 +55,7 @@
                 </h3>
             </div>
         
+
 
         {% include 'footer.html' %}
 
@@ -60,13 +69,23 @@
 
     'use strict';
 
-    let templateCropList = `
-            {{#family}}
-                 <button id="button{{family_name}}"
-                              onclick=" getResultsDetails({{family_id}})">
-                              {{family_name}}
-                           </button>
-            {{/family}}
+    let templateFamilyList = ` 
+                <select class="form-select" id="templateFamilyList" aria-label="Default select Family">
+                <option selected>Open this select menu</option>
+                {{#family}}
+                <option value="1">{{family_name}}</option>
+                {{/family}}
+                </select>
+    `;
+
+    let templateSpeciesList = ` 
+                <select class="form-select" id="templateSpeciesList" aria-label="Default select Family" disabled>
+                <option selected>Open this select menu</option>
+       
+                <option value="1">One</option>
+                <option value="1">Two</option>
+              
+                </select>
     `;
     
     let request = null;
@@ -74,7 +93,7 @@
 
         function makeCropList(family) {
             let map = {family: family};
-            let html = Mustache.render(templateCropList, map);
+            let html = Mustache.render(templateFamilyList, map);
             return html;
             console.log("convert to html");
         }
@@ -91,28 +110,27 @@
             divNode.innerHTML = '';
             let buttonList = makeCropList(response);
             divNode.innerHTML = buttonList;
-            console.log("handle response");
         }
 
         function handleError(request) {
                alert('Error: Failed to fetch data from server');
             }
 
-            let familyId = $('#textInput').val();
-            let encodedFamilyId = encodeURIComponent(familyId);
+        // Start of function
+        let familyId = $('#textInput').val();
+        let encodedFamilyId = encodeURIComponent(familyId);
 
-            let url = '/selectCropSpecification?family=' + encodedFamilyId;
+        let url = '/selectCropSpecification?family=' + encodedFamilyId;
 
-            if (request !== null) {
-                console.log("ABOORT");
-                request.abort();
-            }
-            request = new XMLHttpRequest();
-            request.onload = handleResponse;
-            request.onerror = handleError;
-            request.open('GET', url);
-            request.send();
-            console.log("send AJAX");
+        if (request !== null) {
+            console.log("ABOORT");
+            request.abort();
+        }
+        request = new XMLHttpRequest();
+        request.onload = handleResponse;
+        request.onerror = handleError;
+        request.open('GET', url);
+        request.send();
     }
 
 
@@ -129,11 +147,23 @@
                 familyInput.addEventListener(
                'input', debouncedGetResults);
         getFamilyResults();
-        console.log("setup");
     }
 
     // call setup
      document.addEventListener('DOMContentLoaded', setup);
+
+    $(document).on('change', '#templateFamilyList', function() {
+    var selectedValue = $(this).val();
+    
+    if (selectedValue != null) {
+      // Disable the species dropdown if a family is selected
+      $('#templateSpeciesList').prop('disabled', false);
+    } else {
+      // Enable the species dropdown if no family is selected
+      $('#templateSpeciesList').prop('disabled', true);
+    }
+    console.log('Selected value: ' + selectedValue);
+    });
 
     </script>
  
