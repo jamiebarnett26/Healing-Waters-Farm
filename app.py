@@ -111,17 +111,18 @@ def getWeeklyTasks(user_crop, frost_rating):
     today = datetime.date.today()
     enddate = today + datetime.timedelta(days=7)
     todos = []
-    if user_crop['indoor_seed_starting_date'] <= enddate:
+    
+    if user_crop['indoor_seed_starting_date'] is not None and user_crop['indoor_seed_starting_date'] <= enddate:
         todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Start indoor seeding", "date": user_crop['indoor_seed_starting_date'], "done": False})
-    if user_crop['transplanting_date'] <= enddate:
+    if user_crop['transplanting_date'] is not None and  user_crop['transplanting_date'] <= enddate:
         todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Transplant plants outdoors", "date": user_crop['transplanting_date'], "done": False})
-    if user_crop['direct_sow_date'] <= enddate:
+    if user_crop['direct_sow_date'] is not None and user_crop['direct_sow_date'] <= enddate:
         todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Direct sowing", "date": user_crop['direct_sow_date'], "done": False})
-    if user_crop['harvest_date'] <= enddate:
+    if user_crop['harvest_date'] is not None and user_crop['harvest_date'] <= enddate:
         todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Prepare for harvest", "date": user_crop['harvest_date'], "done": False})
-    if user_crop['seed_harvest_date'] <= enddate:
+    if user_crop['seed_harvest_date'] is not None and user_crop['seed_harvest_date'] <= enddate:
         todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Prepare for seed harvest", "date": user_crop['seed_harvest_date'], "done": False})
-    if frost_rating > 1 and inFrost():
+    if frost_rating is not None and frost_rating > 1 and inFrost():
         todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "This plant is frost-sensitive and you are in a frost!", "date": today, "done": False})
 
     return todos
