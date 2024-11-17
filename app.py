@@ -10,6 +10,7 @@ from datetime import datetime
 from authlib.integrations.flask_client import OAuth
 from authlib.integrations.flask_client import OAuth
 from top import app
+import json
 import auth
 import sys
 
@@ -241,35 +242,20 @@ def cropPage(variety_name):
     return response
 
 #-----------------------------------------------------------------------
-# Request from homepage by adding crop card, directs to selectFamily.html
 @app.route('/selectFamily', methods=['GET'])
 def search_crops():
-    admin = flask.request.cookies.get('admin') == 'true'
-    family = flask.request.args.get('family')
-    if family == None:
-        family = ""
-    
-    families= database.search_field_name('family', family)
-    html_code = flask.render_template('addCrop/selectFamily.html',
-                                      families=families,
-                                      admin = admin,
-                                      current_time=get_current_time())
-    response = flask.make_response(html_code)
-    return response
 
+    return flask.send_file('templates/addCrop/selectFamily.html')
 #-----------------------------------------------------------------------
 
-@app.route('/selectSpecies/<family_id>', methods=['GET'])
-def show_species(family_id):
-    species = database.species_from_family(family_id)
-    admin = flask.request.cookies.get('admin') == 'true'
+@app.route('/selectCropSpecification', methods=['GET'])
+def show_species():
+    family = flask.request.args.get('family', '')
+    families = database.search_field_name('family', family)
 
-    html_code = flask.render_template('addCrop/selectSpecies.html', 
-                                      species=species,
-                                      family_id=family_id,
-                                      admin = admin,
-                                      current_time = get_current_time())
-    response = flask.make_response(html_code)
+    json_doc = json.dumps(families)
+    response = flask.make_response(json_doc)
+    response.headers['Content-Type'] = 'application/json'
     return response
 
 #-----------------------------------------------------------------------
