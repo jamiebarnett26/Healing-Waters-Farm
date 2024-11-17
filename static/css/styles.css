@@ -11,7 +11,6 @@ button {
   display: inline-block;
   padding: 10px 20px;
   margin: 5px;
-  background-color: #4CAF50; /* Green background */
   color: white; /* White text */
   text-align: center;
   border: none;
@@ -52,7 +51,6 @@ main {
 .footer {
   display: flex;
   font-size: 5vw;  /* Adjust the font size relative to viewport width */
-  background-color: #52c35f;
   color: white;
   text-align: center;
   justify-content: center;
