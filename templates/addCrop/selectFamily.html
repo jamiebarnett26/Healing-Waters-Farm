@@ -1,36 +1,35 @@
 <!DOCTYPE html>
 <html>
+    <head>
 
-   <head>
-    <!-- Link to Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <!-- Link to Bootstrap js -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Link to jQuery -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-   <!-- CSS Internal Styling -->
-    <style>
-       .container {
-               color: rgb(114, 161, 138);
-               font-family: Georgia, 'Times New Roman', Times, serif;
-               text-align: center;
-           }
-       .p {
-           color: rgb(255, 255, 255);
-               font-family: Georgia, 'Times New Roman', Times, serif;
-       }
-    </style>
-   </head>
+     <!-- Link to Bootstrap CSS -->
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+     <!-- Link to Bootstrap js -->
+     <script src= "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"> </script>
+     <!-- Link to jQuery -->
+     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+     
+    <!-- CSS Internal Styling -->
+     <style>
+        .container {
+                color: rgb(114, 161, 138);
+                font-family: Georgia, 'Times New Roman', Times, serif;
+                text-align: center;
+            }
+        .p {
+            color: rgb(255, 255, 255);
+                font-family: Georgia, 'Times New Roman', Times, serif;
+        }
+     </style>
+    </head>
 
 
-   <body>
-       <div class="container">
-           <br>
-           <h1>Select Family</h1>
-           <form action="/selectFamily" method="get">
-               <input type="text", name="family", autofocus> <input type="submit" value="Submit">
-           </form>
-       </div>
+    <body>
+         <!-- Title and Search Bar  -->
+        <div class="container">
+            <br>
+            <h1 id="Title">Select Family</h1>
+            <input type="text", id="textInput", autofocus> <input type="submit" value="Submit">
 
        <div class="card card-body m-2 mb-3" style="min-width: 75vw; height: 100vw; background-color: #517D5A">
            <h3>  
@@ -48,17 +47,11 @@
                </div>
            </h3>
        </div>
-       <hr>
+       <hr> 
 
-       {% include 'footer.html' %}
+        
+        {% include 'footer.html' %}
 
-       <script>
-           $(document).ready(function(){
-               $("#").click(function(){
-               $("#MYHEADER").slideUp();
-           });
-       });
-       </script>
-       
-   </body>
+ 
+    </body>
 </html>

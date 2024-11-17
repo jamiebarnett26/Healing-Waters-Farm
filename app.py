@@ -10,6 +10,7 @@ import datetime
 from authlib.integrations.flask_client import OAuth
 from authlib.integrations.flask_client import OAuth
 from top import app
+import json
 import auth
 import crop_infos
 import sys
@@ -64,11 +65,15 @@ def getCardInfo():
             break
         user_crop_infos.append(full_crop_info)
 
+        user_crop_infos.append(database.full_crop_info(user_crop['crop_info_id']))
+        
         variety_name = user_crop_infos[i]['variety_name']
         variety_dict = database.search_field_name("variety", variety_name)
         variety_id.append(variety_dict[0]['variety_id'])
         
         todos = getWeeklyTasks(user_crop, full_crop_info['frost_sensitivity_rating'])
+
+        database.get_user_added_tasks(user_crops[i]['user_crop_id'], todos)
         all_todos.append(todos)
     
     crops_with_todos = zip(user_crop_infos, all_todos, variety_id)
@@ -145,23 +150,21 @@ def profile_list():
     response = flask.make_response(html_code)
     return response
 
-<<<<<<< HEAD
-=======
 #-----------------------------------------------------------------------
 # helper method to get varieties and latin names as lists for user crops
 def get_crop_varieties_and_latin(user_id):
     user_crops = database.get_user_crops(user_id)
 
-    # add in login stuff
-    user_crop_infos = []
-    variety_names = []
-    latin_names = []
+    crop_data = []
     for user_crop in user_crops:
-        user_crop_infos.append(database.full_crop_info(user_crop['crop_info_id']))
-        variety_names.append(user_crop_infos[0]['variety_name'])
-        latin_names.append(user_crop_infos[0]['latin_name'])
+        crop_info = database.full_crop_info(user_crop['crop_info_id'])
+        variety_id = crop_info['variety_id']  # Assuming this field exists in your database schema
+        variety_name = crop_info['variety_name']
+        latin_name = crop_info['latin_name']
+        crop_data.append((variety_id, variety_name, latin_name))
 
-    return zip(variety_names, latin_names)
+    return crop_data
+
 
 
 #-----------------------------------------------------------------------
@@ -171,7 +174,6 @@ def oldIndex():
     html_code = flask.render_template('account.html')
     response = flask.make_response(html_code)
     return response
->>>>>>> 942d5c2779d4e01ea04a9d30a72fc02fce2e45b7
 
 #-----------------------------------------------------------------------
 # Request from homepage by selecting a crop, directs to indv CropPage_task.html
@@ -193,12 +195,52 @@ def show_crop(variety_id):
         full_crop_infos.append(full_crop_info)
     
     html_code = flask.render_template('showcrop.html',
-                                      crop_info_id=crop_infos[0]['crop_info_id'],
-                                      admin=admin,
-                                      crop_infos=full_crop_infos,
-                                      current_time=get_current_time())
+                                      crop_infos=full_crop_infos)
     response = flask.make_response(html_code)
     return response
+
+
+#-----------------------------------------------------------------------
+
+# @app.route('/selectCropSpecification', methods=['GET'])
+# def show_species():
+#     family = flask.request.args.get('family', '')
+#     families = database.search_field_name('family', family)
+
+#     json_doc = json.dumps(families)
+#     response = flask.make_response(json_doc)
+#     response.headers['Content-Type'] = 'application/json'
+#     return response
+
+# #-----------------------------------------------------------------------
+
+# @app.route('/selectVariety/<species_id>', methods=['GET'])
+# def show_variety(species_id):
+#     admin = flask.request.cookies.get('admin') == 'true'
+#     varieties = database.variety_from_species(species_id)
+    
+#     html_code = flask.render_template(
+#         'addCrop/selectVariety.html',
+#         varieties=varieties,
+#         species_id=species_id,
+#         admin=admin,
+#         current_time=get_current_time()
+#     )
+    
+#     response = flask.make_response(html_code)
+#     return response
+
+# #-----------------------------------------------------------------------
+
+# @app.route('/createfamily', methods=['GET'])
+# def create_family():
+#     admin = flask.request.cookies.get('admin') == 'true'
+#     html_code = flask.render_template('createfamily.html',
+#                                       admin=admin,
+#                                       crop_infos=full_crop_infos,
+#                                       current_time=get_current_time())
+#     response = flask.make_response(html_code)
+#     return response
 
 #-----------------------------------------------------------------------
 
