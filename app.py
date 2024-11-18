@@ -261,8 +261,8 @@ def show_family():
 
 #-----------------------------------------------------------------------
 
-@app.route('/showSpeces', methods=['GET'])
-def show_species(familyId):
+@app.route('/showSpecies', methods=['GET'])
+def show_species():
     #admin = flask.request.cookies.get('admin') == 'true'
     print("HELLLO")
     
