@@ -80,6 +80,17 @@ def getCardInfo():
     
     return crops_with_todos
 
+@app.route('/delete_template', methods = ['POST'])
+def deleteTemplate():
+    user_crop_id = flask.request.args.get('cropid')
+    try: 
+        database.delete_template(user_crop_id)
+        return flask.jsonify({'success': True, 'message': 'Template deleted successfully'})
+    except Exception as e:
+        return flask.jsonify({'success': False, 'message': str(e)}), 500
+
+
+
 
 @app.route('/edit_task', methods = ['POST'])
 def editTask():

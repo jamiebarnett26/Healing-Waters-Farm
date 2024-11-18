@@ -451,6 +451,12 @@ def edit_user_tasks(user_id, user_crop_id, date_field, new_date):
                 setattr(crop, date_field, new_date) 
         session.commit()
 
+def delete_template(user_crop_id):
+    with sqlalchemy.orm.Session(_engine) as session:
+        session.query(User_Crop).filter(User_Crop.user_crop_id == user_crop_id).delete()
+        session.commit()
+
+
         
 def add_task(user_id, user_crop_id, task_name, task_date):
     with sqlalchemy.orm.Session(_engine) as session:
