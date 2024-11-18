@@ -142,6 +142,7 @@
         request.send();
     }
 
+
     function getSpeciesResults(familyId) {
 
         function makeCropList(species) {
@@ -230,9 +231,6 @@
     }
 
 
-
-
-
     let timer = null;
     function debouncedGetResults() {
         clearTimeout(timer);
@@ -264,6 +262,13 @@
 
         getVarietyResults(selectedValue);
     });
+
+    $(document).on('change', '#templateVarietyList', function() {
+        var selectedValue = $(this).val();
+        window.location = '/showcrop/' + selectedValue
+    });
+
+
 
 
     </script>
