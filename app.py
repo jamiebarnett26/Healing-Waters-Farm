@@ -257,17 +257,29 @@ def show_family():
     response.headers['Content-Type'] = 'application/json'
     return response
 
-
-
 #-----------------------------------------------------------------------
 
 @app.route('/showSpecies', methods=['GET'])
 def show_species():
     #admin = flask.request.cookies.get('admin') == 'true'
-    print("HELLLO")
+
     
     familyId = flask.request.args.get('family', '')
     species = database.species_from_family(familyId)
+    json_doc = json.dumps(species)
+
+    response = flask.make_response(json_doc)
+    response.headers['Content-Type'] = 'application/json'
+    return response
+
+#-----------------------------------------------------------------------
+
+@app.route('/showVariety', methods=['GET'])
+def show_variety():
+    #admin = flask.request.cookies.get('admin') == 'true'
+
+    speciesId = flask.request.args.get('species', '')
+    species = database.variety_from_species(speciesId)
     json_doc = json.dumps(species)
 
     response = flask.make_response(json_doc)

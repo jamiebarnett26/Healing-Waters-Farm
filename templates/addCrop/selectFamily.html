@@ -23,7 +23,6 @@
      </style>
     </head>
 
-
     <body>
          <!-- Title and Search Bar  -->
         <div class="container">
@@ -37,11 +36,19 @@
                 <h3>   
                     <div class="card-title d-flex justify-content-center align-items-center">
                         <p class="card-text">
-
-                            <div id="familyDiv">  </div>
-
-                            <div id="speciesDiv">  </div>
-
+                            <div class="container">
+                                <div class="row">
+                                    <div id="familyDiv">  </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div id="speciesDiv">  </div>
+                                </div>
+                                <div class="row">
+                                    <div id="varietyDiv">  </div>
+                                </div>
+                            </div>
+                           
                             <br>
                             <a href="/createfamily">Add New Family</a>
                         </p>  
@@ -75,13 +82,18 @@
     let templateSpeciesList = ` 
                 <select class="form-select" id="templateSpeciesList" aria-label="Default select Family" >
                 <option selected>Open this select menu</option>
-       
-                <option value="1">One</option>
-                <option value="1">Two</option>
-                 {{#species}}
+                {{#species}}
                 <option value="1">{{species_name}}</option>
                 {{/species}}
-              
+                </select>
+    `;
+
+    let templateVarietyList = ` 
+                <select class="form-select" id="templateVarietyList" aria-label="Default select Family" >
+                <option selected>Open this select menu</option>
+                {{#variety}}
+                <option value="1">{{variety_name}}</option>
+                {{/variety}}
                 </select>
     `;
     
@@ -130,8 +142,6 @@
         request.send();
     }
 
-     
-
     function getSpeciesResults(familyId) {
 
         function makeCropList(species) {
@@ -176,6 +186,50 @@
     }
 
 
+    function getVarietyResults(speciesId) {
+
+        function makeCropList(variety) {
+            let map = {variety: variety};
+            let html = Mustache.render(templateVarietyList, map);
+            return html;
+            console.log("convert to html");
+        }
+        
+        function handleResponse(variety) {
+            if(this.status !== 200) {
+            alert('Error: Failed to fetch data from server');
+            return;
+            }
+            let response = JSON.parse(this.response);
+            let divNode = document.getElementById('varietyDiv');
+            divNode.innerHTML = '';
+            let buttonList = makeCropList(response);
+            divNode.innerHTML = buttonList;
+        }
+
+        function handleError(request) {
+               alert('Error: Failed to fetch data from server');
+            }
+
+        // Start of function
+        //let specieId = $('#textInput').val();
+        let encodedSpeciesId = encodeURIComponent(speciesId);
+
+        let url = '/showVariety?species=' + encodedSpeciesId;
+
+
+        if (request !== null) {
+            console.log("ABOORT");
+            request.abort();
+        }
+        request = new XMLHttpRequest();
+        request.onload = handleResponse;
+        request.onerror = handleError;
+        request.open('GET', url);
+        request.send();
+    }
+
+
 
 
 
@@ -202,15 +256,15 @@
         console.log(selectedValue);
 
         getSpeciesResults(selectedValue);
-        
-
-        
-        // if (selectedValue != null) {
-        // // Disable the species dropdown if a family is selected
-        // $('#templateSpeciesList').prop('disabled', false);
-        // } 
-        // console.log('Selected value: ' + selectedValue);
     });
+
+    $(document).on('change', '#templateSpeciesList', function() {
+        var selectedValue = $(this).val();
+        console.log(selectedValue);
+
+        getVarietyResults(selectedValue);
+    });
+
 
     </script>
  
