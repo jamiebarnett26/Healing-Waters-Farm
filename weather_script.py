@@ -34,3 +34,11 @@ def get_description():
 
 def get_city():
     return response['name']
+
+def get_wind_speed():
+    wind_speed_mps = response['wind']['speed']
+    wind_speed_mph = wind_speed_mps * 2.23694
+    return wind_speed_mph
+
+def get_kelvin():
+    return response['main']['temp']
