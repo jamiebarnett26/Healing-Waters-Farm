@@ -234,6 +234,7 @@ def show_crop(variety_id):
         full_crop_infos.append(full_crop_info)
     
     html_code = flask.render_template('showcrop.html',
+                                      crop_info_id=crop_infos[0]['crop_info_id'],
                                       crop_infos=full_crop_infos)
     response = flask.make_response(html_code)
     return response
