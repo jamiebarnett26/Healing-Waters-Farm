@@ -145,6 +145,81 @@ def profile_list():
     response = flask.make_response(html_code)
     return response
 
+#-----------------------------------------------------------------------
+@app.route('/adviceboard', methods=['GET'])
+def advice_board():
+    admin = flask.request.cookies.get('admin') == 'true'
+    user_id = flask.request.cookies.get('user_id')
+
+    if not user_id:
+        return flask.redirect('/login')
+    user = database.get_user(user_id, 'user_id')
+    if not user:
+        return flask.redirect('/login')
+     
+    user_name = user.first_name + " " + user.last_name
+    questions = database.get_questions()
+    html_code = flask.render_template('adviceboard.html',
+                                      admin=admin,
+                                      questions=questions,
+                                      user_id=user_id,
+                                      user_name=user_name,
+                                      current_time=get_current_time())
+    response = flask.make_response(html_code)
+    return response
+
+#-----------------------------------------------------------------------
+@app.route('/createquestion', methods=['GET'])
+def create_question():
+    admin = flask.request.cookies.get('admin') == 'true'
+    user_id = flask.request.cookies.get('user_id')
+    html_code = flask.render_template('createquestion.html',
+                                      admin=admin,
+                                      user_id=user_id,
+                                      current_time=get_current_time())
+    response = flask.make_response(html_code)
+    return response
+
+#-----------------------------------------------------------------------
+
+@app.route('/addquestion/<user_id>', methods=['POST'])
+def add_question(user_id):
+    title = flask.request.form.get('title')
+    text = flask.request.form.get('text')
+    question = {'user_id':user_id, 'title':title, 'text':text, 'status':'Unresolved'}
+    database.add_question(question)
+    return advice_board()
+
+#-----------------------------------------------------------------------
+
+@app.route('/editquestion/<question_id>', methods=['GET'])
+def edit_question(question_id):
+    question = database.search_field_id('question', question_id)
+    admin = flask.request.cookies.get('admin') == 'true'
+    html_code = flask.render_template('editquestion.html',
+                                      admin=admin,
+                                      question=question[0],
+                                      current_time=get_current_time())
+    response = flask.make_response(html_code)
+    return response
+    
+#-----------------------------------------------------------------------
+
+@app.route('/posteditquestion/<question_id>', methods=['POST'])
+def post_edit_question(question_id):
+    title = flask.request.form.get('title')
+    text  = flask.request.form.get('text')
+    question = {'title':title, 'text':text}
+    database.edit_question(question_id, question)
+    return advice_board()
+
+#-----------------------------------------------------------------------
+# functionality to delete
+@app.route('/deletequestion/<question_id>')
+def delete_question(question_id):
+    user_id = flask.request.cookies.get('user_id')
+    database.delete_question(user_id, question_id)
+    return advice_board()
 
 #-----------------------------------------------------------------------
 # Request from homepage by selecting a crop, directs to indv CropPage_task.html

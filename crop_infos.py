@@ -63,6 +63,7 @@ def show_variety(species_id):
     response = flask.make_response(html_code)
     return response
 
+
 #-----------------------------------------------------------------------
 
 @app.route('/createfamily', methods=['GET'])

@@ -78,11 +78,31 @@ class Admin (Base):
     admin_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     user_id = sqlalchemy.Column(sqlalchemy.Integer)
 
-_engine = sqlalchemy.create_engine(_DATABASE_URL)
+class Question (Base):
+    __tablename__ = 'questions'
+    question_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
+    user_id = sqlalchemy.Column(sqlalchemy.Integer)
+    created_at = sqlalchemy.Column(sqlalchemy.TIMESTAMP, server_default=sqlalchemy.func.now(), nullable=False)
+    updated_at = sqlalchemy.Column(sqlalchemy.TIMESTAMP, server_default=sqlalchemy.func.now(), onupdate=sqlalchemy.func.now(), nullable=False)
+    title = sqlalchemy.Column(sqlalchemy.String)
+    text = sqlalchemy.Column(sqlalchemy.String)
+    status = sqlalchemy.Column(sqlalchemy.String)
 
+_engine = sqlalchemy.create_engine(_DATABASE_URL, pool_size=10, max_overflow=20, pool_timeout=30, pool_recycle=3600)
+Session = sqlalchemy.orm.scoped_session(sqlalchemy.orm.sessionmaker(autocommit=False, autoflush=False, bind=_engine))
 
+def get_session():
+    """Helper function to retrieve a session from the scoped session factory"""
+    return Session()
+
+def add_question(question):
+    with get_session() as session:
+        new_question = Question(**question)
+        session.add(new_question)
+        session.commit()
+    
 def add_user(first_name, last_name, email):
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         is_existing_user = session.query(Users).filter_by(email=email).first()
         if is_existing_user:
             print("User already exists with email:", email)
@@ -105,7 +125,7 @@ def add_user(first_name, last_name, email):
 
 
 def get_user(searchvalue, searchfield):
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         if searchfield == 'email':
             query = session.query(Users).filter_by(email=searchvalue)
             
@@ -117,7 +137,7 @@ def get_user(searchvalue, searchfield):
 
 
 def is_admin(user_id):
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         query = session.query(Admin).filter_by(user_id=user_id)
         table = query.first()
 
@@ -125,7 +145,7 @@ def is_admin(user_id):
             return 'true'
         return 'false'
 def get_profiles():
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         query = session.query(Users)
         table = query.all()
         profiles = []
@@ -139,6 +159,24 @@ def get_profiles():
 
         return profiles
 
+def get_questions():
+    with get_session() as session:
+        query = session.query(Question)
+        table = query.all()
+        questions = []
+        for row in table:
+           question = {
+                'question_id':row.question_id,
+                'user_id':row.user_id,
+                'created_at':row.created_at,
+                'title':row.title,
+                'text':row.text,
+                'status':row.status
+            }
+           questions.append(question)
+
+        return questions
+
 #------------------------------------------------------------------------------
 # search_value: This is the value that the user either clicks on or types in.
 #               It represents the term that we want to search for in the database.
@@ -148,7 +186,7 @@ def get_profiles():
 
 def search_field_name(search_field, search_value):
     results = []
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         if search_field == 'family':
             query = session.query(Family).filter(
                 Family.family_name.ilike(f"%{search_value}%"),
@@ -192,7 +230,7 @@ def search_field_name(search_field, search_value):
 
 def search_field_id(search_field, search_value):
     results = []
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         if search_field == 'family':
             query = session.query(Family).filter(
                 Family.family_id == search_value
@@ -258,11 +296,27 @@ def search_field_id(search_field, search_value):
                 'frost_sensitivity_rating': row.frost_sensitivity_rating
             }
                 results.append(crop_info)
+        if search_field == 'question':
+            query = session.query(Question).filter(
+                Question.question_id == search_value,
+            )
+            table = query.all()
+            for row in table:
+                question = {
+                    'question_id':row.question_id,
+                    'user_id':row.user_id,
+                    'created_at':row.created_at,
+                    'updated_at':row.updated_at,
+                    'title':row.title,
+                    'text':row.text,
+                    'status':row.status
+                }
+                results.append(question)
     return results
 
 def species_from_family(family_id):
     species = []
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         query = session.query(Species).filter(
             Species.family_id == family_id
         )
@@ -279,7 +333,7 @@ def species_from_family(family_id):
 
 def variety_from_species(species_id):
     varieties = []
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         query = session.query(Variety).filter(
             Variety.species_id == species_id
         )
@@ -295,7 +349,7 @@ def variety_from_species(species_id):
 
 def crop_info_from_variety(variety_id):
     crop_infos = []
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         query = session.query(Crop_Info).filter(
             Crop_Info.variety_id == variety_id
         )
@@ -325,7 +379,7 @@ def crop_info_from_variety(variety_id):
     return crop_infos
 
 def family_from_species(species_id):
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         query = session.query(Species).filter(
             Species.species_id == species_id
         )
@@ -337,7 +391,7 @@ def family_from_species(species_id):
         return family_table
 
 def species_from_variety(variety_id):
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         query = session.query(Variety).filter(
             Variety.variety_id == variety_id
         )
@@ -350,7 +404,7 @@ def species_from_variety(variety_id):
 
 
 def full_crop_info(crop_info_id):
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         query = session.query(Crop_Info).filter(
             Crop_Info.crop_info_id == crop_info_id
         )
@@ -387,7 +441,7 @@ def full_crop_info(crop_info_id):
         return crop_info
 
 def get_template_crop(species_id):
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         varieties = variety_from_species(species_id)
         variety_ids = []
         for variety in varieties:
@@ -403,7 +457,7 @@ def get_template_crop(species_id):
         return -1
 
 def get_user_crops(user_id):
-     with sqlalchemy.orm.Session(_engine) as session:
+     with get_session() as session:
         table = session.query(User_Crop).filter(
             User_Crop.user_id == user_id
         ).all()
@@ -424,20 +478,20 @@ def get_user_crops(user_id):
         return user_crops
 
 def add_family(family):
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         new_family = Family(**family)
         session.add(new_family)
         session.commit()
 
 def add_species(species):
-    with sqlalchemy.orm.Session(_engine) as session:
+     with get_session() as session:
         new_species = Species(**species)
         session.add(new_species)
         session.commit()
 
 def add_variety(variety, crop_info):
     crop_info = {key: (None if value == 'None' else value) for key, value in crop_info.items()}
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         new_variety = Variety(**variety)
         session.add(new_variety)
         session.commit()
@@ -449,7 +503,7 @@ def add_variety(variety, crop_info):
         session.commit()
 
 def edit_family(family_id, updated_data):
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         family = session.query(Family).get(family_id)
         if family:
             for key, value in updated_data.items():
@@ -457,7 +511,7 @@ def edit_family(family_id, updated_data):
             session.commit()
 
 def edit_species(species_id, updated_data):
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         species = session.query(Species).get(species_id)
         if species:
             for key, value in updated_data.items():
@@ -469,7 +523,7 @@ def edit_variety(variety_id, updated_data_variety, updated_data_crop):
         if updated_data_crop.get(field) == "":
             updated_data_crop[field] = None 
 
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         crop_info = session.query(Crop_Info).get(variety_id)
         variety = session.query(Variety).get(variety_id)
         if crop_info:
@@ -481,16 +535,23 @@ def edit_variety(variety_id, updated_data_variety, updated_data_crop):
                 setattr(variety, key, value)
                 session.commit()
 
+def edit_question(question_id, updated_data):
+    with get_session() as session:
+        question = session.query(Question).get(question_id)
+        if question:
+            for key, value in updated_data.items():
+                setattr(question, key, value)
+            session.commit()
 
 
 def add_user_crop(user_crop):
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         new_crop = User_Crop(**user_crop)
         session.add(new_crop)
         session.commit()
 
 def delete_family(family_id):
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         family_to_delete = session.query(Family).filter_by(family_id=family_id).first()
 
         species = species_from_family(family_id)
@@ -501,7 +562,7 @@ def delete_family(family_id):
         session.commit()
 
 def delete_species(species_id):
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         species_to_delete = session.query(Species).filter_by(species_id=species_id).first()
 
         varieties = variety_from_species(species_id)
@@ -512,7 +573,7 @@ def delete_species(species_id):
         session.commit()
     
 def delete_variety(variety_id):
-    with sqlalchemy.orm.Session(_engine) as session:
+    with get_session() as session:
         variety_to_delete = session.query(Variety).filter_by(variety_id=variety_id).first()
 
         crop_infos = crop_info_from_variety(variety_id)
@@ -523,6 +584,14 @@ def delete_variety(variety_id):
 
         session.delete(variety_to_delete)
         session.commit()
+
+def delete_question(user_id, question_id):
+    with get_session() as session:
+        question_to_delete = session.query(Question).filter_by(question_id=question_id).first()
+        if(user_id == question_to_delete.user_id):
+            session.delete(question_to_delete)
+            session.commit()
+        
 
 
 #-----------------------------------------------------------------------

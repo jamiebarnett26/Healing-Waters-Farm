@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        {% include 'header.html' %}
+        <hr>
+        <a  href="/createquestion">Ask Question</a>
+        <hr>
+        {% for question in questions %}
+            <Strong>{{ question['title']}}</Strong> - <Strong>{{ user_name }}</Strong><br>
+            {{ question['text'] }}<br>
+            Status: {{ question['status']}} <br>
+            {% if user_id|string == question['user_id']|string %}
+            <a  href="/editquestion/{{ question['question_id'] }}">Edit</a>   <a  href="/deletequestion/{{ question['question_id'] }}">Delete</a>
+            {% endif %}
+            <hr>
+        {% endfor %}
+        {% include 'footer.html' %}
+    </body>
+</html>
+
