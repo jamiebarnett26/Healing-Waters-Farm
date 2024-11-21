@@ -11,7 +11,7 @@
      <!-- Link to jQuery -->
      <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
 
-     
+
 </head>
 <body>
     <img id="infoButton-{{crop_info['variety_name']}}" src = "./static/img/info.png" alt="info logo" style="width:8vw;height:8vw;" >
@@ -36,20 +36,27 @@
               </div>
             </div>
           </div>
-    
-          <script>
-               $(document).ready(function() {
-            // When infoButton clicked -> show modal
-            $('[id^=infoButton]').on('click', function() {
-                var familyClicked = $(this).attr('id').split('infoButton-')[1];
-                console.log(familyClicked);
 
-                $("#infoModal").modal('show');
+     <!-- Link to Mustache -->
+    <script src="https://cdn.jsdelivr.net/npm/mustache@4.2.0/mustache.min.js"></script>
+    
+    <script>
+        'use strict';
+      
+
+
+
+        $(document).ready(function() {
+        // When infoButton clicked -> show modal
+        $('[id^=infoButton]').on('click', function() {
+            var familyClicked = $(this).attr('id').split('infoButton-')[1];
+            console.log(familyClicked);
+
+            $("#infoModal").modal('show');
 
             });
         });
-
-          </script>
+    </script>
           <script src = "../../static/js/script.js"></script>
 </body>
 </html>
