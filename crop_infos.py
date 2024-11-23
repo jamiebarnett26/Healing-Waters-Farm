@@ -69,40 +69,10 @@ def show_variety():
     response.headers['Content-Type'] = 'application/json'
     return response
 
-
-
-
-
-# @app.route('/selectSpecies/<family_id>', methods=['GET'])
-# def show_species(family_id):
-#     species = database.species_from_family(family_id)
-#     admin = flask.request.cookies.get('admin') == 'true'
-
-#     html_code = flask.render_template('addCrop/selectSpecies.html', 
-#                                       species=species,
-#                                       family_id=family_id,
-#                                       admin = admin,
-#                                       current_time = get_current_time())
-#     response = flask.make_response(html_code)
-#     return response
-
-# #-----------------------------------------------------------------------
-
-# @app.route('/selectVariety/<species_id>', methods=['GET'])
-# def show_variety(species_id):
-#     admin = flask.request.cookies.get('admin') == 'true'
-#     varieties = database.variety_from_species(species_id)
-    
-#     html_code = flask.render_template(
-#         'addCrop/selectVariety.html',
-#         varieties=varieties,
-#         species_id=species_id,
-#         admin=admin,
-#         current_time=get_current_time()
-#     )
-    
-#     response = flask.make_response(html_code)
-#     return response
+#-----------------------------------------------------------------------
+@app.route('/cropcards', methods=['GET'])
+def load_cropcards():
+    return flask.send_file('templates/homepage/cropcards.html')
 
 #-----------------------------------------------------------------------
 
