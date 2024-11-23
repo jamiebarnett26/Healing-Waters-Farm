@@ -24,9 +24,12 @@ def load_footer():
     html_code = flask.render_template('footer.html', admin=admin)
     response = flask.make_response(html_code)
     return response
-
-
-    #return flask.send_file('templates/footer.html')
+#-----------------------------------------------------------------------
+@app.route('/weather', methods=['GET'])
+def load_weather():
+    html_code = flask.render_template('homepage/boxes_w_info.html')
+    response = flask.make_response(html_code)
+    return response
 #-----------------------------------------------------------------------
 @app.route('/showFamily', methods=['GET'])
 def show_family():
