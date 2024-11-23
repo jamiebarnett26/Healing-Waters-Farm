@@ -21,6 +21,12 @@
                 font-family: Georgia, 'Times New Roman', Times, serif;
         }
      </style>
+
+    <script> 
+    $(function(){
+      $("#footer").load("footer"); 
+    });
+    </script> 
     </head>
 
     <body>
@@ -58,7 +64,7 @@
         
 
 
-        {% include 'footer.html' %}
+        <div id="footer"> </div>
 
 
 

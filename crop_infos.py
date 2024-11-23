@@ -18,6 +18,16 @@ def get_current_time():
 def search_crops():
     return flask.send_file('templates/addCrop/selectFamily.html')
 #-----------------------------------------------------------------------
+@app.route('/footer', methods=['GET'])
+def load_footer():
+    admin = flask.request.cookies.get('admin') == 'true'
+    html_code = flask.render_template('footer.html', admin=admin)
+    response = flask.make_response(html_code)
+    return response
+
+
+    #return flask.send_file('templates/footer.html')
+#-----------------------------------------------------------------------
 @app.route('/showFamily', methods=['GET'])
 def show_family():
     family = flask.request.args.get('family', '')
