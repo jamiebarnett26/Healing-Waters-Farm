@@ -42,7 +42,9 @@
                             </em>
                         </button>
                         <!-- info icon -->
-                        {% include 'homepage/infoButton.html' %}
+                        <img id="infoButton-{{crop_info['variety_name']}}" src = "./static/img/info.png" alt="info logo" style="width:8vw;height:8vw;" >
+                        <button class="btn btn-danger" onclick="deleteCrop({{ todos[0]['user_crop_id'] }})">Delete Crop</button>
+                   
                     </div>
                 </h3>
                 {% set outer_loop = loop %}
