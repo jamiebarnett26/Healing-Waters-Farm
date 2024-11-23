@@ -7,30 +7,38 @@ import time
 import json
 import sys
 
-
 #-----------------------------------------------------------------------
 
 def get_current_time():
     return time.asctime(time.localtime())
 
 #-----------------------------------------------------------------------
-@app.route('/selectFamily', methods=['GET'])
-def search_crops():
-    return flask.send_file('templates/addCrop/selectFamily.html')
-#-----------------------------------------------------------------------
-@app.route('/footer', methods=['GET'])
-def load_footer():
-    admin = flask.request.cookies.get('admin') == 'true'
-    html_code = flask.render_template('footer.html', admin=admin)
-    response = flask.make_response(html_code)
-    return response
+# METHODS FOR HOMEPAGE
 #-----------------------------------------------------------------------
 @app.route('/weather', methods=['GET'])
 def load_weather():
     html_code = flask.render_template('homepage/boxes_w_info.html')
     response = flask.make_response(html_code)
     return response
+
+@app.route('/cropcards', methods=['GET'])
+def load_cropcards():
+    return flask.send_file('templates/homepage/cropcards.html')
+
+@app.route('/footer', methods=['GET'])
+def load_footer():
+    admin = flask.request.cookies.get('admin') == 'true'
+    html_code = flask.render_template('footer.html', admin=admin)
+    response = flask.make_response(html_code)
+    return response
+
 #-----------------------------------------------------------------------
+# METHODS FOR SERIES OF CROP SELECTION
+#-----------------------------------------------------------------------
+@app.route('/selectFamily', methods=['GET'])
+def search_crops():
+    return flask.send_file('templates/addCrop/selectFamily.html')
+#--------------------------
 @app.route('/showFamily', methods=['GET'])
 def show_family():
     family = flask.request.args.get('family', '')
@@ -40,9 +48,7 @@ def show_family():
     response = flask.make_response(json_doc)
     response.headers['Content-Type'] = 'application/json'
     return response
-
-#-----------------------------------------------------------------------
-
+#--------------------------
 @app.route('/showSpecies', methods=['GET'])
 def show_species():
     #admin = flask.request.cookies.get('admin') == 'true'
@@ -54,9 +60,7 @@ def show_species():
     response = flask.make_response(json_doc)
     response.headers['Content-Type'] = 'application/json'
     return response
-
-#-----------------------------------------------------------------------
-
+#--------------------------
 @app.route('/showVariety', methods=['GET'])
 def show_variety():
     #admin = flask.request.cookies.get('admin') == 'true'
@@ -68,11 +72,6 @@ def show_variety():
     response = flask.make_response(json_doc)
     response.headers['Content-Type'] = 'application/json'
     return response
-
-#-----------------------------------------------------------------------
-@app.route('/cropcards', methods=['GET'])
-def load_cropcards():
-    return flask.send_file('templates/homepage/cropcards.html')
 
 #-----------------------------------------------------------------------
 
