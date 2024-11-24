@@ -23,6 +23,7 @@ def load_weather():
 
 @app.route('/cropCards', methods=['GET'])
 def load_cropcards():
+    print("IN SERVER INITIAL")
     return flask.send_file('templates/homepage/cropcards.html')
 
 @app.route('/footer', methods=['GET'])
@@ -30,6 +31,16 @@ def load_footer():
     admin = flask.request.cookies.get('admin') == 'true'
     html_code = flask.render_template('footer.html', admin=admin)
     response = flask.make_response(html_code)
+    return response
+
+@app.route('/getCropCardInfo', methods=['GET'])
+def load_cropCards():
+    print("IN SERVER")
+    cropInfo = flask.request.cookies.get('crops_with_todos')
+    json_doc = json.dumps(cropInfo)
+        
+    response = flask.make_response(json_doc)
+    response.headers['Content-Type'] = 'application/json'
     return response
 
 #-----------------------------------------------------------------------

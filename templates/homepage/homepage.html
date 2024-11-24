@@ -60,65 +60,14 @@
             <h1 style = "font-size: 10vw;">
                 <a href = "/testpage" class = "text-dark px-2"> <b> Crop Tasks: </b> </a>
             </h1>
-
+            <!-- cropcards -->
             <div id="cropCards"> </div>
-
+            
         </div>
     </div>
 
     <!-- footer -->
     <div id="footer"> </div>
 
-    <!-- <script>
-
-        function loadCropCards() {
-
-        function makeCropList(variety) {
-            let map = {variety: variety};
-            let html = Mustache.render(templateVarietyList, map);
-            return html;
-            console.log("convert to html");
-        }
-        
-        function handleResponse() {
-            if(this.status !== 200) {
-                alert('Error: Failed to fetch data from server');
-                return;
-            }
-            let response = JSON.parse(this.response);
-            let divNode = document.getElementById('cropcards');
-            //divNode.innerHTML = '';
-            //let buttonList = makeCropList(response);
-            divNode.innerHTML = response;
-        }
-
-        function handleError(request) {
-               alert('Error: Failed to fetch data from server');
-            }
-
-        // Start of function
-        let url = '/cropCards';
-
-        // if (request !== null) {
-        //     console.log("ABOORT");
-        //     request.abort();
-        // }
-        request = new XMLHttpRequest();
-        request.onload = handleResponse;
-        request.onerror = handleError;
-        request.open('GET', url);
-        request.send();
-    }
-
-
-    // Called at start
-    function setup() {
-        loadCropCards();
-    }
-
-    // call setup
-     document.addEventListener('DOMContentLoaded', setup);
-    </script>
--->
 </body>
 </html> 
