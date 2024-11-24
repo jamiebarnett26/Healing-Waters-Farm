@@ -21,7 +21,7 @@ def load_weather():
     response = flask.make_response(html_code)
     return response
 
-@app.route('/cropcards', methods=['GET'])
+@app.route('/cropCards', methods=['GET'])
 def load_cropcards():
     return flask.send_file('templates/homepage/cropcards.html')
 

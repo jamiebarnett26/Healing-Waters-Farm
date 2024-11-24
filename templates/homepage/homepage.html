@@ -40,6 +40,8 @@
     $(function(){
       $("#footer").load("footer"); 
       $("#weather").load("weather"); 
+      $("#cropCards").load("cropCards"); 
+      
     });
     </script> 
 
@@ -59,16 +61,15 @@
                 <a href = "/testpage" class = "text-dark px-2"> <b> Crop Tasks: </b> </a>
             </h1>
 
-            <div class="cropcards"> </div>
+            <div id="cropCards"> </div>
 
-            {% include 'homepage/cropcards.html' %}
         </div>
     </div>
 
     <!-- footer -->
     <div id="footer"> </div>
 
-    <script>
+    <!-- <script>
 
         function loadCropCards() {
 
@@ -96,13 +97,12 @@
             }
 
         // Start of function
-        //let specieId = $('#textInput').val();
         let url = '/cropCards';
 
-        if (request !== null) {
-            console.log("ABOORT");
-            request.abort();
-        }
+        // if (request !== null) {
+        //     console.log("ABOORT");
+        //     request.abort();
+        // }
         request = new XMLHttpRequest();
         request.onload = handleResponse;
         request.onerror = handleError;
@@ -119,6 +119,6 @@
     // call setup
      document.addEventListener('DOMContentLoaded', setup);
     </script>
-
+-->
 </body>
-</html>
+</html> 
