@@ -13,8 +13,7 @@
     <script src=  "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"> </script>
     <!-- Link to jQuery -->
     <script src= "https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"> </script>
-    <!-- Link to Mustache -->
-    <script src="https://cdn.jsdelivr.net/npm/mustache@4.2.0/mustache.min.js"></script>
+
 
     <!-- Page specific CSS -->
     <style>
@@ -64,7 +63,7 @@
                             {{#crops_with_todos}}
                             <em style = "font-size: 6.5vw"> 
                                 {{ crop_info}}
-                                {{ variety_name}}
+                                {{ variety_id }}
                                 {{ todos }}
                                 {{ crop_info['variety_name'] }}
                             </em>
@@ -83,6 +82,8 @@
     function getCropCards() {
 
         function makeCropCard(crops_with_todos) {
+            console.log(crops_with_todos);
+
             let map = {crops_with_todos: crops_with_todos};
             let html = Mustache.render(templateCropCard, map);
             return html;
@@ -96,6 +97,16 @@
             return;
             }
             let response = JSON.parse(this.response);
+
+            response.forEach(function(item) {
+      var cropInfo = item[0];   // The crop information
+      var tasks = item[1];      // The list of tasks
+      var varietyId = item[2];  // The variety ID
+
+      console.log(cropInfo, tasks, varietyId);
+      // You can now update the UI with this information
+    });
+    
             let divNode = document.getElementById('cropcards');
             divNode.innerHTML = '';
             let cropCards = makeCropCard(response);

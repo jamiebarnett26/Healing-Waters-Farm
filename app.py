@@ -6,7 +6,7 @@ import time
 import flask 
 import database
 import datetime
-
+from datetime import date
 from authlib.integrations.flask_client import OAuth
 from authlib.integrations.flask_client import OAuth
 from top import app
@@ -168,14 +168,30 @@ def homepage():
      
     user_name = user.first_name + " " + user.last_name
 
-    crops_with_todos = getCardInfo()
     html_code = flask.render_template('homepage/homepage.html',
                                       user_name=user_name,
-                                      admin=admin,
-                                      crops_with_todos=crops_with_todos)
+                                      admin=admin)
     response = flask.make_response(html_code)
     return response
+#-----------------------------------------------------------------------
+# Custom JSON encoder that converts date and datetime objects to string
+class CustomJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, (date, datetime)):
+            return obj.isoformat()  # Convert date/datetime to ISO format string
+        return super().default(obj)
+#-----------------------------------------------------------------------
 
+@app.route('/getCropCardInfo', methods=['GET'])
+def load_cropCards():
+    print("IN SERVER")
+    crops_with_todos = getCardInfo()
+    # Convert the zip object into a list before serializing it to JSON
+    crops_with_todos_list = list(crops_with_todos)
+    json_doc = json.dumps(crops_with_todos_list, cls=CustomJSONEncoder)
+    response = flask.make_response(json_doc)
+    response.headers['Content-Type'] = 'application/json'
+    return response
 #-----------------------------------------------------------------------
 # Admin functionality of seeing all profiles, loads profile_list.html
 @app.route('/profile_list', methods=['GET'])

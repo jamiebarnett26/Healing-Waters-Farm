@@ -33,15 +33,6 @@ def load_footer():
     response = flask.make_response(html_code)
     return response
 
-@app.route('/getCropCardInfo', methods=['GET'])
-def load_cropCards():
-    print("IN SERVER")
-    cropInfo = flask.request.cookies.get('crops_with_todos')
-    json_doc = json.dumps(cropInfo)
-        
-    response = flask.make_response(json_doc)
-    response.headers['Content-Type'] = 'application/json'
-    return response
 
 #-----------------------------------------------------------------------
 # METHODS FOR SERIES OF CROP SELECTION
