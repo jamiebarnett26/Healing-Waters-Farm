@@ -87,7 +87,7 @@
   
                 
                 <!-- Delete button -->
-                <button class="btn btn-danger" onclick="deleteCrop({{todos[0].user_crop_id}})">Delete Crop</button>
+                <button class="btn btn-danger" id="deleteButton-{{crop_info.variety_id}}">Delete Crop</button>
             </div>
         </h3>
 
@@ -176,46 +176,6 @@ let templateModalBody = `
         getCropCards();
     }
 
-    function deleteCrop(userCropId) {
-
-        // Start of function
-                
-        let encodedUserCropId = encodeURIComponent(userCropId);
-        let url = '/delete_template?cropid=' + encodedUserCropId
-        if (request !== null) {
-            console.log("ABOORT");
-            request.abort();
-        }
-        request = new XMLHttpRequest();
-        request.onload = handleResponse;
-        request.onerror = handleError;
-        request.open('POST', url);
-        request.send();
-         
-        function makeCropList(variety) {
-            let map = {variety: variety};
-            let html = Mustache.render(templateVarietyList, map);
-            return html;
-            console.log("convert to html");
-        }
-        
-        function handleResponse(variety) {
-            if(this.status !== 200) {
-            alert('Error: Failed to fetch data from server');
-            return;
-            }
-            let response = JSON.parse(this.response);
-            let divNode = document.getElementById('varietyDiv');
-            divNode.innerHTML = '';
-            let buttonList = makeCropList(response);
-            divNode.innerHTML = buttonList;
-        }
-
-        function handleError(request) {
-               alert('Error: Failed to fetch data from server');
-            }
-    
-        }
 
 //---------------------------------------------------------------------------------
 //Jquery Functions 
@@ -241,6 +201,38 @@ let templateModalBody = `
         
         // Show the modal
         infoModal.show();
+    });
+
+
+
+    // Click Delete crop
+    $('[id^=deleteButton]').on('click', function() {
+        var userCropId = $(this).attr('id').split('deleteButton-')[1];
+        console.log("Deleting crop with variety_id: " + userCropId);
+        let encodedUserCropId = encodeURIComponent(userCropId);
+        //let url = '/delete_template?cropid=' + encodedUserCropId
+
+        // Send AJAX POST request to delete the crop
+        $.ajax({
+            url: '/delete_template?cropid=' + encodedUserCropId,        // URL to send the request to
+            type: 'POST',              // POST method
+            data: {                    // Send the crop ID to the server
+                variety_id: userCropId
+            },
+            success: function(response) {
+                console.log("Delete response: ", response);
+                if (response.success) {
+                    // Remove the deleted crop card from the DOM
+                    $('#crop-card-' + userCropId).remove();
+                } else {
+                    alert("Failed to delete crop.");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error deleting crop: ", error);
+                alert("An error occurred while trying to delete the crop.");
+            }
+        });
     });
     }
 //---------------------------------------------------------------------------------
