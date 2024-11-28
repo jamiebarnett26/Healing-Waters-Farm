@@ -53,8 +53,7 @@
               <h5 class="modal-title"> Crop Information </h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-            </div>
+            <div class="modal-body">      </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
@@ -106,6 +105,10 @@
     {{/crops}}
 `;
 
+let templateModalBody = `
+
+`;
+
 //---------------------------------------------------------------------------------
 // Function to fetch and render crop cards
     let request = null;
@@ -132,16 +135,7 @@
             return;
             }
             let response = JSON.parse(this.response);
-
-            // response.forEach(function(item) {
-            // var cropInfo = item[0];   // The crop information
-            // var tasks = item[1];      // The list of tasks
-            // var varietyId = item[2];  // The variety ID
-
             console.log(response);
-            // You can now update the UI with this information
-            //});
-
             let divNode = document.getElementById('cropcards');
             divNode.innerHTML = '';
             let cropCards = makeCropCard(response);
@@ -182,6 +176,47 @@
         getCropCards();
     }
 
+    function deleteCrop(userCropId) {
+
+        // Start of function
+                
+        let encodedUserCropId = encodeURIComponent(userCropId);
+        let url = '/delete_template?cropid=' + encodedUserCropId
+        if (request !== null) {
+            console.log("ABOORT");
+            request.abort();
+        }
+        request = new XMLHttpRequest();
+        request.onload = handleResponse;
+        request.onerror = handleError;
+        request.open('POST', url);
+        request.send();
+         
+        function makeCropList(variety) {
+            let map = {variety: variety};
+            let html = Mustache.render(templateVarietyList, map);
+            return html;
+            console.log("convert to html");
+        }
+        
+        function handleResponse(variety) {
+            if(this.status !== 200) {
+            alert('Error: Failed to fetch data from server');
+            return;
+            }
+            let response = JSON.parse(this.response);
+            let divNode = document.getElementById('varietyDiv');
+            divNode.innerHTML = '';
+            let buttonList = makeCropList(response);
+            divNode.innerHTML = buttonList;
+        }
+
+        function handleError(request) {
+               alert('Error: Failed to fetch data from server');
+            }
+    
+        }
+
 //---------------------------------------------------------------------------------
 //Jquery Functions 
     if (document.readyState !== 'loading') {
@@ -194,12 +229,12 @@
     }
    
     function jsForDynamicElelements() {
-    console.log("HERE AND NOW");
-
     // Click info button
     $('[id^=infoButton]').on('click', function() {
         var familyClicked = $(this).attr('id').split('infoButton-')[1];
         console.log(familyClicked);
+
+        // TO DO: IMPLEMENT AJAX
 
         // Get the modal element
         var infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
