@@ -134,11 +134,11 @@
             divNode.innerHTML = '';
             let cropCards = makeCropCard(response);
             divNode.innerHTML = cropCards;
-        }
+     }
 
         function handleError(request) {
-               alert('Error: Failed to fetch data from server');
-            }
+            alert('Error: Failed to fetch data from server');
+        }
 
         // Start of function
         let url = '/getCropCardInfo';
@@ -156,22 +156,24 @@
     }
 
         // Called at start
-        function setup() {
-            console.log("SETUP");
+    function setup() {
+        console.log("SETUP");
 
-            $('[id^=card-button]').on('click', function() {
-                var varietyId = $(this).attr('id').split('card-button-')[1];
-                window.location.href = '/showcrop/' + varietyId;
-            });
+        $('[id^=card-button]').on('click', function() {
+            var varietyId = $(this).attr('id').split('card-button-')[1];
+            window.location.href = '/showcrop/' + varietyId;
+        });
 
-            $('#end_add_crop').on('click', function() {
-                window.location.href = '/selectFamily';
-            });
+        $('#end_add_crop').on('click', function() {
+            window.location.href = '/selectFamily';
+         });
 
-            getCropCards();
-        }
+        getCropCards();
+    }
 
 
+
+    
         if (document.readyState !== 'loading') {
             setup();
         } else {
@@ -180,8 +182,11 @@
                 setup();
             });
         }
-        // call setup
-        // document.addEventListener('DOMContentLoaded', setup());
+
+    
+
+
+       
 
     
     </script>
@@ -193,29 +198,6 @@
 
 
 <!--
-
-function deleteCrop(userCropId) {
-            let encodedUserCropId = encodeURIComponent(userCropId);
-            let url = '/delete_template?cropid=' + encodedUserCropId
-
-            let requestData = {
-                type: 'POST',
-                url: url, 
-                success: function (response) {
-                    if (response.success) {
-                        //TODO: Use AJAX to update dynamically instead of reloading page
-                        location.reload(); 
-                    } else {
-                        alert("Failed to delete task: " + response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    alert("An error occurred while deleting the task: " + error);
-                }
-            };
-
-            $.ajax(requestData);
-        }
 
 
         function showEditForm(userCropId) {
