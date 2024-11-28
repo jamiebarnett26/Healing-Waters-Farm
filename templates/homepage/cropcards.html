@@ -152,6 +152,7 @@
             divNode.innerHTML = '';
             let cropCards = makeCropCard(response);
             divNode.innerHTML = cropCards;
+            jsForDynamicElelements();
      }
 
         function handleError(request) {
@@ -183,14 +184,7 @@
         $('#end_add_crop').on('click', function() {
             window.location.href = '/selectFamily';
          });
-         // Click info button
-         $('[id^=infoButton]').on('click', function() {
-            var familyClicked = $(this).attr('id').split('infoButton-')[1];
-            console.log(familyClicked);
-
-            $("#infoModal").modal('show');
-
-        });
+      
 
         getCropCards();
     }
@@ -204,6 +198,23 @@
             setup();
         });
     }
+   
+    function jsForDynamicElelements() {
+    console.log("HERE AND NOW");
+
+    // Click info button
+    $('[id^=infoButton]').on('click', function() {
+        var familyClicked = $(this).attr('id').split('infoButton-')[1];
+        console.log(familyClicked);
+
+        // Get the modal element
+        var infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
+        
+        // Show the modal
+        infoModal.show();
+    });
+    }
+
 
     
 
