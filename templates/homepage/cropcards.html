@@ -71,15 +71,29 @@
                 <button class="btn btn-danger" onclick="deleteCrop({{todos[0].user_crop_id}})">Delete Crop</button>
             </div>
         </h3>
+
+            <!-- Render Todo List for each crop -->
+      <!-- Loop over todos (tasks) for this crop -->
+    <div class="todos">
+        {{#todos}} <!-- This is a list of tasks -->
+        <div class="todo">
+             <input type="checkbox" {{#completed}}checked{{/completed}} disabled /> <!-- If the task is completed, mark the checkbox -->
+            <span>{{task}}</span> <!-- Display the task name -->
+        </div>
+        {{/todos}}
+    </div>
+ 
+
     </div>
     {{/crops}}
 `;
 
+    // Function to fetch and render crop cards
     let request = null;
     function getCropCards() {
 
         function makeCropCard(crops_with_todos) {
-        console.log(crops_with_todos);
+        //console.log(crops_with_todos);
 
         // Transform the data structure to match the template format
         let crops = crops_with_todos.map(item => {
@@ -107,14 +121,14 @@
             }
             let response = JSON.parse(this.response);
 
-            response.forEach(function(item) {
-      var cropInfo = item[0];   // The crop information
-      var tasks = item[1];      // The list of tasks
-      var varietyId = item[2];  // The variety ID
+            // response.forEach(function(item) {
+            // var cropInfo = item[0];   // The crop information
+            // var tasks = item[1];      // The list of tasks
+            // var varietyId = item[2];  // The variety ID
 
-      console.log(cropInfo, tasks, varietyId);
-      // You can now update the UI with this information
-    });
+            console.log(response);
+            // You can now update the UI with this information
+            //});
 
             let divNode = document.getElementById('cropcards');
             divNode.innerHTML = '';
@@ -303,7 +317,7 @@ function deleteCrop(userCropId) {
                                 {{ crop_info['variety_name'] }}
                             </em>
                         </button>
-                        <!-- info icon 
+                
                         <img id="infoButton-{{crop_info['variety_name']}}" src = "./static/img/info.png" alt="info logo" style="width:8vw;height:8vw;" >
                         <button class="btn btn-danger" onclick="deleteCrop({{ todos[0]['user_crop_id'] }})">Delete Crop</button>
                    
@@ -312,14 +326,13 @@ function deleteCrop(userCropId) {
                 {% set outer_loop = loop %}
 
                 {% for todo in todos %}
-                <!-- Call the loop index 
                 <span style="display: none;">{{ loop.index }}</span>
                 {% include 'homepage/checkbox.html' %}
                 <hr>
                 {% endfor %}
 
 
-                <!-- Edit Tasks and Forms 
+
                 <button id="edit-button-{{todos[0]['user_crop_id']}}" onclick="showEditForm({{ todos[0]['user_crop_id'] }})">Edit Task</button>
                 <div id="edit-form-{{todos[0]['user_crop_id']}}" style="display: none;">
                     <h3>Select a task to edit</h3>
