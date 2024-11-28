@@ -2,16 +2,40 @@
 <html>
     <body>
         {% include 'header.html' %}
+        <h1>Announcements</h1>
+        {% if admin %}
+            <a  href="/createannouncement">Create Announcement</a>
+        {% endif %}
+        {% for announcement in announcements %}
+            <Strong>{{ announcement['title']}}</Strong> - <Strong>{{ announcement['user_id'] }}</Strong><br>
+            {{ announcement['text'] }}<br>
+            {% if user_id|string == announcement['user_id']|string %}
+            <a  href="/editannouncement/{{ announcement['announcement_id'] }}">Edit</a>   <a  href="/deleteannouncement/{{ announcement['announcement_id'] }}">Delete</a>
+            {% endif %}
+        {% endfor %}
+        <h1>Advice Board</h1>
         <hr>
         <a  href="/createquestion">Ask Question</a>
         <hr>
         {% for question in questions %}
-            <Strong>{{ question['title']}}</Strong> - <Strong>{{ user_name }}</Strong><br>
+            <Strong>{{ question['title']}}</Strong> - <Strong>{{ user_id }}</Strong><br>
             {{ question['text'] }}<br>
             Status: {{ question['status']}} <br>
             {% if user_id|string == question['user_id']|string %}
-            <a  href="/editquestion/{{ question['question_id'] }}">Edit</a>   <a  href="/deletequestion/{{ question['question_id'] }}">Delete</a>
+            <a  href="/editquestion/{{ question['question_id'] }}">Edit</a>   <a  href="/deletequestion/{{ question['question_id'] }}">Delete</a> <br>
             {% endif %}
+            {% if admin %}
+            <a  href="/createreply/{{ question['question_id'] }}">Reply</a>
+            {% endif %}
+            <strong>Replies:</strong><br>
+            {% for reply in replies %}
+                {% if reply['question_id'] == question['question_id'] %}
+                    <em>{{ reply['text'] }}</em> - by {{ user_id }}<br>
+                    {% if user_id|string == reply['user_id']|string %}
+                        <a  href="/editreply/{{ reply['reply_id'] }}">Edit</a>   <a  href="/deletereply/{{ reply['reply_id'] }}">Delete</a>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
             <hr>
         {% endfor %}
         {% include 'footer.html' %}

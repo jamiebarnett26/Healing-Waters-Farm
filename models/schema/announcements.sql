@@ -1,12 +1,11 @@
-DROP TABLE IF EXISTS questions;
+DROP TABLE IF EXISTS announcements;
 
-create table questions
+create table announcements
 (
-    question_id          serial primary key,
+    announcement_id          serial primary key,
     user_id              integer,
     title         varchar(255) not null,
     text          text not null,
-    status        varchar(50) not null,
     created_at           timestamp default current_timestamp,
     updated_at           timestamp default current_timestamp
 );

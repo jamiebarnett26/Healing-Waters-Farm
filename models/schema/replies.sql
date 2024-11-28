@@ -1,12 +1,11 @@
-DROP TABLE IF EXISTS questions;
+DROP TABLE IF EXISTS replies;
 
-create table questions
+create table replies
 (
-    question_id          serial primary key,
+    reply_id          serial primary key,
     user_id              integer,
-    title         varchar(255) not null,
+    question_id              integer,
     text          text not null,
-    status        varchar(50) not null,
     created_at           timestamp default current_timestamp,
     updated_at           timestamp default current_timestamp
 );

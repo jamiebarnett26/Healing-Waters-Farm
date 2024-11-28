@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+    <form action="/addreply/{{ question_id }}" method="post">
+        <strong>Text</strong>
+        <input type="text", name="text", autofocus> <br>
+        <input type="submit" value="Reply">
+    </form>
+    <hr>
+    {% include 'footer.html' %}
+</html>
+

@@ -159,9 +159,13 @@ def advice_board():
      
     user_name = user.first_name + " " + user.last_name
     questions = database.get_questions()
+    replies = database.get_replies()
+    announcements = database.get_announcements()
     html_code = flask.render_template('adviceboard.html',
                                       admin=admin,
                                       questions=questions,
+                                      replies=replies,
+                                      announcements=announcements,
                                       user_id=user_id,
                                       user_name=user_name,
                                       current_time=get_current_time())
@@ -220,6 +224,114 @@ def delete_question(question_id):
     user_id = flask.request.cookies.get('user_id')
     database.delete_question(user_id, question_id)
     return advice_board()
+
+#-----------------------------------------------------------------------
+@app.route('/createreply/<question_id>', methods=['GET'])
+def create_reply(question_id):
+    admin = flask.request.cookies.get('admin') == 'true'
+    user_id = flask.request.cookies.get('user_id')
+    html_code = flask.render_template('createreply.html',
+                                      admin=admin,
+                                      question_id=question_id,
+                                      user_id=user_id,
+                                      current_time=get_current_time())
+    response = flask.make_response(html_code)
+    return response
+
+#-----------------------------------------------------------------------
+
+@app.route('/addreply/<question_id>', methods=['POST'])
+def add_reply(question_id):
+    user_id = flask.request.cookies.get('user_id')
+    text = flask.request.form.get('text')
+    reply = {'question_id':question_id,'user_id':user_id, 'text':text}
+    database.add_reply(reply)
+    return advice_board()
+
+#-----------------------------------------------------------------------
+
+@app.route('/editreply/<reply_id>', methods=['GET'])
+def edit_reply(reply_id):
+    reply = database.search_field_id('reply', reply_id)
+    admin = flask.request.cookies.get('admin') == 'true'
+    html_code = flask.render_template('editreply.html',
+                                      admin=admin,
+                                      reply=reply[0],
+                                      current_time=get_current_time())
+    response = flask.make_response(html_code)
+    return response
+    
+#-----------------------------------------------------------------------
+
+@app.route('/posteditreply/<reply_id>', methods=['POST'])
+def post_edit_reply(reply_id):
+    text  = flask.request.form.get('text')
+    reply = {'text':text}
+    database.edit_reply(reply_id, reply)
+    return advice_board()
+
+#-----------------------------------------------------------------------
+# functionality to delete
+@app.route('/deletereply/<reply_id>')
+def delete_reply(reply_id):
+    user_id = flask.request.cookies.get('user_id')
+    database.delete_reply(user_id, reply_id)
+    return advice_board()
+
+#-----------------------------------------------------------------------
+@app.route('/createannouncement/', methods=['GET'])
+def create_announcement():
+    admin = flask.request.cookies.get('admin') == 'true'
+    user_id = flask.request.cookies.get('user_id')
+    html_code = flask.render_template('createannouncement.html',
+                                      admin=admin,
+                                      user_id=user_id,
+                                      current_time=get_current_time())
+    response = flask.make_response(html_code)
+    return response
+
+#-----------------------------------------------------------------------
+
+@app.route('/addannouncement/', methods=['POST'])
+def add_announcement():
+    user_id = flask.request.cookies.get('user_id')
+    text = flask.request.form.get('text')
+    title = flask.request.form.get('title')
+    announcement = {'user_id':user_id, 'text':text, 'title':title}
+    database.add_announcement(announcement)
+    return advice_board()
+
+#-----------------------------------------------------------------------
+
+@app.route('/editannouncement/<announcement_id>', methods=['GET'])
+def edit_announcement(announcement_id):
+    announcement = database.search_field_id('announcement', announcement_id)
+    admin = flask.request.cookies.get('admin') == 'true'
+    html_code = flask.render_template('editannouncement.html',
+                                      admin=admin,
+                                      announcement=announcement[0],
+                                      current_time=get_current_time())
+    response = flask.make_response(html_code)
+    return response
+    
+#-----------------------------------------------------------------------
+
+@app.route('/posteditannouncement/<announcement_id>', methods=['POST'])
+def post_edit_announcement(announcement_id):
+    text  = flask.request.form.get('text')
+    title = flask.request.form.get('title')
+    announcement = {'text':text, 'title':title}
+    database.edit_announcement(announcement_id, announcement)
+    return advice_board()
+
+#-----------------------------------------------------------------------
+# functionality to delete
+@app.route('/deleteannouncement/<announcement_id>')
+def delete_announcement(announcement_id):
+    user_id = flask.request.cookies.get('user_id')
+    database.delete_announcement(user_id, announcement_id)
+    return advice_board()
+
 
 #-----------------------------------------------------------------------
 # Request from homepage by selecting a crop, directs to indv CropPage_task.html
