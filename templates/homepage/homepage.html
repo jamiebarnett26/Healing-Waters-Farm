@@ -51,11 +51,7 @@
     </div>
     <div class="container-fluid bg-success-subtle rounded-top-5 p-0 pb-5">
 
-        <!-- This button takes you to old homepage -->
-            <div class = "col mx-auto text-center p-3">
-                <button class = "btn btn-dark w-100" type = "button" id = "test_button"> Logout </button>
-            </div>
-        <!----------------- ^Testing^ ----------------->
+
 
         <div class="container-fluid p-0">
             <h1 style = "font-size: 10vw;">
@@ -65,53 +61,7 @@
         </div>
     </div>
 
-    <footer class="footer fixed-bottom" style = "background-color: white; border-top: 2px solid black; height: 15vw">
-        <div class="container text-center p-0">
-            <div class="row p-0">
-                <div class="col">
-                    <div class="btn btn-dark">
-                        My Crops
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="btn btn-dark">
-                        Account
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="btn btn-dark">
-                        Community
-                    </div>
-                </div>
-                {% if admin %}
-                    <div class="col">
-                        <div class="btn btn-dark">
-                            Profiles
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </footer>
+    {% include 'footer.html' %}
 
-<!-- jQuery functions - button links -->
-    <script>
-        $(document).ready(function() {
-            $('#test_button').on('click', function() {
-                window.location.href = '/logout';
-            });
-
-            // redirects "My Crops" button to showusercrops page
-            $('.btn-dark:contains("My Crops")').on('click', function() {
-                window.location.href = '/showusercrops';
-            });
-            $('.btn-dark:contains("Profiles")').on('click', function() {
-                window.location.href = '/profile_list';
-            });
-            $('.btn-dark:contains("Community")').on('click', function() {
-                window.location.href = '/adviceboard';
-            });
-        });
-    </script>
 </body>
 </html>

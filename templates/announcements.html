@@ -1,0 +1,52 @@
+<h1>Announcements</h1>
+
+<!-- Popup form for adding a new question -->
+<div id="addAnnouncementPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); z-index: 1000;">
+    <form action="/addannouncement/{{ announcement_id }}" method="post">
+        <strong>Title</strong>
+        <input type="text", name="title", autofocus> <br>
+        <strong>Text</strong>
+        <input type="text", name="text", autofocus> <br>
+        <input type="submit" value="Create Announcement">
+        <button type="button" onclick="togglePopup('addAnnouncementPopup')">Cancel</button>
+    </form>
+</div>
+
+{% if admin %}
+    <!-- Button to open the popup form for adding a question -->
+    <button onclick="togglePopup('addAnnouncementPopup')">Create Announcement</button>
+{% endif %}
+<br>
+{% for announcement in announcements %}
+    <div id="editAnnouncementPopup{{ announcement['announcement_id'] }}" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); z-index: 1000;">
+        <form action="/editannouncement/{{ announcement['announcement_id'] }}" method="post">
+            <strong>Title</strong>
+            <input type="text", name="title", value="{{ announcement['title'] }}" autofocus> <br>
+            <strong>Text</strong>
+            <input type="text", name="text", value="{{ announcement['text'] }}" autofocus> <br>
+            <input type="submit" value="Edit Announcement">
+        </form>
+    </div>
+    <strong>{{ announcement['title'] }}</strong> - <strong>{{ announcement['user_id'] }}</strong><br>
+    {{ announcement['text'] }}<br>
+    {% if user_id|string == announcement['user_id']|string %}
+        <button onclick="togglePopup('editAnnouncementPopup{{ announcement['announcement_id'] }}')">Edit</button>
+        <form action="/deleteannouncement/{{ announcement['announcement_id'] }}" method="post">
+            <input type="submit" value="Delete">
+        </form>
+    {% endif %}
+{% endfor %}
+
+<script>
+    function togglePopup(popupId) {
+        const popupForm = document.getElementById(popupId);
+        const overlay = document.getElementById('overlay');
+        if (popupForm.style.display === 'none') {
+            popupForm.style.display = 'block';
+            overlay.style.display = 'block';
+        } else {
+            popupForm.style.display = 'none';
+            overlay.style.display = 'none';
+        }
+    }
+</script>

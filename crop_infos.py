@@ -4,6 +4,7 @@ import flask
 from flask import redirect
 import database
 import time
+import json
 import sys
 
 
@@ -13,56 +14,92 @@ def get_current_time():
     return time.asctime(time.localtime())
 
 #-----------------------------------------------------------------------
-
-# Request from homepage by adding crop card, directs to selectFamily.html
 @app.route('/selectFamily', methods=['GET'])
-def select_family():
+def search_crops():
+    return flask.send_file('templates/addCrop/selectFamily.html')
+#-----------------------------------------------------------------------
+@app.route('/footer', methods=['GET'])
+def load_footer():
     admin = flask.request.cookies.get('admin') == 'true'
-    family = flask.request.args.get('family')
-    if family == None:
-        family = ""
-    
-    families= database.search_field_name('family', family)
-    html_code = flask.render_template('addCrop/selectFamily.html',
-                                      families=families,
-                                      admin = admin,
-                                      current_time=get_current_time())
+    html_code = flask.render_template('footer.html', admin=admin)
     response = flask.make_response(html_code)
+    return response
+
+
+    #return flask.send_file('templates/footer.html')
+#-----------------------------------------------------------------------
+@app.route('/showFamily', methods=['GET'])
+def show_family():
+    family = flask.request.args.get('family', '')
+    families = database.search_field_name('family', family)
+    json_doc = json.dumps(families)
+        
+    response = flask.make_response(json_doc)
+    response.headers['Content-Type'] = 'application/json'
     return response
 
 #-----------------------------------------------------------------------
 
-@app.route('/selectSpecies/<family_id>', methods=['GET'])
-def show_species(family_id):
-    species = database.species_from_family(family_id)
-    admin = flask.request.cookies.get('admin') == 'true'
+@app.route('/showSpecies', methods=['GET'])
+def show_species():
+    #admin = flask.request.cookies.get('admin') == 'true'
 
-    html_code = flask.render_template('addCrop/selectSpecies.html', 
-                                      species=species,
-                                      family_id=family_id,
-                                      admin = admin,
-                                      current_time = get_current_time())
-    response = flask.make_response(html_code)
+    familyId = flask.request.args.get('family', '')
+    species = database.species_from_family(familyId)
+    json_doc = json.dumps(species)
+
+    response = flask.make_response(json_doc)
+    response.headers['Content-Type'] = 'application/json'
     return response
 
 #-----------------------------------------------------------------------
 
-@app.route('/selectVariety/<species_id>', methods=['GET'])
-def show_variety(species_id):
-    admin = flask.request.cookies.get('admin') == 'true'
-    varieties = database.variety_from_species(species_id)
-    
-    html_code = flask.render_template(
-        'addCrop/selectVariety.html',
-        varieties=varieties,
-        species_id=species_id,
-        admin=admin,
-        current_time=get_current_time()
-    )
-    
-    response = flask.make_response(html_code)
+@app.route('/showVariety', methods=['GET'])
+def show_variety():
+    #admin = flask.request.cookies.get('admin') == 'true'
+
+    speciesId = flask.request.args.get('species', '')
+    species = database.variety_from_species(speciesId)
+    json_doc = json.dumps(species)
+
+    response = flask.make_response(json_doc)
+    response.headers['Content-Type'] = 'application/json'
     return response
 
+
+
+
+
+# @app.route('/selectSpecies/<family_id>', methods=['GET'])
+# def show_species(family_id):
+#     species = database.species_from_family(family_id)
+#     admin = flask.request.cookies.get('admin') == 'true'
+
+#     html_code = flask.render_template('addCrop/selectSpecies.html', 
+#                                       species=species,
+#                                       family_id=family_id,
+#                                       admin = admin,
+#                                       current_time = get_current_time())
+#     response = flask.make_response(html_code)
+#     return response
+
+# #-----------------------------------------------------------------------
+
+# @app.route('/selectVariety/<species_id>', methods=['GET'])
+# def show_variety(species_id):
+#     admin = flask.request.cookies.get('admin') == 'true'
+#     varieties = database.variety_from_species(species_id)
+    
+#     html_code = flask.render_template(
+#         'addCrop/selectVariety.html',
+#         varieties=varieties,
+#         species_id=species_id,
+#         admin=admin,
+#         current_time=get_current_time()
+#     )
+    
+#     response = flask.make_response(html_code)
+#     return response
 
 #-----------------------------------------------------------------------
 

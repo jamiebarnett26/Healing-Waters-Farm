@@ -1,79 +1,283 @@
 <!DOCTYPE html>
 <html>
-   <head>
+    <head>
+
+     <!-- Link to Bootstrap CSS -->
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+     <!-- Link to Bootstrap js -->
+     <script src= "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"> </script>
+     <!-- Link to jQuery -->
+     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+     
+    <!-- CSS Internal Styling -->
+     <style>
+        .container {
+                color: rgb(114, 161, 138);
+                font-family: Georgia, 'Times New Roman', Times, serif;
+                text-align: center;
+            }
+        .p {
+            color: rgb(255, 255, 255);
+                font-family: Georgia, 'Times New Roman', Times, serif;
+        }
+     </style>
+
+    <script> 
+    $(function(){
+      $("#footer").load("footer"); 
+    });
+    </script> 
+    </head>
+
+    <body>
+         <!-- Title and Search Bar  -->
+        <div class="container">
+            <br>
+            <h1 id="Title">Select Family</h1>
+            <input type="text", id="textInput", autofocus> <input type="submit" value="Submit">
+
+        </div>
+            <!-- Card(Background)  -->
+            <div class="card card-body m-2 mb-3" style="min-width: 75vw; height: 100vw; background-color: #517D5A">
+                <h3>   
+                    <div class="card-title d-flex justify-content-center align-items-center">
+                        <p class="card-text">
+                            <div class="container">
+                                <div class="row">
+                                    <div id="familyDiv">  </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div id="speciesDiv">  </div>
+                                </div>
+                                <div class="row">
+                                    <div id="varietyDiv">  </div>
+                                </div>
+                            </div>
+                           
+                            <br>
+                            <a href="/createfamily">Add New Family</a>
+                        </p>  
+                    </div>
+                </h3>
+            </div>
+        
 
 
-    <!-- Link to Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <!-- Link to Bootstrap js -->
-    <script src=
-    "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+        <div id="footer"> </div>
+
+
+
+    <!-- Link to Mustache -->
+    <script src="https://cdn.jsdelivr.net/npm/mustache@4.2.0/mustache.min.js"></script>
+        
+
+    <script> 
+
+    'use strict';
+
+    let templateFamilyList = ` 
+                <select class="form-select" id="templateFamilyList" aria-label="Default select Family">
+                <option selected>Open this select menu</option>
+                {{#family}}
+                <option value={{family_id}}>{{family_name}}</option>
+                {{/family}}
+                </select>
+    `;
+
+    let templateSpeciesList = ` 
+                <select class="form-select" id="templateSpeciesList" aria-label="Default select Family" >
+                <option selected>Open this select menu</option>
+                {{#species}}
+                <option value="1">{{species_name}}</option>
+                {{/species}}
+                </select>
+    `;
+
+    let templateVarietyList = ` 
+                <select class="form-select" id="templateVarietyList" aria-label="Default select Family" >
+                <option selected>Open this select menu</option>
+                {{#variety}}
+                <option value="1">{{variety_name}}</option>
+                {{/variety}}
+                </select>
+    `;
+    
+    let request = null;
+    function getFamilyResults() {
+
+        function makeCropList(family) {
+            let map = {family: family};
+            let html = Mustache.render(templateFamilyList, map);
+            return html;
+            console.log("convert to html");
+        }
+        
+        function handleResponse(families) {
+            // let html = convertToHtml(families);
+            // $('#listOfButtons').html(html)
+            if(this.status !== 200) {
+            alert('Error: Failed to fetch data from server');
+            return;
+            }
+            let response = JSON.parse(this.response);
+            let divNode = document.getElementById('familyDiv');
+            divNode.innerHTML = '';
+            let buttonList = makeCropList(response);
+            divNode.innerHTML = buttonList;
+        }
+
+        function handleError(request) {
+               alert('Error: Failed to fetch data from server');
+            }
+
+        // Start of function
+        let familyId = $('#textInput').val();
+        let encodedFamilyId = encodeURIComponent(familyId);
+
+        let url = '/showFamily?family=' + encodedFamilyId;
+
+        if (request !== null) {
+            console.log("ABOORT");
+            request.abort();
+        }
+        request = new XMLHttpRequest();
+        request.onload = handleResponse;
+        request.onerror = handleError;
+        request.open('GET', url);
+        request.send();
+    }
+
+
+    function getSpeciesResults(familyId) {
+
+        function makeCropList(species) {
+            let map = {species: species};
+            let html = Mustache.render(templateSpeciesList, map);
+            return html;
+            console.log("convert to html");
+        }
+        
+        function handleResponse(species) {
+            if(this.status !== 200) {
+            alert('Error: Failed to fetch data from server');
+            return;
+            }
+            let response = JSON.parse(this.response);
+            let divNode = document.getElementById('speciesDiv');
+            divNode.innerHTML = '';
+            let buttonList = makeCropList(response);
+            divNode.innerHTML = buttonList;
+        }
+
+        function handleError(request) {
+               alert('Error: Failed to fetch data from server');
+            }
+
+        // Start of function
+        //let specieId = $('#textInput').val();
+        let encodedFamilyId = encodeURIComponent(familyId);
+
+        let url = '/showSpecies?family=' + encodedFamilyId;
+
+
+        if (request !== null) {
+            console.log("ABOORT");
+            request.abort();
+        }
+        request = new XMLHttpRequest();
+        request.onload = handleResponse;
+        request.onerror = handleError;
+        request.open('GET', url);
+        request.send();
+    }
+
+
+    function getVarietyResults(speciesId) {
+
+        function makeCropList(variety) {
+            let map = {variety: variety};
+            let html = Mustache.render(templateVarietyList, map);
+            return html;
+            console.log("convert to html");
+        }
+        
+        function handleResponse(variety) {
+            if(this.status !== 200) {
+            alert('Error: Failed to fetch data from server');
+            return;
+            }
+            let response = JSON.parse(this.response);
+            let divNode = document.getElementById('varietyDiv');
+            divNode.innerHTML = '';
+            let buttonList = makeCropList(response);
+            divNode.innerHTML = buttonList;
+        }
+
+        function handleError(request) {
+               alert('Error: Failed to fetch data from server');
+            }
+
+        // Start of function
+        //let specieId = $('#textInput').val();
+        let encodedSpeciesId = encodeURIComponent(speciesId);
+
+        let url = '/showVariety?species=' + encodedSpeciesId;
+
+
+        if (request !== null) {
+            console.log("ABOORT");
+            request.abort();
+        }
+        request = new XMLHttpRequest();
+        request.onload = handleResponse;
+        request.onerror = handleError;
+        request.open('GET', url);
+        request.send();
+    }
+
+
+    let timer = null;
+    function debouncedGetResults() {
+        clearTimeout(timer);
+        timer = window.setTimeout(getFamilyResults, 500)
+    }
+
+    // Called at start
+    function setup() {
+        let familyInput =
+                document.getElementById('textInput');
+                familyInput.addEventListener(
+               'input', debouncedGetResults);
+        getFamilyResults();
+    }
+
+    // call setup
+     document.addEventListener('DOMContentLoaded', setup);
+
+    $(document).on('change', '#templateFamilyList', function() {
+        var selectedValue = $(this).val();
+        console.log(selectedValue);
+
+        getSpeciesResults(selectedValue);
+    });
+
+    $(document).on('change', '#templateSpeciesList', function() {
+        var selectedValue = $(this).val();
+        console.log(selectedValue);
+
+        getVarietyResults(selectedValue);
+    });
+
+    $(document).on('change', '#templateVarietyList', function() {
+        var selectedValue = $(this).val();
+        window.location = '/showcrop/' + selectedValue
+    });
+
+
+
+
     </script>
-
-
-    <!-- Link to jQuery -->
-    <script src=
-    "https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js">
-    </script>
-   
-   <!-- CSS Internal Styling -->
-    <style>
-       .container {
-               color: rgb(114, 161, 138);
-               font-family: Georgia, 'Times New Roman', Times, serif;
-               text-align: center;
-           }
-       .p {
-           color: rgb(255, 255, 255);
-               font-family: Georgia, 'Times New Roman', Times, serif;
-       }
-    </style>
-
-
-   </head>
-   <body>
-
-
-       <div class="container">
-           <br>
-           <h1>Select Family</h1>
-           <form action="/selectFamily" method="get">
-               <input type="text", name="family", autofocus> <input type="submit" value="Submit">
-           </form>
-       </div>
-
-
-       <div class="card card-body m-2 mb-3" style="min-width: 75vw; height: 100vw; background-color: #517D5A">
-           <h3>  
-               <div class="card-title d-flex justify-content-center align-items-center">
-                   <p>
-                       {% for family in families: %}
-                       <br>
-                       <a  href="/selectSpecies/{{ family['family_id'] }}">{{ family['family_name'] }}</a> {% if admin %} <a href="/deletefamily/{{ family['family_id'] }}">Delete Family</a>  <a href="/editfamily/{{ family['family_id'] }}">Edit Family</a>{% endif %}
-                       <br>
-                       {% endfor %}
-                       <br>
-                       <a href="/createfamily">Add New Family</a>
-                   </p>
-                  
-               </div>
-           </h3>
-       </div>
-
-
-  
-       <hr>
-
-
-       {% include 'footer.html' %}
-
-
-       <script>
-           $(document).ready(function(){
-               $("#").click(function(){
-               $("#MYHEADER").slideUp();
-           });
-       });
-       </script>
-   </body>
+ 
+    </body>
 </html>

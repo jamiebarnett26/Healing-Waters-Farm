@@ -132,6 +132,15 @@ def add_announcement(announcement):
         new_announcement = Announcement(**announcement)
         session.add(new_announcement)
         session.commit()
+class Tasks (Base):
+    __tablename__ = 'tasks'
+    task_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
+    user_crop_id = sqlalchemy.Column(sqlalchemy.Integer)
+    user_id = sqlalchemy.Column(sqlalchemy.Integer)
+    task_name = sqlalchemy.Column(sqlalchemy.String(255))
+    task_date = sqlalchemy.Column(sqlalchemy.Date)
+
+
 
 def add_user(first_name, last_name, email):
     with get_session() as session:
@@ -506,16 +515,25 @@ def full_crop_info(crop_info_id):
         )
         info_table = query.first()
         if not info_table:
-            return -1
+            return None  # Ensure you handle None to avoid AttributeError
+
         query = session.query(Variety).filter(
             Variety.variety_id == info_table.variety_id
         )
         variety_table = query.first()
+        if not variety_table:
+            return None  # Similarly, handle None for variety_table
 
         species_table = species_from_variety(info_table.variety_id)
+        if not species_table:
+            return None  # Check for None before proceeding to avoid crashes
+
         family_table = family_from_species(species_table.family_id)
+        if not family_table:
+            return None
 
         crop_info = {
+            'variety_id': variety_table.variety_id,  # Include variety_id explicitly
             'family_name': family_table.family_name,
             'latin_name': species_table.latin_name,
             'variety_name': variety_table.variety_name,
@@ -525,7 +543,7 @@ def full_crop_info(crop_info_id):
             'plant_spacing_harvest': info_table.plant_spacing_harvest,
             'plant_spacing_seed': info_table.plant_spacing_seed,
             'row_spacing_harvest': info_table.row_spacing_harvest,
-            'row_spacing_seed': info_table.row_spacing_seed, 
+            'row_spacing_seed': info_table.row_spacing_seed,
             'days_to_maturity_harvest': info_table.days_to_maturity_harvest,
             'days_to_maturity_seed': info_table.days_to_maturity_seed,
             'days_to_transplantation': info_table.days_to_transplantation,
@@ -535,6 +553,7 @@ def full_crop_info(crop_info_id):
             'frost_sensitivity_rating': info_table.frost_sensitivity_rating
         }
         return crop_info
+
 
 def get_template_crop(species_id):
     with get_session() as session:
@@ -572,6 +591,48 @@ def get_user_crops(user_id):
             }
             user_crops.append(user_crop)
         return user_crops
+
+def edit_user_tasks(user_id, user_crop_id, date_field, new_date):
+    with sqlalchemy.orm.Session(_engine) as session:
+
+        user_crops = session.query(User_Crop).filter(User_Crop.user_id == user_id).all()
+        for crop in user_crops:
+            if hasattr(crop, date_field):  
+                setattr(crop, date_field, new_date) 
+        session.commit()
+
+def delete_template(user_crop_id):
+    with sqlalchemy.orm.Session(_engine) as session:
+        session.query(User_Crop).filter(User_Crop.user_crop_id == user_crop_id).delete()
+        session.commit()
+
+
+        
+def add_task(user_id, user_crop_id, task_name, task_date):
+    with sqlalchemy.orm.Session(_engine) as session:
+        new_task = Tasks(
+            user_crop_id=user_crop_id, 
+            user_id=user_id, 
+            task_name=task_name, 
+            task_date=task_date)
+        session.add(new_task)
+        session.commit()
+
+def get_user_added_tasks(user_crop_id, todos):
+    with sqlalchemy.orm.Session(_engine) as session:
+        user_tasks = session.query(Tasks).filter(
+            Tasks.user_crop_id == user_crop_id
+        ).all()
+
+        for task in user_tasks:
+            todos.append({
+                "user_crop_id": task.user_crop_id,
+                "task": task.task_name,
+                "date": task.task_date,
+                "done": False
+            })
+        
+        return todos
 
 def add_family(family):
     with get_session() as session:
@@ -699,7 +760,7 @@ def delete_variety(variety_id):
 def delete_question(user_id, question_id):
     with get_session() as session:
         question_to_delete = session.query(Question).filter_by(question_id=question_id).first()
-        if(user_id == question_to_delete.user_id):
+        if(str(user_id) == str(question_to_delete.user_id)):
             session.delete(question_to_delete)
             session.commit()
 

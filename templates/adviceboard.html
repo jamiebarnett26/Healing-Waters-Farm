@@ -1,44 +1,108 @@
-<!DOCTYPE html>
-<html>
-    <body>
-        {% include 'header.html' %}
-        <h1>Announcements</h1>
-        {% if admin %}
-            <a  href="/createannouncement">Create Announcement</a>
-        {% endif %}
-        {% for announcement in announcements %}
-            <Strong>{{ announcement['title']}}</Strong> - <Strong>{{ announcement['user_id'] }}</Strong><br>
-            {{ announcement['text'] }}<br>
-            {% if user_id|string == announcement['user_id']|string %}
-            <a  href="/editannouncement/{{ announcement['announcement_id'] }}">Edit</a>   <a  href="/deleteannouncement/{{ announcement['announcement_id'] }}">Delete</a>
-            {% endif %}
-        {% endfor %}
-        <h1>Advice Board</h1>
-        <hr>
-        <a  href="/createquestion">Ask Question</a>
-        <hr>
-        {% for question in questions %}
-            <Strong>{{ question['title']}}</Strong> - <Strong>{{ user_id }}</Strong><br>
-            {{ question['text'] }}<br>
-            Status: {{ question['status']}} <br>
-            {% if user_id|string == question['user_id']|string %}
-            <a  href="/editquestion/{{ question['question_id'] }}">Edit</a>   <a  href="/deletequestion/{{ question['question_id'] }}">Delete</a> <br>
-            {% endif %}
-            {% if admin %}
-            <a  href="/createreply/{{ question['question_id'] }}">Reply</a>
-            {% endif %}
+
+<h1>Advice Board</h1>
+<hr>
+
+<!-- Button to open the popup form for adding a question -->
+<button onclick="togglePopup('addQuestionPopup')">Ask Question</button>
+
+<!-- Popup form for adding a new question -->
+<div id="addQuestionPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); z-index: 1000;">
+    <form action="/addquestion/{{ user_id }}" method="post">
+        <strong>Title</strong><br>
+        <input type="text" name="title" autofocus required><br>
+        <strong>Text</strong><br>
+        <textarea name="text" rows="4" cols="50" required></textarea><br>
+        <input type="submit" value="Ask Question">
+        <button type="button" onclick="togglePopup('addQuestionPopup')">Cancel</button>
+    </form>
+</div>
+
+
+<!-- Transparent overlay to close the popup -->
+<div id="overlay" onclick="togglePopup('addQuestionPopup')" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;"></div>
+<hr>
+
+{% for question in questions %}
+    <strong>{{ question['title'] }}</strong> - <strong>{{ user_id }}</strong><br>
+    {{ question['text'] }}<br>
+    Status: {{ question['status'] }}<br>
+    {% if user_id|string == question['user_id']|string %}
+        <button onclick="togglePopup('editQuestionPopup{{ question['question_id'] }}')">Edit</button>
+        <form action="/deletequestion/{{ question['question_id'] }}" method="post">
+            <input type="submit" value="Delete">
+        </form> <br>
+    {% endif %}
+    {% if admin %}
+    <button onclick="togglePopup('addReplyPopup{{ question['question_id'] }}')">Reply</button>
+    {% endif %}
+    
+    <!-- Popup for editing a question (initially hidden) -->
+    <div id="editQuestionPopup{{ question['question_id'] }}" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); z-index: 1000;">
+        <form action="/editquestion/{{ question['question_id'] }}" method="post">
+            <strong>Title</strong>
+            <input type="text", name="title", value="{{ question['title'] }}" autofocus> <br>
+            <strong>Text</strong>
+            <input type="text", name="text", value="{{ question['text'] }}" autofocus> <br>
+            <input type="submit" value="Edit Question">
+        </form>
+    </div>
+    <div id="addReplyPopup{{ question['question_id'] }}" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); z-index: 1000;">
+        <form action="/addreply/{{ question['question_id'] }}" method="post">
+            <strong>Text</strong>
+            <input type="text", name="text", autofocus> <br>
+            <input type="submit" value="Reply">
+            <button type="button" onclick="togglePopup('addReplyPopup{{ question['question_id'] }}')">Cancel</button>
+        </form>
+    </div>
+    <div>
+        <button onclick="toggleReplies('{{ question['question_id'] }}')">View Replies</button>
+        <div id="replies-{{ question['question_id'] }}" style="display: none; margin-top: 10px;">
             <strong>Replies:</strong><br>
             {% for reply in replies %}
                 {% if reply['question_id'] == question['question_id'] %}
-                    <em>{{ reply['text'] }}</em> - by {{ user_id }}<br>
+                    <em>{{ reply['text'] }}</em> - by {{ reply['user_name'] }}<br>
                     {% if user_id|string == reply['user_id']|string %}
-                        <a  href="/editreply/{{ reply['reply_id'] }}">Edit</a>   <a  href="/deletereply/{{ reply['reply_id'] }}">Delete</a>
+                        <button onclick="togglePopup('editReplyPopup{{ reply['reply_id'] }}')">Edit</button>
+                        <form action="/deletereply/{{ reply['reply_id'] }}" method="post">
+                            <input type="submit" value="Delete">
+                        </form>
                     {% endif %}
+                    
+                    <!-- Popup for editing a reply (initially hidden) -->
+                    <div id="editReplyPopup{{ reply['reply_id'] }}" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); z-index: 1000;">
+                        <form action="/editreply/{{ reply['reply_id'] }}" method="post">
+                            <strong>Edit Reply</strong><br>
+                            <textarea name="text" rows="4" cols="50" required>{{ reply['text'] }}</textarea><br>
+                            <input type="submit" value="Save Changes">
+                            <button type="button" onclick="togglePopup('editReplyPopup{{ reply['reply_id'] }}')">Cancel</button>
+                        </form>
+                    </div>
                 {% endif %}
             {% endfor %}
-            <hr>
-        {% endfor %}
-        {% include 'footer.html' %}
-    </body>
-</html>
+        </div>
+    </div>
+    <hr>
+{% endfor %}
 
+<script>
+    function toggleReplies(questionId) {
+        const repliesDiv = document.getElementById(`replies-${questionId}`);
+        if (repliesDiv.style.display === 'none') {
+            repliesDiv.style.display = 'block';
+        } else {
+            repliesDiv.style.display = 'none';
+        }
+    }
+
+    function togglePopup(popupId) {
+        const popupForm = document.getElementById(popupId);
+        const overlay = document.getElementById('overlay');
+        if (popupForm.style.display === 'none') {
+            popupForm.style.display = 'block';
+            overlay.style.display = 'block';
+        } else {
+            popupForm.style.display = 'none';
+            overlay.style.display = 'none';
+        }
+    }
+</script>

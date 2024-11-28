@@ -10,6 +10,7 @@ import datetime
 from authlib.integrations.flask_client import OAuth
 from authlib.integrations.flask_client import OAuth
 from top import app
+import json
 import auth
 import crop_infos
 import sys
@@ -64,33 +65,76 @@ def getCardInfo():
             break
         user_crop_infos.append(full_crop_info)
 
+        user_crop_infos.append(database.full_crop_info(user_crop['crop_info_id']))
+        
         variety_name = user_crop_infos[i]['variety_name']
         variety_dict = database.search_field_name("variety", variety_name)
         variety_id.append(variety_dict[0]['variety_id'])
         
         todos = getWeeklyTasks(user_crop, full_crop_info['frost_sensitivity_rating'])
+
+        database.get_user_added_tasks(user_crops[i]['user_crop_id'], todos)
         all_todos.append(todos)
     
     crops_with_todos = zip(user_crop_infos, all_todos, variety_id)
     
     return crops_with_todos
 
+@app.route('/delete_template', methods = ['POST'])
+def deleteTemplate():
+    user_crop_id = flask.request.args.get('cropid')
+    try: 
+        database.delete_template(user_crop_id)
+        return flask.jsonify({'success': True, 'message': 'Template deleted successfully'})
+    except Exception as e:
+        return flask.jsonify({'success': False, 'message': str(e)}), 500
+
+
+
+
+@app.route('/edit_task', methods = ['POST'])
+def editTask():
+    user_id = flask.request.cookies.get('user_id')
+    data = flask.request.get_json()
+    user_crop_id = data.get('user_crop_id')
+    date_field = data.get('date_field')
+    new_date = data.get('new_date')
+    try: 
+        database.edit_user_tasks(user_id, user_crop_id, date_field, new_date)
+        return flask.jsonify({'success': True, 'message': 'Date updated successfully'})
+    except Exception as e:
+        return flask.jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/add_task', methods = ['POST'])
+def addTask():
+    user_id = flask.request.cookies.get('user_id')
+    data = flask.request.get_json()
+    user_crop_id = data.get('user_crop_id')
+    task_name = data.get('new_task')
+    task_date = data.get('new_date')
+    try: 
+        database.add_task(user_id, user_crop_id, task_name, task_date)
+        return flask.jsonify({'success': True, 'message': 'Task added successfully'})
+    except Exception as e:
+        return flask.jsonify({'success': False, 'message': str(e)}), 500
+
 def getWeeklyTasks(user_crop, frost_rating):
     today = datetime.date.today()
     enddate = today + datetime.timedelta(days=7)
     todos = []
-    if user_crop['indoor_seed_starting_date'] <= enddate:
-        todos.append({"task": "Start indoor seeding", "date": user_crop['indoor_seed_starting_date'], "done": False})
-    if user_crop['transplanting_date'] <= enddate:
-        todos.append({"task": "Transplant plants outdoors", "date": user_crop['transplanting_date'], "done": False})
-    if user_crop['direct_sow_date'] <= enddate:
-        todos.append({"task": "Direct sowing", "date": user_crop['direct_sow_date'], "done": False})
-    if user_crop['harvest_date'] <= enddate:
-        todos.append({"task": "Prepare for harvest", "date": user_crop['harvest_date'], "done": False})
-    if user_crop['seed_harvest_date'] <= enddate:
-        todos.append({"task": "Prepare for seed harvest", "date": user_crop['seed_harvest_date'], "done": False})
-    if frost_rating > 1 and inFrost():
-        todos.append({"task": "This plant is frost-sensitive and you are in a frost!", "date": today, "done": False})
+    
+    if user_crop['indoor_seed_starting_date'] is not None and user_crop['indoor_seed_starting_date'] <= enddate:
+        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Start indoor seeding", "date": user_crop['indoor_seed_starting_date'], "done": False})
+    if user_crop['transplanting_date'] is not None and  user_crop['transplanting_date'] <= enddate:
+        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Transplant plants outdoors", "date": user_crop['transplanting_date'], "done": False})
+    if user_crop['direct_sow_date'] is not None and user_crop['direct_sow_date'] <= enddate:
+        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Direct sowing", "date": user_crop['direct_sow_date'], "done": False})
+    if user_crop['harvest_date'] is not None and user_crop['harvest_date'] <= enddate:
+        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Prepare for harvest", "date": user_crop['harvest_date'], "done": False})
+    if user_crop['seed_harvest_date'] is not None and user_crop['seed_harvest_date'] <= enddate:
+        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Prepare for seed harvest", "date": user_crop['seed_harvest_date'], "done": False})
+    if frost_rating is not None and frost_rating > 1 and inFrost():
+        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "This plant is frost-sensitive and you are in a frost!", "date": today, "done": False})
 
     return todos
 
@@ -146,8 +190,8 @@ def profile_list():
     return response
 
 #-----------------------------------------------------------------------
-@app.route('/adviceboard', methods=['GET'])
-def advice_board():
+@app.route('/community', methods=['GET'])
+def community():
     admin = flask.request.cookies.get('admin') == 'true'
     user_id = flask.request.cookies.get('user_id')
 
@@ -161,25 +205,13 @@ def advice_board():
     questions = database.get_questions()
     replies = database.get_replies()
     announcements = database.get_announcements()
-    html_code = flask.render_template('adviceboard.html',
+    html_code = flask.render_template('community.html',
                                       admin=admin,
                                       questions=questions,
                                       replies=replies,
                                       announcements=announcements,
                                       user_id=user_id,
                                       user_name=user_name,
-                                      current_time=get_current_time())
-    response = flask.make_response(html_code)
-    return response
-
-#-----------------------------------------------------------------------
-@app.route('/createquestion', methods=['GET'])
-def create_question():
-    admin = flask.request.cookies.get('admin') == 'true'
-    user_id = flask.request.cookies.get('user_id')
-    html_code = flask.render_template('createquestion.html',
-                                      admin=admin,
-                                      user_id=user_id,
                                       current_time=get_current_time())
     response = flask.make_response(html_code)
     return response
@@ -192,51 +224,27 @@ def add_question(user_id):
     text = flask.request.form.get('text')
     question = {'user_id':user_id, 'title':title, 'text':text, 'status':'Unresolved'}
     database.add_question(question)
-    return advice_board()
+    return community()
 
-#-----------------------------------------------------------------------
-
-@app.route('/editquestion/<question_id>', methods=['GET'])
-def edit_question(question_id):
-    question = database.search_field_id('question', question_id)
-    admin = flask.request.cookies.get('admin') == 'true'
-    html_code = flask.render_template('editquestion.html',
-                                      admin=admin,
-                                      question=question[0],
-                                      current_time=get_current_time())
-    response = flask.make_response(html_code)
-    return response
     
 #-----------------------------------------------------------------------
 
-@app.route('/posteditquestion/<question_id>', methods=['POST'])
+@app.route('/editquestion/<question_id>', methods=['POST'])
 def post_edit_question(question_id):
     title = flask.request.form.get('title')
     text  = flask.request.form.get('text')
     question = {'title':title, 'text':text}
     database.edit_question(question_id, question)
-    return advice_board()
+    return community()
 
 #-----------------------------------------------------------------------
 # functionality to delete
-@app.route('/deletequestion/<question_id>')
+@app.route('/deletequestion/<question_id>', methods=['POST'])
 def delete_question(question_id):
     user_id = flask.request.cookies.get('user_id')
     database.delete_question(user_id, question_id)
-    return advice_board()
+    return community()
 
-#-----------------------------------------------------------------------
-@app.route('/createreply/<question_id>', methods=['GET'])
-def create_reply(question_id):
-    admin = flask.request.cookies.get('admin') == 'true'
-    user_id = flask.request.cookies.get('user_id')
-    html_code = flask.render_template('createreply.html',
-                                      admin=admin,
-                                      question_id=question_id,
-                                      user_id=user_id,
-                                      current_time=get_current_time())
-    response = flask.make_response(html_code)
-    return response
 
 #-----------------------------------------------------------------------
 
@@ -246,49 +254,24 @@ def add_reply(question_id):
     text = flask.request.form.get('text')
     reply = {'question_id':question_id,'user_id':user_id, 'text':text}
     database.add_reply(reply)
-    return advice_board()
+    return community()
 
 #-----------------------------------------------------------------------
 
-@app.route('/editreply/<reply_id>', methods=['GET'])
-def edit_reply(reply_id):
-    reply = database.search_field_id('reply', reply_id)
-    admin = flask.request.cookies.get('admin') == 'true'
-    html_code = flask.render_template('editreply.html',
-                                      admin=admin,
-                                      reply=reply[0],
-                                      current_time=get_current_time())
-    response = flask.make_response(html_code)
-    return response
-    
-#-----------------------------------------------------------------------
-
-@app.route('/posteditreply/<reply_id>', methods=['POST'])
+@app.route('/editreply/<reply_id>', methods=['POST'])
 def post_edit_reply(reply_id):
     text  = flask.request.form.get('text')
     reply = {'text':text}
     database.edit_reply(reply_id, reply)
-    return advice_board()
+    return community()
 
 #-----------------------------------------------------------------------
 # functionality to delete
-@app.route('/deletereply/<reply_id>')
+@app.route('/deletereply/<reply_id>', methods=['POST'])
 def delete_reply(reply_id):
     user_id = flask.request.cookies.get('user_id')
     database.delete_reply(user_id, reply_id)
-    return advice_board()
-
-#-----------------------------------------------------------------------
-@app.route('/createannouncement/', methods=['GET'])
-def create_announcement():
-    admin = flask.request.cookies.get('admin') == 'true'
-    user_id = flask.request.cookies.get('user_id')
-    html_code = flask.render_template('createannouncement.html',
-                                      admin=admin,
-                                      user_id=user_id,
-                                      current_time=get_current_time())
-    response = flask.make_response(html_code)
-    return response
+    return community()
 
 #-----------------------------------------------------------------------
 
@@ -299,39 +282,49 @@ def add_announcement():
     title = flask.request.form.get('title')
     announcement = {'user_id':user_id, 'text':text, 'title':title}
     database.add_announcement(announcement)
-    return advice_board()
-
-#-----------------------------------------------------------------------
-
-@app.route('/editannouncement/<announcement_id>', methods=['GET'])
-def edit_announcement(announcement_id):
-    announcement = database.search_field_id('announcement', announcement_id)
-    admin = flask.request.cookies.get('admin') == 'true'
-    html_code = flask.render_template('editannouncement.html',
-                                      admin=admin,
-                                      announcement=announcement[0],
-                                      current_time=get_current_time())
-    response = flask.make_response(html_code)
-    return response
+    return community()
     
 #-----------------------------------------------------------------------
 
-@app.route('/posteditannouncement/<announcement_id>', methods=['POST'])
+@app.route('/editannouncement/<announcement_id>', methods=['POST'])
 def post_edit_announcement(announcement_id):
     text  = flask.request.form.get('text')
     title = flask.request.form.get('title')
     announcement = {'text':text, 'title':title}
     database.edit_announcement(announcement_id, announcement)
-    return advice_board()
+    return community()
 
 #-----------------------------------------------------------------------
 # functionality to delete
-@app.route('/deleteannouncement/<announcement_id>')
+@app.route('/deleteannouncement/<announcement_id>', methods=['POST'])
 def delete_announcement(announcement_id):
     user_id = flask.request.cookies.get('user_id')
     database.delete_announcement(user_id, announcement_id)
-    return advice_board()
+    return community()
 
+# helper method to get varieties and latin names as lists for user crops
+def get_crop_varieties_and_latin(user_id):
+    user_crops = database.get_user_crops(user_id)
+
+    crop_data = []
+    for user_crop in user_crops:
+        crop_info = database.full_crop_info(user_crop['crop_info_id'])
+        variety_id = crop_info['variety_id']  # Assuming this field exists in your database schema
+        variety_name = crop_info['variety_name']
+        latin_name = crop_info['latin_name']
+        crop_data.append((variety_id, variety_name, latin_name))
+
+    return crop_data
+
+
+
+#-----------------------------------------------------------------------
+# Rdirects to account.html
+@app.route('/account', methods=['GET'])
+def oldIndex():
+    html_code = flask.render_template('account.html')
+    response = flask.make_response(html_code)
+    return response
 
 #-----------------------------------------------------------------------
 # Request from homepage by selecting a crop, directs to indv CropPage_task.html
@@ -354,11 +347,52 @@ def show_crop(variety_id):
     
     html_code = flask.render_template('showcrop.html',
                                       crop_info_id=crop_infos[0]['crop_info_id'],
-                                      admin=admin,
-                                      crop_infos=full_crop_infos,
-                                      current_time=get_current_time())
+                                      crop_infos=full_crop_infos)
     response = flask.make_response(html_code)
     return response
+
+
+#-----------------------------------------------------------------------
+
+# @app.route('/selectCropSpecification', methods=['GET'])
+# def show_species():
+#     family = flask.request.args.get('family', '')
+#     families = database.search_field_name('family', family)
+
+#     json_doc = json.dumps(families)
+#     response = flask.make_response(json_doc)
+#     response.headers['Content-Type'] = 'application/json'
+#     return response
+
+# #-----------------------------------------------------------------------
+
+# @app.route('/selectVariety/<species_id>', methods=['GET'])
+# def show_variety(species_id):
+#     admin = flask.request.cookies.get('admin') == 'true'
+#     varieties = database.variety_from_species(species_id)
+    
+#     html_code = flask.render_template(
+#         'addCrop/selectVariety.html',
+#         varieties=varieties,
+#         species_id=species_id,
+#         admin=admin,
+#         current_time=get_current_time()
+#     )
+    
+#     response = flask.make_response(html_code)
+#     return response
+
+# #-----------------------------------------------------------------------
+
+# @app.route('/createfamily', methods=['GET'])
+# def create_family():
+#     admin = flask.request.cookies.get('admin') == 'true'
+#     html_code = flask.render_template('createfamily.html',
+#                                       admin=admin,
+#                                       crop_infos=full_crop_infos,
+#                                       current_time=get_current_time())
+#     response = flask.make_response(html_code)
+#     return response
 
 #-----------------------------------------------------------------------
 
