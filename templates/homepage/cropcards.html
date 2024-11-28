@@ -210,11 +210,11 @@ let templateModalBody = `
         var userCropId = $(this).attr('id').split('deleteButton-')[1];
         console.log("Deleting crop with variety_id: " + userCropId);
         let encodedUserCropId = encodeURIComponent(userCropId);
-        //let url = '/delete_template?cropid=' + encodedUserCropId
+        let url = '/delete_template?cropid=' + encodedUserCropId
 
         // Send AJAX POST request to delete the crop
         $.ajax({
-            url: '/delete_template?cropid=' + encodedUserCropId,        // URL to send the request to
+            url: url,
             type: 'POST',              // POST method
             data: {                    // Send the crop ID to the server
                 variety_id: userCropId
