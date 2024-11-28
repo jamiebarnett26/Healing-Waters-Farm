@@ -172,6 +172,7 @@ def homepage():
                                       user_name=user_name,
                                       admin=admin)
     response = flask.make_response(html_code)
+    print("SHOW HOMEPAGE")
     return response
 #-----------------------------------------------------------------------
 # Custom JSON encoder that converts date and datetime objects to string
