@@ -208,8 +208,10 @@ def profile_list():
 
 #-----------------------------------------------------------------------
 # helper method to get varieties and latin names as lists for user crops
-def get_crop_varieties_and_latin(user_id):
-    user_crops = database.get_user_crops(user_id)
+@app.route('/get_crop_fullName', methods=['GET'])
+def get_crop_varieties_and_latin():
+    crop_id = flask.request.args.get('id', '')
+    user_crops = database.get_user_crops(crop_id)
 
     crop_data = []
     for user_crop in user_crops:
