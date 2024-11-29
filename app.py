@@ -172,7 +172,7 @@ def homepage():
                                       user_name=user_name,
                                       admin=admin)
     response = flask.make_response(html_code)
-    print("SHOW HOMEPAGE")
+    print("LOADING HOMEPAGE")
     return response
 #-----------------------------------------------------------------------
 # Custom JSON encoder that converts date and datetime objects to string
@@ -304,6 +304,7 @@ def show_crop(variety_id):
 
 @app.route('/addusercrop/<crop_info_id>')
 def add_user_crop(crop_info_id):
+    print("adding crop")
     user_id = flask.request.cookies.get('user_id')
     if not user_id:
         return flask.redirect('/login')
@@ -327,6 +328,7 @@ def add_user_crop(crop_info_id):
     }
 
     database.add_user_crop(user_crop)
+    print("ABOUT TO RETURN HOMEPAGE")
 
     return homepage()
 
