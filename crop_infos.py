@@ -15,7 +15,7 @@ def get_current_time():
 
 #-----------------------------------------------------------------------
 @app.route('/selectFamily', methods=['GET'])
-def search_crops():
+def select_family():
     return flask.send_file('templates/addCrop/selectFamily.html')
 #-----------------------------------------------------------------------
 @app.route('/footer', methods=['GET'])
@@ -114,40 +114,18 @@ def create_family():
 
 #-----------------------------------------------------------------------
 
-@app.route('/editfamily/<family_id>', methods=['GET'])
-def edit_family(family_id):
-    family = database.search_field_id('family', family_id)
-    admin = flask.request.cookies.get('admin') == 'true'
-    html_code = flask.render_template('editfamily.html',
-                                      admin=admin,
-                                      family=family[0],
-                                      current_time=get_current_time())
-    response = flask.make_response(html_code)
-    return response
     
 
-@app.route('/posteditfamily/<family_id>', methods=['POST'])
+@app.route('/editfamily/<family_id>', methods=['POST'])
 def post_edit_family(family_id):
     family_name = flask.request.form.get('family_name')
     family = {'family_name':family_name}
     database.edit_family(family_id, family)
     return select_family()
 
-#-----------------------------------------------------------------------
 
-@app.route('/editspecies/<species_id>', methods=['GET'])
-def edit_species(species_id):
-    species = database.search_field_id('species', species_id)
-    admin = flask.request.cookies.get('admin') == 'true'
-    html_code = flask.render_template('editspecies.html',
-                                      admin=admin,
-                                      species=species[0],
-                                      current_time=get_current_time())
-    response = flask.make_response(html_code)
-    return response
-    
 
-@app.route('/posteditspecies/<species_id>', methods=['POST'])
+@app.route('/editspecies/<species_id>', methods=['POST'])
 def post_edit_species(species_id):
     species_name = flask.request.form.get('species_name')
     latin_name = flask.request.form.get('latin_name')
@@ -169,7 +147,7 @@ def edit_variety(variety_id):
     return response
     
 
-@app.route('/posteditvariety/<variety_id>', methods=['POST'])
+@app.route('/editvariety/<variety_id>', methods=['POST'])
 def post_edit_variety(variety_id):
     variety_name = flask.request.form.get('variety_name')
     crop_type = flask.request.form.get('crop_type_name')
@@ -295,17 +273,17 @@ def add_variety(species_id):
     return select_family()
 #-----------------------------------------------------------------------
 # functionality to delete
-@app.route('/deletefamily/<family_id>')
+@app.route('/deletefamily/<family_id>', methods=['POST'])
 def delete_family(family_id):
     database.delete_family(family_id)
     return select_family()
 
-@app.route('/deletespecies/<species_id>')
+@app.route('/deletespecies/<species_id>', methods=['POST'])
 def delete_species(species_id):
     database.delete_species(species_id)
     return select_family()
 
-@app.route('/deletevariety/<variety_id>')
+@app.route('/deletevariety/<variety_id>', methods=['POST'])
 def delete_variety(variety_id):
     database.delete_variety(variety_id)
     return select_family()
