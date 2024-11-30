@@ -52,6 +52,7 @@
                                 <div class="row">
                                     <div id="speciesDiv">  </div>
                                     <div id="editSpeciesActions" class="mt-3"></div>
+                                    
                                 </div>
                                 <div class="row">
                                     <div id="varietyDiv">  </div>
@@ -100,7 +101,7 @@
                 <select class="form-select" id="templateSpeciesList" aria-label="Default select Family" >
                 <option selected>Open this select menu</option>
                 {{#species}}
-                <option value="1">{{species_name}}</option>
+                <option value={{species_id}}>{{species_name}}</option>
                 {{/species}}
                 </select>
     `;
@@ -109,7 +110,7 @@
                 <select class="form-select" id="templateVarietyList" aria-label="Default select Family" >
                 <option selected>Open this select menu</option>
                 {{#variety}}
-                <option value="1">{{variety_name}}</option>
+                <option value={{variety_id}}>{{variety_name}}</option>
                 {{/variety}}
                 </select>
     `;
@@ -282,6 +283,7 @@
         // Add Edit and Delete buttons for the selected family
         var familyActionsContainer = document.getElementById('editFamilyActions');
         familyActionsContainer.innerHTML = `
+
             <button type="button" onclick="togglePopup('editFamilyPopup${selectedValue}')">Edit</button>
             <form action="/deletefamily/${selectedValue}" method="post">
                 <input type="submit" value="Delete">
@@ -314,8 +316,9 @@
         console.log(selectedValue);
 
         getVarietyResults(selectedValue);
-        var speciesActionsContainer = document.getElementById('editspeciesActions');
+        var speciesActionsContainer = document.getElementById('editSpeciesActions');
         speciesActionsContainer.innerHTML = `
+            
             <button type="button" onclick="togglePopup('editSpeciesPopup${selectedValue}')">Edit</button>
             <form action="/deletespecies/${selectedValue}" method="post">
                 <input type="submit" value="Delete">

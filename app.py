@@ -50,35 +50,61 @@ def manual_login():
 #-----------------------------------------------------------------------
 # Helper function, returns crop to do list for cards
 def getCardInfo():
-    #user_id = flask.request.cookies.get('user_id')
-    #if not user_id:
-     #   return flask.redirect('/login')
     user_id = flask.request.cookies.get('user_id')
+    if not user_id:
+        return flask.redirect('/login')
+
     user_crops = database.get_user_crops(user_id)
+    if user_crops is None:
+        app.logger.error("No crops found for user_id: %s", user_id)
+        return []  # Return an empty list if no crops exist.
+
     user_crop_infos = []
     all_todos = []
     variety_id = []
 
     for i, user_crop in enumerate(user_crops):
+        # Safely fetch full_crop_info
         full_crop_info = database.full_crop_info(user_crop['crop_info_id'])
-        if full_crop_info == -1:
-            break
+        if full_crop_info is None:
+            app.logger.error("No full crop info found for crop_info_id: %s", user_crop['crop_info_id'])
+            continue  # Skip this crop if no info is found.
+
         user_crop_infos.append(full_crop_info)
+        app.logger.info("Added crop info: %s", full_crop_info)
 
-        user_crop_infos.append(database.full_crop_info(user_crop['crop_info_id']))
-        
-        variety_name = user_crop_infos[i]['variety_name']
+        # Safely fetch variety_dict
+        variety_name = full_crop_info.get('variety_name')  # Use .get() for safe access
+        if not variety_name:
+            app.logger.error("Variety name missing in crop info: %s", full_crop_info)
+            continue
+
         variety_dict = database.search_field_name("variety", variety_name)
-        variety_id.append(variety_dict[0]['variety_id'])
-        
-        todos = getWeeklyTasks(user_crop, full_crop_info['frost_sensitivity_rating'])
+        if not variety_dict:
+            app.logger.error("No variety found for variety_name: %s", variety_name)
+            continue
 
-        database.get_user_added_tasks(user_crops[i]['user_crop_id'], todos)
+        variety_id.append(variety_dict[0].get('variety_id', None))
+        if variety_id[-1] is None:
+            app.logger.error("Variety ID missing for variety_name: %s", variety_name)
+            continue
+
+        # Safely get todos
+        todos = getWeeklyTasks(user_crop, full_crop_info.get('frost_sensitivity_rating', 0))
+        if todos is None:
+            todos = []  # Default to an empty list if no tasks found.
+
+        database.get_user_added_tasks(user_crop.get('user_crop_id'), todos)
         all_todos.append(todos)
-    
+
+    # Ensure all lists have the same length
+    if len(user_crop_infos) != len(all_todos) or len(user_crop_infos) != len(variety_id):
+        app.logger.error("Mismatch in lengths of user_crop_infos, all_todos, and variety_id")
+
     crops_with_todos = zip(user_crop_infos, all_todos, variety_id)
-    
     return crops_with_todos
+
+
 
 @app.route('/delete_template', methods = ['POST'])
 def deleteTemplate():
@@ -344,9 +370,14 @@ def show_crop(variety_id):
     for crop_info in crop_infos:
         full_crop_info = database.full_crop_info(crop_info['crop_info_id'])
         full_crop_infos.append(full_crop_info)
-    
+
+    app.logger.info(variety_id)
+    app.logger.info(database.species_from_variety(variety_id))
+    species_id = database.species_from_variety(variety_id).species_id
+    app.logger.info(species_id)
     html_code = flask.render_template('showcrop.html',
                                       crop_info_id=crop_infos[0]['crop_info_id'],
+                                      species_id=species_id,
                                       crop_infos=full_crop_infos)
     response = flask.make_response(html_code)
     return response
