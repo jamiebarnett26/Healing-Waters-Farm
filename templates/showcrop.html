@@ -59,11 +59,106 @@
 </head>
 <body>
     <strong></strong>
+    <div id="addVarietyPopup" style="display: none; 
+    position: fixed; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    border: 1px solid #ccc; 
+    background: #fff; 
+    padding: 20px; 
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.2); 
+    z-index: 1000; 
+    max-height: 80vh; /* Limit the height */
+    overflow-y: auto; /* Make it scrollable */ 
+    width: 90%; /* Adjust width for smaller screens */
+    max-width: 600px; /* Prevent it from being too wide */">
+        <form action="/addvariety/{{ species_id }}" method="post">
+            <strong>Variety</strong>
+            <input type="text", name="variety_name", autofocus> <br>
+            <strong>Crop Type</strong>
+            <input type="text", name="crop_type_name", autofocus> <br>
+            <strong>Seed Spacing for Harvesting Crops:</strong>
+            <input type="text", name="plant_spacing_harvest", value={{ crop_infos[0]['plant_spacing_harvest'] }} autofocus> <br>
+            <strong>Seed Spacing for Harvesting Seeds:</strong>
+            <input type="text", name="plant_spacing_seed", value={{ crop_infos[0]['plant_spacing_seed'] }} autofocus> <br>
+            <strong>Row Spacing for Harvesting Crops:</strong>
+            <input type="text", name="row_spacing_harvest", value={{ crop_infos[0]['row_spacing_harvest'] }} autofocus> <br>
+            <strong>Row Spacing for Harvesting Seeds:</strong>
+            <input type="text", name="row_spacing_seed'", value={{ crop_infos[0]['row_spacing_seed'] }} autofocus> <br>
+            <strong>Days to Maturity for Harvesting Crops:</strong>
+            <input type="text", name="days_to_maturity_harvest", value={{ crop_infos[0]['days_to_maturity_harvest'] }} autofocus> <br>
+            <strong>Days to Maturity for Harvesting Seed:</strong>
+            <input type="text", name="days_to_maturity_seed", value={{ crop_infos[0]['days_to_maturity_seed'] }} autofocus> <br>
+            <strong>Days to Transplantation:</strong>
+            <input type="text", name="days_to_transplantation", value={{ crop_infos[0]['days_to_transplantation'] }} autofocus> <br>
+            <strong>Days to Direct Sow:</strong>
+            <input type="text", name="days_to_direct_sow", value={{ crop_infos[0]['days_to_direct_sow'] }} autofocus> <br>
+            <strong>Days for Harvesting Crops:</strong>
+            <input type="text", name="days_to_harvest", value={{ crop_infos[0]['days_to_harvest'] }} autofocus> <br>
+            <strong>Days for Harvesting Seeds:</strong>
+            <input type="text", name="days_to_seed_harvest", value={{ crop_infos[0]['days_to_seed_harvest'] }} autofocus> <br>
+            <strong>Frost Sensitivity Rating:</strong>
+            <input type="text", name="frost_sensitivity_rating", value={{ crop_infos[0]['frost_sensitivity_rating'] }} autofocus> <br>
+            <input type="submit" value="Add Variety">
+            <button type="button" onclick="togglePopup('addVarietyPopup')">Cancel</button>
+        </form>
+    </div>
+    <div id="editVarietyPopup" style="display: none; 
+    position: fixed; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    border: 1px solid #ccc; 
+    background: #fff; 
+    padding: 20px; 
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.2); 
+    z-index: 1000; 
+    max-height: 80vh; /* Limit the height */
+    overflow-y: auto; /* Make it scrollable */ 
+    width: 90%; /* Adjust width for smaller screens */
+    max-width: 600px; /* Prevent it from being too wide */">
+        <form action="/editvariety/{{ crop_infos[0]['variety_id'] }}" method="post">
+            <strong>Variety</strong>
+            <input type="text", name="variety_name", autofocus> <br>
+            <strong>Crop Type</strong>
+            <input type="text", name="crop_type_name", autofocus> <br>
+            <strong>Seed Spacing for Harvesting Crops:</strong>
+            <input type="text", name="plant_spacing_harvest", value={{ crop_infos[0]['plant_spacing_harvest'] }} autofocus> <br>
+            <strong>Seed Spacing for Harvesting Seeds:</strong>
+            <input type="text", name="plant_spacing_seed", value={{ crop_infos[0]['plant_spacing_seed'] }} autofocus> <br>
+            <strong>Row Spacing for Harvesting Crops:</strong>
+            <input type="text", name="row_spacing_harvest", value={{ crop_infos[0]['row_spacing_harvest'] }} autofocus> <br>
+            <strong>Row Spacing for Harvesting Seeds:</strong>
+            <input type="text", name="row_spacing_seed'", value={{ crop_infos[0]['row_spacing_seed'] }} autofocus> <br>
+            <strong>Days to Maturity for Harvesting Crops:</strong>
+            <input type="text", name="days_to_maturity_harvest", value={{ crop_infos[0]['days_to_maturity_harvest'] }} autofocus> <br>
+            <strong>Days to Maturity for Harvesting Seed:</strong>
+            <input type="text", name="days_to_maturity_seed", value={{ crop_infos[0]['days_to_maturity_seed'] }} autofocus> <br>
+            <strong>Days to Transplantation:</strong>
+            <input type="text", name="days_to_transplantation", value={{ crop_infos[0]['days_to_transplantation'] }} autofocus> <br>
+            <strong>Days to Direct Sow:</strong>
+            <input type="text", name="days_to_direct_sow", value={{ crop_infos[0]['days_to_direct_sow'] }} autofocus> <br>
+            <strong>Days for Harvesting Crops:</strong>
+            <input type="text", name="days_to_harvest", value={{ crop_infos[0]['days_to_harvest'] }} autofocus> <br>
+            <strong>Days for Harvesting Seeds:</strong>
+            <input type="text", name="days_to_seed_harvest", value={{ crop_infos[0]['days_to_seed_harvest'] }} autofocus> <br>
+            <strong>Frost Sensitivity Rating:</strong>
+            <input type="text", name="frost_sensitivity_rating", value={{ crop_infos[0]['frost_sensitivity_rating'] }} autofocus> <br>
+            <input type="submit" value="Edit Variety">
+            <button type="button" onclick="togglePopup('editVarietyPopup')">Cancel</button>
+        </form>
+    </div>
     <div class="container py-4">
         <h1 class="page-title text-center mb-4">{{ crop_infos[0]['variety_name'] }}</h1>
         <div class="text-end">
             {{ crop_infos[0]['crop_info_id'] }}
             <a href="/addusercrop/{{ crop_info_id }}" class="btn btn-success action-button">Add Crop</a>
+            <button onclick="togglePopup('addVarietyPopup')">Create New Variety</button>
+            <button onclick="togglePopup('editVarietyPopup')">Edit This Variety</button>
+            <form action="/deletevariety/{{ crop_infos[0]['variety_id'] }}" method="post">
+                <input type="submit" value="Delete Variety">
+            </form>
 
         </div>
         
@@ -72,7 +167,7 @@
             {% include 'displaycropinfo.html' %}
         </div>
         
-        <!-- Static Task List Section -->
+        Static Task List Section
         <div class="task-section">
             <h2 class="section-title">Task List</h2>
             <ul class="task-list">
@@ -108,6 +203,17 @@
 
     <!-- Bootstrap JS and Popper.js via CDN -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHj/GD76VjFqGaabiE/H6jnOE/Ia5nlxQ+24n3y1PwTxeyJz7s4e+4O" crossorigin="anonymous"></script>
+    <script>
+        function togglePopup(popupId) {
+            console.log(popupId)
+            const popupForm = document.getElementById(popupId);
+            if (popupForm.style.display === 'none') {
+                popupForm.style.display = 'block';
+            } else {
+                popupForm.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>
 

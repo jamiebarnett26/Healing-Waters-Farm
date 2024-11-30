@@ -59,8 +59,10 @@ def show_variety():
     #admin = flask.request.cookies.get('admin') == 'true'
 
     speciesId = flask.request.args.get('species', '')
-    species = database.variety_from_species(speciesId)
-    json_doc = json.dumps(species)
+    app.logger.info(speciesId)
+    variety = database.variety_from_species(speciesId)
+    app.logger.info(variety)
+    json_doc = json.dumps(variety)
 
     response = flask.make_response(json_doc)
     response.headers['Content-Type'] = 'application/json'
@@ -135,20 +137,9 @@ def post_edit_species(species_id):
 
 #-----------------------------------------------------------------------
 
-@app.route('/editvariety/<variety_id>', methods=['GET'])
-def edit_variety(variety_id):
-    variety = database.search_field_id('variety', variety_id)
-    admin = flask.request.cookies.get('admin') == 'true'
-    html_code = flask.render_template('editvariety.html',
-                                      admin=admin,
-                                      variety=variety[0],
-                                      current_time=get_current_time())
-    response = flask.make_response(html_code)
-    return response
-    
 
 @app.route('/editvariety/<variety_id>', methods=['POST'])
-def post_edit_variety(variety_id):
+def edit_variety(variety_id):
     variety_name = flask.request.form.get('variety_name')
     crop_type = flask.request.form.get('crop_type_name')
     plant_spacing_harvest = flask.request.form.get('plant_spacing_harvest')
