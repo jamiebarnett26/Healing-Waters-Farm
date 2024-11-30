@@ -20,6 +20,7 @@
             color: rgb(255, 255, 255);
                 font-family: Georgia, 'Times New Roman', Times, serif;
         }
+
      </style>
 
     <script> 
@@ -44,14 +45,11 @@
                         <p class="card-text">
                             <div class="container">
                                 <div class="row">
-                                    <button onclick="togglePopup('addFamilyPopup')">Add New Family</button>
-                                    <div id="familyDiv">  </div>
-                                    <div id="editFamilyActions" class="mt-3"></div>
+                                    <div id="familyDiv">  </div>    
                                 </div>
                                 <br>
                                 <div class="row">
                                     <div id="speciesDiv">  </div>
-                                    <div id="editSpeciesActions" class="mt-3"></div>
                                     
                                 </div>
                                 <div class="row">
@@ -87,35 +85,76 @@
     <script> 
 
     'use strict';
+    let isAdmin = false;  // Initialize isAdmin
+
+    // Ensure the DOM is fully loaded before the script runs
+    document.addEventListener('DOMContentLoaded', function() {
+        setup();  // Call setup when the DOM is ready
+        checkAdminStatus();  // Check if the user is an admin
+    });
+
+    function setup() {
+        let familyInput = document.getElementById('textInput');
+        familyInput.addEventListener('input', debouncedGetResults);
+        getFamilyResults();  // Fetch family results on setup
+    }
+
+
+    // Function to add admin-specific features
+    function addAdminFeatures() {
+        const familyDiv = document.getElementById('familyDiv');  // Assuming this element exists
+
+        // Check if the "Add New Family" button already exists
+        if (!document.getElementById('addFamilyButton')) {
+            const addFamilyButton = document.createElement('button');
+            addFamilyButton.textContent = 'Add New Family';
+            addFamilyButton.id = 'addFamilyButton';  // Add an ID to the button
+            addFamilyButton.onclick = () => togglePopup('addFamilyPopup');
+            familyDiv.appendChild(addFamilyButton);
+        }
+
+        const editFamilyActions = document.createElement('div');
+        editFamilyActions.classList.add('mt-3');
+        editFamilyActions.id = 'editFamilyActions';
+        familyDiv.appendChild(editFamilyActions);
+        console.log(editFamilyActions);
+
+        const speciesDiv = document.getElementById('speciesDiv');
+        const editSpeciesActions = document.createElement('div');
+        editSpeciesActions.classList.add('mt-3');
+        editSpeciesActions.id = 'editSpeciesActions';
+        speciesDiv.appendChild(editSpeciesActions);
+    }
+
 
     let templateFamilyList = ` 
-                <select class="form-select" id="templateFamilyList" aria-label="Default select Family">
-                <option selected>Open this select menu</option>
-                {{#family}}
-                <option value={{family_id}}>{{family_name}}</option>
-                {{/family}}
-                </select>
+        <select class="form-select" id="templateFamilyList" aria-label="Default select Family">
+            <option selected>Open this select menu</option>
+            {{#family}}
+            <option value={{family_id}}>{{family_name}}</option>
+            {{/family}}
+        </select>
     `;
 
     let templateSpeciesList = ` 
-                <select class="form-select" id="templateSpeciesList" aria-label="Default select Family" >
-                <option selected>Open this select menu</option>
-                {{#species}}
-                <option value={{species_id}}>{{species_name}}</option>
-                {{/species}}
-                </select>
+        <select class="form-select" id="templateSpeciesList" aria-label="Default select Family">
+            <option selected>Open this select menu</option>
+            {{#species}}
+            <option value={{species_id}}>{{species_name}}</option>
+            {{/species}}
+        </select>
     `;
 
     let templateVarietyList = ` 
-                <select class="form-select" id="templateVarietyList" aria-label="Default select Family" >
-                <option selected>Open this select menu</option>
-                {{#variety}}
-                <option value={{variety_id}}>{{variety_name}}</option>
-                {{/variety}}
-                </select>
+        <select class="form-select" id="templateVarietyList" aria-label="Default select Family">
+            <option selected>Open this select menu</option>
+            {{#variety}}
+            <option value={{variety_id}}>{{variety_name}}</option>
+            {{/variety}}
+        </select>
     `;
+
     function togglePopup(popupId) {
-        console.log(popupId)
         const popupForm = document.getElementById(popupId);
         if (popupForm.style.display === 'none') {
             popupForm.style.display = 'block';
@@ -125,43 +164,59 @@
     }
 
     let request = null;
-    function getFamilyResults() {
+    // Function to check if the user is an admin
+    function checkAdminStatus() {
+        let request = new XMLHttpRequest();
+        request.onload = function() {
+            if (this.status !== 200) {
+                alert('Error: Failed to fetch admin status');
+                return;
+            }
+            let response = JSON.parse(this.response);
+            isAdmin = response === true;
+            console.log(isAdmin ? 'User is an admin' : 'User is not an admin');
+            if (isAdmin) {
+                addAdminFeatures(); // Add admin-specific elements if the user is an admin
+            }
+        };
+        request.onerror = function() {
+            alert('Error: Failed to check admin status');
+        };
+        request.open('GET', '/isAdmin');
+        request.send();
+    }
 
+    function getFamilyResults() {
         function makeCropList(family) {
             let map = {family: family};
-            let html = Mustache.render(templateFamilyList, map);
-            return html;
-            console.log("convert to html");
+            return Mustache.render(templateFamilyList, map);
         }
-        
-        function handleResponse(families) {
-            // let html = convertToHtml(families);
-            // $('#listOfButtons').html(html)
-            if(this.status !== 200) {
-            alert('Error: Failed to fetch data from server');
-            return;
+
+        function handleResponse() {
+            if (this.status !== 200) {
+                alert('Error: Failed to fetch data from server');
+                return;
             }
             let response = JSON.parse(this.response);
             let divNode = document.getElementById('familyDiv');
             divNode.innerHTML = '';
             let buttonList = makeCropList(response);
             divNode.innerHTML = buttonList;
+            checkAdminStatus();
         }
 
-        function handleError(request) {
-               alert('Error: Failed to fetch data from server');
-            }
+        function handleError() {
+            alert('Error: Failed to fetch data from server');
+        }
 
-        // Start of function
         let familyId = $('#textInput').val();
         let encodedFamilyId = encodeURIComponent(familyId);
-
         let url = '/showFamily?family=' + encodedFamilyId;
 
         if (request !== null) {
-            console.log("ABORT");
             request.abort();
         }
+
         request = new XMLHttpRequest();
         request.onload = handleResponse;
         request.onerror = handleError;
@@ -169,43 +224,37 @@
         request.send();
     }
 
-
     function getSpeciesResults(familyId) {
-
         function makeCropList(species) {
             let map = {species: species};
-            let html = Mustache.render(templateSpeciesList, map);
-            return html;
-            console.log("convert to html");
+            return Mustache.render(templateSpeciesList, map);
         }
-        
-        function handleResponse(species) {
-            if(this.status !== 200) {
-            alert('Error: Failed to fetch data from server');
-            return;
+
+        function handleResponse() {
+            if (this.status !== 200) {
+                alert('Error: Failed to fetch data from server');
+                return;
             }
             let response = JSON.parse(this.response);
             let divNode = document.getElementById('speciesDiv');
             divNode.innerHTML = '';
             let buttonList = makeCropList(response);
             divNode.innerHTML = buttonList;
+            checkAdminStatus();
+
         }
 
-        function handleError(request) {
-               alert('Error: Failed to fetch data from server');
-            }
+        function handleError() {
+            alert('Error: Failed to fetch data from server');
+        }
 
-        // Start of function
-        //let specieId = $('#textInput').val();
         let encodedFamilyId = encodeURIComponent(familyId);
-
         let url = '/showSpecies?family=' + encodedFamilyId;
 
-
         if (request !== null) {
-            console.log("ABOORT");
             request.abort();
         }
+
         request = new XMLHttpRequest();
         request.onload = handleResponse;
         request.onerror = handleError;
@@ -213,43 +262,37 @@
         request.send();
     }
 
-
     function getVarietyResults(speciesId) {
-
         function makeCropList(variety) {
             let map = {variety: variety};
-            let html = Mustache.render(templateVarietyList, map);
-            return html;
-            console.log("convert to html");
+            return Mustache.render(templateVarietyList, map);
         }
-        
-        function handleResponse(variety) {
-            if(this.status !== 200) {
-            alert('Error: Failed to fetch data from server');
-            return;
+
+        function handleResponse() {
+            if (this.status !== 200) {
+                alert('Error: Failed to fetch data from server');
+                return;
             }
             let response = JSON.parse(this.response);
             let divNode = document.getElementById('varietyDiv');
             divNode.innerHTML = '';
             let buttonList = makeCropList(response);
             divNode.innerHTML = buttonList;
+            checkAdminStatus();
+
         }
 
-        function handleError(request) {
-               alert('Error: Failed to fetch data from server');
-            }
+        function handleError() {
+            alert('Error: Failed to fetch data from server');
+        }
 
-        // Start of function
-        //let specieId = $('#textInput').val();
         let encodedSpeciesId = encodeURIComponent(speciesId);
-
         let url = '/showVariety?species=' + encodedSpeciesId;
 
-
         if (request !== null) {
-            console.log("ABOORT");
             request.abort();
         }
+
         request = new XMLHttpRequest();
         request.onload = handleResponse;
         request.onerror = handleError;
@@ -257,59 +300,62 @@
         request.send();
     }
 
-
     let timer = null;
+
     function debouncedGetResults() {
         clearTimeout(timer);
-        timer = window.setTimeout(getFamilyResults, 500)
+        timer = window.setTimeout(getFamilyResults, 500);
     }
 
-    // Called at start
-    function setup() {
-        let familyInput =
-                document.getElementById('textInput');
-                familyInput.addEventListener(
-               'input', debouncedGetResults);
-        getFamilyResults();
-    }
-
-    // call setup
-     document.addEventListener('DOMContentLoaded', setup);
-
-    $(document).on('change', '#templateFamilyList', function() {
-        var selectedValue = $(this).val();
-
-        getSpeciesResults(selectedValue);
-        // Add Edit and Delete buttons for the selected family
-        var familyActionsContainer = document.getElementById('editFamilyActions');
-        familyActionsContainer.innerHTML = `
-
-            <button type="button" onclick="togglePopup('editFamilyPopup${selectedValue}')">Edit</button>
-            <form action="/deletefamily/${selectedValue}" method="post">
-                <input type="submit" value="Delete">
-            </form>
-            <div id="editFamilyPopup${selectedValue}" class="popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); z-index: 1000;">
-                <form action="/editfamily/${selectedValue}" method="post">
-                    <strong>Family Name</strong>
-                    <input type="text" name="family_name" autofocus> <br>
-                    <input type="submit" value="Edit Family">
-                    <button type="button" onclick="togglePopup('editFamilyPopup${selectedValue}')">Cancel</button>
-                </form>
-            </div>
-            <button onclick="togglePopup('addSpeciesPopup')">Add New Species</button>
-
-            <div id="addSpeciesPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); z-index: 1000;">
-                <form action="/addspecies/${selectedValue}" method="post">
-                    <strong>Species Name</strong>
-                    <input type="text", name="species_name", autofocus> <br>
-                    <strong>Latin Name</strong>
-                    <input type="text", name="latin_name", autofocus> <br>
-                    <input type="submit" value="Add Species">
-                    <button type="button" onclick="togglePopup('addFamilyPopup')">Cancel</button>
-                </form>
-            </div>
-                    `;
+    $(document).ready(function() {
+        // Check if the user is an admin
+        $.ajax({
+            url: '/isAdmin',
+            method: 'GET',
+            success: function(response) {
+                if (response.isAdmin) {
+                    isAdmin = true;
+                    // Add admin-specific elements (like buttons) here
+                    addAdminFeatures();  // Ensure admin features are added if the user is an admin
+                } else {
+                    isAdmin = false;
+                }
+            },
+            error: function() {
+                alert('Error: Unable to verify admin status.');
+            }
         });
+
+        $(document).on('change', '#templateFamilyList', function() {
+            var selectedValue = $(this).val();
+            getSpeciesResults(selectedValue);
+            var familyActionsContainer = document.getElementById('editFamilyActions');
+            console.log(familyActionsContainer);
+            familyActionsContainer.innerHTML = `
+                <button type="button" onclick="togglePopup('editFamilyPopup${selectedValue}')">Edit</button>
+                <form action="/deletefamily/${selectedValue}" method="post">
+                    <input type="submit" value="Delete">
+                </form>
+                <div id="editFamilyPopup${selectedValue}" class="popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); z-index: 1000;">
+                    <form action="/editfamily/${selectedValue}" method="post">
+                        <strong>Family Name</strong>
+                        <input type="text" name="family_name" autofocus> <br>
+                        <input type="submit" value="Edit Family">
+                        <button type="button" onclick="togglePopup('editFamilyPopup${selectedValue}')">Cancel</button>
+                    </form>
+                </div>
+                <button onclick="togglePopup('addSpeciesPopup')">Add New Species</button>
+                <div id="addSpeciesPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); z-index: 1000;">
+                    <form action="/addspecies/${selectedValue}" method="post">
+                        <strong>Species Name</strong>
+                        <input type="text" name="species_name" autofocus><br>
+                        <input type="submit" value="Add Species">
+                        <button type="button" onclick="togglePopup('addSpeciesPopup')">Cancel</button>
+                    </form>
+                </div>
+            `;
+        });
+    });
 
     $(document).on('change', '#templateSpeciesList', function() {
         var selectedValue = $(this).val();
@@ -333,15 +379,13 @@
                     <button type="button" onclick="togglePopup('editFamilyPopup${selectedValue}')">Cancel</button>
                 </form>
             </div>
-                    `;
+                   ` ;
     });
 
     $(document).on('change', '#templateVarietyList', function() {
         var selectedValue = $(this).val();
         window.location = '/showcrop/' + selectedValue
     });
-
-
 
 
     </script>

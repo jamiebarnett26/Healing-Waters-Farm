@@ -528,7 +528,7 @@ def full_crop_info(crop_info_id):
         if not species_table:
             return None  # Check for None before proceeding to avoid crashes
 
-        family_table = family_from_species(species_table.family_id)
+        family_table = family_from_species(species_table.species_id)
         if not family_table:
             return None
 
