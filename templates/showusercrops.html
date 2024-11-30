@@ -33,7 +33,7 @@
         <div class="row row-cols-2 g-3">
             {% for crop_info in crops %}
                 <div class="col">
-                    <a href="/crop/{{ crop_info['variety_name'] }}" class="btn btn-light w-100">
+                    <a href="/showcrop/{{ crop_info['variety_id'] }}" class="btn btn-light w-100">
                         <!-- Placeholder image; you can customize to dynamically load specific images -->
                         <img src="/static/icon/corn.png" class="img-fluid crop-icon" alt="crop_info['variety_name']">
                         <div class="mt-2">{{ crop_info['variety_name'] }}</div>
