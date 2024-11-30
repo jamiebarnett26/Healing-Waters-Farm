@@ -14,6 +14,16 @@ def get_current_time():
     return time.asctime(time.localtime())
 
 #-----------------------------------------------------------------------
+@app.route('/isAdmin', methods=['GET'])
+def is_admin():
+    # Check if the current user is an admin
+    admin = flask.request.cookies.get('admin') == 'true'
+    json_doc = json.dumps(admin)
+
+    response = flask.make_response(json_doc)
+    response.headers['Content-Type'] = 'application/json'
+    return response
+
 @app.route('/selectFamily', methods=['GET'])
 def select_family():
     return flask.send_file('templates/addCrop/selectFamily.html')
@@ -103,16 +113,6 @@ def show_variety():
 #     response = flask.make_response(html_code)
 #     return response
 
-#-----------------------------------------------------------------------
-
-@app.route('/createfamily', methods=['GET'])
-def create_family():
-    admin = flask.request.cookies.get('admin') == 'true'
-    html_code = flask.render_template('createfamily.html',
-                                      admin=admin,
-                                      current_time=get_current_time())
-    response = flask.make_response(html_code)
-    return response
 
 #-----------------------------------------------------------------------
 
