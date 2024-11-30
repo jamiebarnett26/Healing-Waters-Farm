@@ -31,13 +31,13 @@
     <div class="container py-4">
         <h1 class="text-center mb-4">My Crops</h1>
         <div class="row row-cols-2 g-3">
-            {% for variety_id, variety_name, latin_name in crops %}
+            {% for crop_info in crops %}
                 <div class="col">
-                    <a href="/showcrop/{{ variety_id }}" class="btn btn-light w-100">
+                    <a href="/showcrop/{{ crop_info['variety_id'] }}" class="btn btn-light w-100">
                         <!-- Placeholder image; you can customize to dynamically load specific images -->
-                        <img src="/static/icon/corn.png" class="img-fluid crop-icon" alt="{{ variety_name }}">
-                        <div class="mt-2">{{ variety_name }}</div>
-                        <small class="text-muted">{{ latin_name }}</small>
+                        <img src="/static/icon/corn.png" class="img-fluid crop-icon" alt="crop_info['variety_name']">
+                        <div class="mt-2">{{ crop_info['variety_name'] }}</div>
+                        <small class="text-muted">{{ crop_info['latin_name'] }}</small>
                     </a>
                 </div>
             {% endfor %}

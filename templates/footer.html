@@ -24,6 +24,11 @@
                         Home
                     </div>
                 </div>
+                <div class="col" style="margin-top: 1vh; margin-bottom: 1vh;">
+                    <div class="btn btn-dark">
+                        Community
+                    </div>
+                </div>
                 {% if admin %}
                     <div class="xs-col col-lg-2 p-sm-0" style="margin-bottom: 1vh;">
                         <div class="btn btn-dark">
@@ -52,13 +57,12 @@
             $('.btn-dark:contains("Home")').on('click', function() {
                 window.location.href = '/homepage';
             });
+            $('.btn-dark:contains("Community")').on('click', function() {
+                window.location.href = '/community';
+            });
         });
     </script>
 
 </body>
 </html>
 
-
-
-<!-- <a href="/showusercrops">My Crops</a> | <a href="/homepage">Home</a> | Announcements 
-{% if admin %} | <a href="/profile_list">Profiles</a> {% endif %} -->
