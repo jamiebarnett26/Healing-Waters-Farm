@@ -54,10 +54,19 @@ def getCardInfo():
     #if not user_id:
      #   return flask.redirect('/login')
     user_id = flask.request.cookies.get('user_id')
+    
     user_crops = database.get_user_crops(user_id)
+    if not user_crops:
+        print("User doesn't have any crop template activated")
+        return flask.jsonify({
+        "success": False
+    }), 200
+
+    user_crop_id = user_crops[0]['user_crop_id']
+
     user_crop_infos = []
     all_todos = []
-    variety_id = []
+    user_crop_id_list = []
 
     for i, user_crop in enumerate(user_crops):
         full_crop_info = database.full_crop_info(user_crop['crop_info_id'])
@@ -66,26 +75,25 @@ def getCardInfo():
         user_crop_infos.append(full_crop_info)
 
         user_crop_infos.append(database.full_crop_info(user_crop['crop_info_id']))
-        
-        variety_name = user_crop_infos[i]['variety_name']
-        variety_dict = database.search_field_name("variety", variety_name)
-        variety_id.append(variety_dict[0]['variety_id'])
+
+        user_crop_id_list.append(user_crop_id)
         
         todos = getWeeklyTasks(user_crop, full_crop_info['frost_sensitivity_rating'])
 
         database.get_user_added_tasks(user_crops[i]['user_crop_id'], todos)
         all_todos.append(todos)
     
-    crops_with_todos = zip(user_crop_infos, all_todos, variety_id)
+    crops_with_todos = zip(user_crop_infos, all_todos, user_crop_id_list)
     
     return crops_with_todos
 
 @app.route('/delete_template', methods = ['POST'])
 def deleteTemplate():
-    user_crop_id = flask.request.args.get('cropid')
+    user_crop_id = flask.request.args.get('usercropid')
     try: 
         database.delete_template(user_crop_id)
-        return flask.jsonify({'success': True, 'message': 'Template deleted successfully'})
+        remaining_crops = database.get_remaining_crops(user_crop_id)
+        return flask.jsonify({'remaining_crops': len(remaining_crops)})
     except Exception as e:
         return flask.jsonify({'success': False, 'message': str(e)}), 500
 
@@ -187,9 +195,21 @@ class CustomJSONEncoder(json.JSONEncoder):
 def load_cropCards():
     print("IN SERVER")
     crops_with_todos = getCardInfo()
+
+    if isinstance(crops_with_todos, tuple):
+        return crops_with_todos
+
     # Convert the zip object into a list before serializing it to JSON
-    crops_with_todos_list = list(crops_with_todos)
+    crops_with_todos_list = [
+        {
+            "user_crop_info": user_crop,
+            "todos": todos,
+            "user_crop_id": id
+        }
+        for user_crop, todos, id in crops_with_todos
+    ]
     json_doc = json.dumps(crops_with_todos_list, cls=CustomJSONEncoder)
+    print(json_doc)
     response = flask.make_response(json_doc)
     response.headers['Content-Type'] = 'application/json'
     return response

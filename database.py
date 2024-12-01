@@ -456,6 +456,10 @@ def delete_template(user_crop_id):
         session.query(User_Crop).filter(User_Crop.user_crop_id == user_crop_id).delete()
         session.commit()
 
+def get_remaining_crops(user_crop_id):
+    with sqlalchemy.orm.Session(_engine) as session:
+        remaining_crops = session.query(User_Crop).filter(User_Crop.user_crop_id == user_crop_id).all()
+        return remaining_crops
 
         
 def add_task(user_id, user_crop_id, task_name, task_date):

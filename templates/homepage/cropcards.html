@@ -71,38 +71,38 @@
     'use strict';
 
     let templateCropCard = ` 
-    {{#crops}}
-    <div class="card card-body m-2 mb-3" id="crop-card-{{crop_info.variety_id}}" style="min-width: 75vw; min-height: 300px; background-color: #517D5A">
+    {{#crops_with_todos}}
+    <div class="card card-body m-2 mb-3" id="crop-card-{{user_crop_info.variety_id}}" style="min-width: 75vw; min-height: 300px; background-color: #517D5A">
         <h3> 
             <div class="card-title d-flex justify-content-center align-items-center">
-                <button class="btn btn-dark" type="button" id="card-button-{{variety_id}}"> 
+                <button class="btn btn-dark" type="button" id="card-button-{{user_crop_info.variety_id}}"> 
                     <em style="font-size: 6.5vw"> 
-                        {{crop_info.variety_name}} <!-- Access crop_info properties like this -->
+                        {{user_crop_info.variety_name}} <!-- Access crop_info properties like this -->
                     </em>
                 </button>
                 
                 <!-- info icon -->
 
-                <img id="infoButton-{{crop_info.variety_name}}" src="./static/img/info.png" alt="info logo" style="width:8vw;height:8vw;" >
+                <img id="infoButton-{{user_crop_info.variety_name}}" src="./static/img/info.png" alt="info logo" style="width:8vw;height:8vw;" >
   
                 
                 <!-- Delete button -->
-                <button class="btn btn-danger" id="deleteButton-{{crop_info.variety_id}}">Delete Crop</button>
+                <button class="btn btn-danger" onclick="deleteCrop({{user_crop_id}})">Delete Crop</button>
             </div>
         </h3>
 
         <!-- Render Todo List for each crop -->
         <!-- Loop over todos (tasks) for this crop -->
         <div class="todos">
-            {{#todos}} <!-- This is a list of tasks -->
+            {{#todos}}
             <div class="todo">
-                <input type="checkbox" {{#completed}}checked{{/completed}} disabled /> <!-- If the task is completed, mark the checkbox -->
-                <span>{{task}}</span> <!-- Display the task name -->
+                <input type="checkbox" {{#done}}checked{{/done}} disabled />
+                <span>{{task}}</span>
             </div>
             {{/todos}}
         </div>
     </div>
-    {{/crops}}
+    {{/crops_with_todos}}
 `;
 
 let templateModalBody = `
@@ -114,37 +114,61 @@ let templateModalBody = `
 
 `;
 
+
 //---------------------------------------------------------------------------------
-// Function to fetch and render crop cards
+// Delete Crop
+//---------------------------------------------------------------------------------
+    let deleteRequest = null;
+    function deleteCrop(userCropId) {    
+        function handleDeleteResponse(response) {
+            let remainingCrops = response.remaining_crops;
+
+            if (remainingCrops === 0) {
+                $('#cropcards').html('<p> no crops </p>');
+            } else {
+                getCropCards();
+            }
+     }
+
+        function handleDeleteError(request) {
+            alert('Error: Failed to fetch data from server');
+        }
+
+        let encodedUserCropId = encodeURIComponent(userCropId);
+        // Request delete template in line 83 of app.py
+        let url = '/delete_template?usercropid=' + encodedUserCropId;
+
+        if (deleteRequest !== null) {
+            console.log("ABOORT");
+            deleteRequest.abort();
+        }
+
+        let requestData = {
+            type: 'POST',
+            url: url,
+            contentType: 'application/json',
+            success: handleDeleteResponse,
+            error: handleDeleteError,
+    
+            };
+        deleteRequest = $.ajax(requestData)
+        }
+        
+//---------------------------------------------------------------------------------
+// Function to fetch and render crop cards. Automatically gets called on load
+//---------------------------------------------------------------------------------
     let request = null;
     function getCropCards() {
 
         function makeCropCard(crops_with_todos) {
-            // Transform the data structure to match the template format
-            let crops = crops_with_todos.map(item => {
-                return {
-                    crop_info: item[0],  // crop_info is the first element of each tuple
-                    todos: item[1],      // todos is the second element of each tuple
-                    variety_id: item[2]  // variety_id is the third element of each tuple
-                };
-            });
-            let map = { crops: crops };                         // Prepare the data for the Mustache template
+            let map = {crops_with_todos: crops_with_todos};                         // Prepare the data for the Mustache template
             let html = Mustache.render(templateCropCard, map);  // Render the HTML using Mustache
             return html;
         }
         
-        function handleResponse() {
-            console.log("HANDLERESPONSE");
-            if(this.status !== 200) {
-            alert('Error: Failed to fetch data from server');
-            return;
-            }
-            let response = JSON.parse(this.response);
-            console.log(response);
-            let divNode = document.getElementById('cropcards');
-            divNode.innerHTML = '';
-            let cropCards = makeCropCard(response);
-            divNode.innerHTML = cropCards;
+        function handleResponse(crop_with_todos) {
+            let html = makeCropCard(crop_with_todos);
+            $('#cropcards').html(html);
             jsForDynamicElelements();
      }
 
@@ -158,128 +182,88 @@ let templateModalBody = `
             console.log("ABOORT");
             request.abort();
         }
-        request = new XMLHttpRequest();
-        request.onload = handleResponse;
-        request.onerror = handleError;
-        request.open('GET', url);
-        request.send();
+
+        let requestData = {
+            type: 'GET',
+            url: url,
+            success: handleResponse,
+            error: handleError
+        };
+
+        request = $.ajax(requestData)
     }
+
 //---------------------------------------------------------------------------------
 
     function setup() {
-        console.log("SETUP");
-        // Click on crop names
-        $('[id^=card-button]').on('click', function() {
-            var varietyId = $(this).attr('id').split('card-button-')[1];
-            window.location.href = '/showcrop/' + varietyId;
-        });
-        // Click on add crop
-        $('#end_add_crop').on('click', function() {
-            window.location.href = '/selectFamily';
-         });
-      
-        getCropCards();
-    }
-
-
-//---------------------------------------------------------------------------------
-//Jquery Functions 
-    if (document.readyState !== 'loading') {
-        setup();
-    } else {
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log('document was not ready, place code here');
-            setup();
-        });
-    }
-   
-    function jsForDynamicElelements() {
-    // Click info button
-    $('[id^=infoButton]').on('click', function() {
+            console.log("SETUP");
+            // Click on crop names
+            $('[id^=card-button]').on('click', function() {
+                var varietyId = $(this).attr('id').split('card-button-')[1];
+                window.location.href = '/showcrop/' + varietyId;
+            });
+            // Click on add crop
+            $('#end_add_crop').on('click', function() {
+                window.location.href = '/selectFamily';
+            });
         
-        var familyClicked = $(this).attr('id').split('infoButton-')[1];
-        console.log(familyClicked);
-        let encodedCropId = encodeURIComponent(familyClicked);
-        let url = '/get_crop_fullName?id=' + encodedCropId;
-        if (request !== null) {
-            console.log("ABOORT");
-            request.abort();
+            getCropCards();
         }
-        request = new XMLHttpRequest();
-        request.onload = handleResponse;
-        request.onerror = handleError;
-        request.open('GET', url);
-        request.send();
+
+    $('document').ready(setup)
+
+
+    // function jsForDynamicElelements() {
+    // // Click info button
+    // $('[id^=infoButton]').on('click', function() {
+        
+    //     var familyClicked = $(this).attr('id').split('infoButton-')[1];
+    //     console.log(familyClicked);
+    //     let encodedCropId = encodeURIComponent(familyClicked);
+    //     let url = '/get_crop_fullName?id=' + encodedCropId;
+    //     if (request !== null) {
+    //         console.log("ABOORT");
+    //         request.abort();
+    //     }
+    //     request = new XMLHttpRequest();
+    //     request.onload = handleResponse;
+    //     request.onerror = handleError;
+    //     request.open('GET', url);
+    //     request.send();
     
 
-        function makeModalText(cropName) {
-            let map = {cropName: cropName};
-            let html = Mustache.render(templateVarietyList, map);
-            return html;
-            console.log("convert to html");
-        }
+    //     function makeModalText(cropName) {
+    //         let map = {cropName: cropName};
+    //         let html = Mustache.render(templateVarietyList, map);
+    //         return html;
+    //         console.log("convert to html");
+    //     }
         
-        function handleResponse(variety) {
-            if(this.status !== 200) {
-            alert('Error: Failed to fetch data from server');
-            return;
-            }
-            let response = JSON.parse(this.response);
-            // Get the modal element
-            var infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
+    //     function handleResponse(variety) {
+    //         if(this.status !== 200) {
+    //         alert('Error: Failed to fetch data from server test');
+    //         return;
+    //         }
+    //         let response = JSON.parse(this.response);
+    //         // Get the modal element
+    //         var infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
 
-            let divNode = document.getElementById('modal-body');
-            divNode.innerHTML = '';
-            let buttonList = makeModalText(response);
-            divNode.innerHTML = buttonList;
+    //         let divNode = document.getElementById('modal-body');
+    //         divNode.innerHTML = '';
+    //         let buttonList = makeModalText(response);
+    //         divNode.innerHTML = buttonList;
         
-            // Show the modal
-            infoModal.show();
-        }
+    //         // Show the modal
+    //         infoModal.show();
+    //     }
 
-        function handleError(request) {
-               alert('Error: Failed to fetch data from server');
-            }
-
+    //     function handleError(request) {
+    //            alert('Error: Failed to fetch data from server');
+    //         }
     
-    });
-
-
-
-    // Click Delete crop
-    $('[id^=deleteButton]').on('click', function() {
-        var userCropId = $(this).attr('id').split('deleteButton-')[1];
-        console.log("Deleting crop with variety_id: " + userCropId);
-        let encodedUserCropId = encodeURIComponent(userCropId);
-        let url = '/delete_template?cropid=' + encodedUserCropId
-
-        // Send AJAX POST request to delete the crop
-        $.ajax({
-            url: url,
-            type: 'POST',              // POST method
-            data: {                    // Send the crop ID to the server
-                variety_id: userCropId
-            },
-            success: function(response) {
-                console.log("Delete response: ", response);
-                if (response.success) {
-                    // Remove the deleted crop card from the DOM
-                    $('#crop-card-' + userCropId).remove();
-                } else {
-                    alert("Failed to delete crop.");
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("Error deleting crop: ", error);
-                alert("An error occurred while trying to delete the crop.");
-            }
-        });
-    });
-    }
-//---------------------------------------------------------------------------------
+    // });
 
     </script>
-
     </body>
 </html>
 
