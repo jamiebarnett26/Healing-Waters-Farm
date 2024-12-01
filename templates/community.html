@@ -44,7 +44,7 @@
         </div>
 
         <!-- Tab content -->
-        <div class="tab-content" id="contentTabsContent">
+        <div class="tab-content" id="contentTabsContent" style="margin-bottom: 3rem;">
             <div class="tab-pane fade" id="announcements" role="tabpanel" aria-labelledby="announcements-tab">
                 {% include 'announcements.html' %}
             </div>
@@ -53,7 +53,10 @@
             </div>
         </div>
 
-        {% include 'footer.html' %}
+        <!-- Footer -->
+        <footer class="mt-4 border-top">
+            {% include 'footer.html' %}
+        </footer>
 
         <script>
             document.addEventListener("DOMContentLoaded", function() {

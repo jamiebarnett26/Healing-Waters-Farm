@@ -45,23 +45,26 @@
 </head>
 
 <html>
-<body style = "font-family: NotoSans; background-color: white !important">
-    <div class = "container-fluid">
-        {% include 'homepage/boxes_w_info.html' %}
-    </div>
-    <div class="container-fluid bg-success-subtle rounded-top-5 p-0 pb-5">
-
-
-
-        <div class="container-fluid p-0">
-            <h1 style = "font-size: 10vw;">
-                <a href = "/testpage" class = "text-dark px-2"> <b> Crop Tasks: </b> </a>
-            </h1>
-            {% include 'homepage/cropcards.html' %}
+    <body style="font-family: NotoSans; background-color: white !important">
+        <div class="container-fluid">
+            {% include 'homepage/boxes_w_info.html' %}
         </div>
-    </div>
+    
+        <div class="container-fluid bg-success-subtle rounded-top-5 p-0 pb-5" style="margin-bottom: 3rem;">
+            <div class="container-fluid p-0">
+                <h1 style="font-size: 10vw;">
+                    <a href="/testpage" class="text-dark px-2"><b>Crop Tasks:</b></a>
+                </h1>
+                {% include 'homepage/cropcards.html' %}
+            </div>
+        </div>
+    
+        <!-- Footer -->
+        <footer class="mt-4 border-top">
+            {% include 'footer.html' %}
+        </footer>
+    </body>
 
-    {% include 'footer.html' %}
 
 </body>
 </html>
