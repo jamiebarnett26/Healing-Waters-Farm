@@ -161,7 +161,7 @@ let templateModalBody = `
         }
         
         function handleResponse(crop_with_todos) {
-            if (crop_with_todos === 0) {
+            if (crop_with_todo.length === 0) {
                 $('#cropcards').html('');
             } else {
                 let html = makeCropCard(crop_with_todos);
