@@ -121,13 +121,7 @@ let templateModalBody = `
     let deleteRequest = null;
     function deleteCrop(userCropId) {    
         function handleDeleteResponse(response) {
-            let remainingCrops = response.remaining_crops;
-
-            if (remainingCrops === 0) {
-                $('#cropcards').html('<p> no crops </p>');
-            } else {
-                getCropCards();
-            }
+            getCropCards()
      }
 
         function handleDeleteError(request) {
@@ -167,9 +161,13 @@ let templateModalBody = `
         }
         
         function handleResponse(crop_with_todos) {
-            let html = makeCropCard(crop_with_todos);
-            $('#cropcards').html(html);
-            jsForDynamicElelements();
+            if (crop_with_todos === 0) {
+                $('#cropcards').html('');
+            } else {
+                let html = makeCropCard(crop_with_todos);
+                $('#cropcards').html(html);
+                // jsForDynamicElelements();
+            }
      }
 
         function handleError(request) {

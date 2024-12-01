@@ -59,7 +59,7 @@ def getCardInfo():
     if not user_crops:
         print("User doesn't have any crop template activated")
         return flask.jsonify({
-        "success": False
+        "crops_with_todos": []
     }), 200
 
     user_crop_id = user_crops[0]['user_crop_id']
