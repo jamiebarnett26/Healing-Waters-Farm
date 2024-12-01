@@ -83,6 +83,7 @@ class Question (Base):
     __tablename__ = 'questions'
     question_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     user_id = sqlalchemy.Column(sqlalchemy.Integer)
+    user_name = sqlalchemy.Column(sqlalchemy.String)
     created_at = sqlalchemy.Column(sqlalchemy.TIMESTAMP, server_default=sqlalchemy.func.now(), nullable=False)
     updated_at = sqlalchemy.Column(sqlalchemy.TIMESTAMP, server_default=sqlalchemy.func.now(), onupdate=sqlalchemy.func.now(), nullable=False)
     title = sqlalchemy.Column(sqlalchemy.String)
@@ -93,6 +94,7 @@ class Reply (Base):
     __tablename__ = 'replies'
     reply_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     user_id = sqlalchemy.Column(sqlalchemy.Integer)
+    user_name = sqlalchemy.Column(sqlalchemy.String)
     question_id = sqlalchemy.Column(sqlalchemy.Integer)
     created_at = sqlalchemy.Column(sqlalchemy.TIMESTAMP, server_default=sqlalchemy.func.now(), nullable=False)
     updated_at = sqlalchemy.Column(sqlalchemy.TIMESTAMP, server_default=sqlalchemy.func.now(), onupdate=sqlalchemy.func.now(), nullable=False)
@@ -102,6 +104,7 @@ class Announcement (Base):
     __tablename__ = 'announcements'
     announcement_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     user_id = sqlalchemy.Column(sqlalchemy.Integer)
+    user_name = sqlalchemy.Column(sqlalchemy.String)
     created_at = sqlalchemy.Column(sqlalchemy.TIMESTAMP, server_default=sqlalchemy.func.now(), nullable=False)
     updated_at = sqlalchemy.Column(sqlalchemy.TIMESTAMP, server_default=sqlalchemy.func.now(), onupdate=sqlalchemy.func.now(), nullable=False)
     title = sqlalchemy.Column(sqlalchemy.String)
@@ -120,18 +123,21 @@ def add_question(question):
         new_question = Question(**question)
         session.add(new_question)
         session.commit()
+    return
 
 def add_reply(reply):
     with get_session() as session:
         new_reply = Reply(**reply)
         session.add(new_reply)
         session.commit()
+    return
 
 def add_announcement(announcement):
     with get_session() as session:
         new_announcement = Announcement(**announcement)
         session.add(new_announcement)
         session.commit()
+    return
 class Tasks (Base):
     __tablename__ = 'tasks'
     task_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
@@ -209,6 +215,7 @@ def get_questions():
            question = {
                 'question_id':row.question_id,
                 'user_id':row.user_id,
+                'user_name':row.user_name,
                 'created_at':row.created_at,
                 'title':row.title,
                 'text':row.text,
@@ -228,6 +235,7 @@ def get_replies():
                 'reply_id':row.reply_id,
                 'question_id':row.question_id,
                 'user_id':row.user_id,
+                'user_name':row.user_name,
                 'created_at':row.created_at,
                 'text':row.text,
             }
@@ -244,6 +252,7 @@ def get_announcements():
            announcement = {
                 'announcement_id':row.announcement_id,
                 'user_id':row.user_id,
+                'user_name':row.user_name,
                 'created_at':row.created_at,
                 'text':row.text,
                 'title':row.title,
@@ -380,6 +389,7 @@ def search_field_id(search_field, search_value):
                 question = {
                     'question_id':row.question_id,
                     'user_id':row.user_id,
+                    'user_name':row.user_name,
                     'created_at':row.created_at,
                     'updated_at':row.updated_at,
                     'title':row.title,
@@ -397,6 +407,7 @@ def search_field_id(search_field, search_value):
                     'reply_id':row.reply_id,
                     'question_id':row.question_id,
                     'user_id':row.user_id,
+                    'user_name':row.user_name,
                     'created_at':row.created_at,
                     'updated_at':row.updated_at,
                     'text':row.text,
@@ -411,6 +422,7 @@ def search_field_id(search_field, search_value):
                 announcement = {
                     'announcement_id':row.announcement_id,
                     'user_id':row.user_id,
+                    'user_name':row.user_name,
                     'created_at':row.created_at,
                     'updated_at':row.updated_at,
                     'title':row.title,
