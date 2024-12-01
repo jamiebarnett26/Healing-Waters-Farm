@@ -437,6 +437,8 @@ def add_user_crop(crop_info_id):
 @app.route('/showusercrops', methods=['GET'])
 def my_crops():
     user_id = flask.request.cookies.get('user_id')
+    admin = flask.request.cookies.get('admin') == 'true'
+    print(admin, file=sys.stderr)
     if not user_id:
         return flask.redirect('/login')
     user_crops = database.get_user_crops(user_id)
@@ -444,7 +446,7 @@ def my_crops():
     for user_crop in user_crops:
         user_crop_info = database.full_crop_info(user_crop['crop_info_id'])
         user_crop_infos.append(user_crop_info)
-    return flask.render_template('showusercrops.html', crops=user_crop_infos)
+    return flask.render_template('showusercrops.html', crops=user_crop_infos, admin=admin)
 
 
 #-----------------------------------------------------------------------
