@@ -78,9 +78,9 @@
                     Crop Image Here
                 </div>
             </div>
-            <div class="col-6"> 
-                <div class="crop-name" id = "crop-name-block"> Reden Tomato </div>
-                <div class="latin-name" id="latin-name-block">Short Name</div> 
+            <div class="col-6 d-flex flex-column justify-content-middle"> 
+                <div class="crop-name" id = "crop-name-block"> {{ variety_name }} </div>
+                <div class="latin-name" id="latin-name-block"> {{ latin_name }}</div> 
                 </div>
                 
             <div class="col-2 d-flex flex-column justify-content-end text-center align-content-center">
@@ -103,7 +103,10 @@
         </div>
     </div>
 
-
+    <div>
+        <h1>Your Tasks</h1>
+        <ul id="taskList"></ul>
+    </div>
 </body>
 
 <!-- Link to Mustache -->
@@ -127,4 +130,25 @@
             return Mustache.render(templateFamilyList, map);
         }
     }
+
+    $(document).ready(function() {
+        $.ajax({
+            url: '/getTasks',
+            method: 'GET',
+            success: function(response) {
+                console.log('Todos:', response);
+
+                response.forEach(todo => {
+                    $('#taskList').append(`
+                        <li>
+                            Task: ${todo.task}, Date: ${todo.date}, Done: ${todo.done}
+                        </li>
+                    `);
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching tasks:', error);
+            }
+        });
+    })
 </script>

@@ -202,14 +202,22 @@ def homepage():
     response = flask.make_response(html_code)
     return response
 
-@app.route('/testingnewcropinfo', methods = ['GET'])
-def new_show_crop( ):
+@app.route('/testingnewcropinfo/<variety_id>', methods = ['GET'])
+def new_show_crop(variety_id):
     user_id = flask.request.cookies.get('user_id')
     if not user_id:
         return flask.redirect('/login')
+    
+    crop_infos = database.crop_info_from_variety(variety_id)
+    full_crop_infos = database.full_crop_info(crop_infos[0]['crop_info_id'])
+    variety_name = full_crop_infos['variety_name']
+    latin_name = full_crop_infos['latin_name']
 
-    user_crops = database.get_user_crops(user_id)
-    return flask.render_template('newcropinfo.html', user_crops=user_crops)
+    return flask.render_template('newcropinfo.html', 
+                                 full_crop_infos=full_crop_infos,
+                                 crop_info_id = crop_infos[0]['crop_info_id'],
+                                 variety_name = variety_name,
+                                 latin_name = latin_name)
 
 #-----------------------------------------------------------------------
 # @app.route('/showcrop/<int:crop_info_id>')
@@ -402,7 +410,7 @@ def cropPage(variety_name):
     return response
 
 #-----------------------------------------------------------------------
-# Loads the My Crops page (Showcasing all crops)
+# Loads the Individual crop page to add a crop
 @app.route('/showcrop/<variety_id>', methods=['GET'])
 def show_crop(variety_id):
     admin = flask.request.cookies.get('admin') == 'true'

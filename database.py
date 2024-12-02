@@ -548,6 +548,8 @@ def full_crop_info(crop_info_id):
             'variety_id': variety_table.variety_id,  # Include variety_id explicitly
             'family_name': family_table.family_name,
             'latin_name': species_table.latin_name,
+            'species_name': species_table.species_name,
+            'species_id': species_table.species_id,
             'variety_name': variety_table.variety_name,
             'crop_type': info_table.crop_type,
             'template': info_table.template,
