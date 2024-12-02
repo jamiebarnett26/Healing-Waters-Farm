@@ -60,11 +60,13 @@
                     <h3>Select a task to edit</h3>
                     <label for="taskDropdown-{{todos[0]['user_crop_id']}}">Task:</label>
                     <select id="taskDropdown-{{todos[0]['user_crop_id']}}">
-                        <option value="indoor_seed_starting_date">Start indoor seeding</option>
-                        <option value="transplanting_date">Transplant plants outdoors</option>
-                        <option value="direct_sow_date">Direct sowing</option>
-                        <option value="harvest_date">Prepare for harvest</option>
+                        
+                        {% for todo in todos %}
+                            <option value={{ todo['task_id'] }}>{{ todo['task'] }}</option>
+                        {% endfor %}
                     </select>
+                    <label for="newTaskInput-{{todos[0]['user_crop_id']}}">Task Name:</label>
+                    <input type="text" id="newTaskInput-{{todos[0]['user_crop_id']}}">
                     <label for="taskDateInput-{{todos[0]['user_crop_id']}}">New Date:</label>
                     <input type="date" id="taskDateInput-{{todos[0]['user_crop_id']}}">
                     <button onclick="submitEdit({{ todos[0]['user_crop_id'] }})">Save</button>
@@ -127,11 +129,13 @@
         }
 
         function submitEdit(userCropId) {
+
             const taskField = document.getElementById(`taskDropdown-${userCropId}`).value;
+            const taskName = document.getElementById(`newTaskInput-${userCropId}`).value;
             const newDate = document.getElementById(`taskDateInput-${userCropId}`).value;
 
-            if (!taskField || !newDate) {
-                alert("Please select a task and a date!");
+            if (!taskField || !newDate || !taskName) {
+                alert("Please select new values !");
                 return;
             }
 
@@ -141,8 +145,8 @@
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    user_crop_id: userCropId,
-                    date_field: taskField,
+                    task_id: taskField,
+                    task_name: taskName,
                     new_date: newDate
                 }),
                 success: function (response) {
@@ -169,12 +173,13 @@
         function submitAdd(userCropId) {
             const newTask = document.getElementById(`newTaskInput-${userCropId}`).value;
             const taskDate = document.getElementById(`addTaskDate-${userCropId}`).value;
+            
 
             if (!newTask || !taskDate) {
                 alert("Please enter a task name and date!");
                 return;
             }
-
+            
             // Send AJAX request to add the task
             $.ajax({
                 url: '/add_task',

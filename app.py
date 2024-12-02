@@ -39,16 +39,20 @@ def index():
     # Show a simple welcome or landing page if no user_id is found.
     return flask.redirect('/login')
 
-#-----------------------------------------------------------------------
-# Currently not in use - loads manual login page
-@app.route('/manual_login')
-def manual_login():
-    html_code = flask.render_template('manual_login.html')
-    response = flask.make_response(html_code)
-    return response
 
 #-----------------------------------------------------------------------
 # Helper function, returns crop to do list for cards
+@app.route('/checkBox', methods=['POST'])
+def check_box():
+    data = flask.request.get_json()
+    task_id = data.get('task_id')
+    completed = data.get('completed')
+    database.checkbox(task_id, completed)
+    return flask.jsonify({
+        'success': True,
+        'completed': completed  # Return the updated status of the task
+    })
+
 def getCardInfo():
     user_id = flask.request.cookies.get('user_id')
     if not user_id:
@@ -89,13 +93,10 @@ def getCardInfo():
             app.logger.error("Variety ID missing for variety_name: %s", variety_name)
             continue
 
-        # Safely get todos
-        todos = getWeeklyTasks(user_crop, full_crop_info.get('frost_sensitivity_rating', 0))
-        if todos is None:
-            todos = []  # Default to an empty list if no tasks found.
+        todos = database.get_tasks(user_crop.get('user_crop_id'))
+        weekly_todos = getWeeklyTasks(todos, user_crop['user_crop_id'], user_id, full_crop_info.get('frost_sensitivity_rating', 0))
+        all_todos.append(weekly_todos)
 
-        database.get_user_added_tasks(user_crop.get('user_crop_id'), todos)
-        all_todos.append(todos)
 
     # Ensure all lists have the same length
     if len(user_crop_infos) != len(all_todos) or len(user_crop_infos) != len(variety_id):
@@ -115,18 +116,14 @@ def deleteTemplate():
     except Exception as e:
         return flask.jsonify({'success': False, 'message': str(e)}), 500
 
-
-
-
 @app.route('/edit_task', methods = ['POST'])
 def editTask():
-    user_id = flask.request.cookies.get('user_id')
     data = flask.request.get_json()
-    user_crop_id = data.get('user_crop_id')
-    date_field = data.get('date_field')
+    task_id = data.get('task_id')
+    task_name = data.get('task_name')
     new_date = data.get('new_date')
     try: 
-        database.edit_user_tasks(user_id, user_crop_id, date_field, new_date)
+        database.edit_tasks(task_id, task_name, new_date)
         return flask.jsonify({'success': True, 'message': 'Date updated successfully'})
     except Exception as e:
         return flask.jsonify({'success': False, 'message': str(e)}), 500
@@ -144,25 +141,17 @@ def addTask():
     except Exception as e:
         return flask.jsonify({'success': False, 'message': str(e)}), 500
 
-def getWeeklyTasks(user_crop, frost_rating):
+def getWeeklyTasks(todos, user_crop_id, user_id, frost_rating):
     today = datetime.date.today()
     enddate = today + datetime.timedelta(days=7)
-    todos = []
-    
-    if user_crop['indoor_seed_starting_date'] is not None and user_crop['indoor_seed_starting_date'] <= enddate:
-        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Start indoor seeding", "date": user_crop['indoor_seed_starting_date'], "done": False})
-    if user_crop['transplanting_date'] is not None and  user_crop['transplanting_date'] <= enddate:
-        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Transplant plants outdoors", "date": user_crop['transplanting_date'], "done": False})
-    if user_crop['direct_sow_date'] is not None and user_crop['direct_sow_date'] <= enddate:
-        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Direct sowing", "date": user_crop['direct_sow_date'], "done": False})
-    if user_crop['harvest_date'] is not None and user_crop['harvest_date'] <= enddate:
-        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Prepare for harvest", "date": user_crop['harvest_date'], "done": False})
-    if user_crop['seed_harvest_date'] is not None and user_crop['seed_harvest_date'] <= enddate:
-        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Prepare for seed harvest", "date": user_crop['seed_harvest_date'], "done": False})
-    if frost_rating is not None and frost_rating > 1 and inFrost():
-        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "This plant is frost-sensitive and you are in a frost!", "date": today, "done": False})
 
-    return todos
+    weekly_todos = []
+    
+    for todo in todos:    
+        if todo['date'] <= enddate:
+            weekly_todos.append(todo)
+
+    return weekly_todos
 
 def inFrost():
     today = datetime.datetime.today()
@@ -171,8 +160,6 @@ def inFrost():
     oct_20 = datetime.datetime(today.year, 10, 20)
     apr_21 = datetime.datetime(today.year+1, 4, 21)
     
-    print(apr_21, file=sys.stderr)
-    print(oct_20, file=sys.stderr)
     # Check if today is between the two dates
     return oct_20 <= today <= apr_21
 
@@ -425,9 +412,10 @@ def add_user_crop(crop_info_id):
         'seed_harvest_date': date5
     }
 
-    database.add_user_crop(user_crop)
+    database.add_user_crop(user_crop, user_id)
 
-    return homepage()
+
+    return redirect('/homepage')
 
 #-----------------------------------------------------------------------
 
@@ -435,7 +423,6 @@ def add_user_crop(crop_info_id):
 def my_crops():
     user_id = flask.request.cookies.get('user_id')
     admin = flask.request.cookies.get('admin') == 'true'
-    print(admin, file=sys.stderr)
     if not user_id:
         return flask.redirect('/login')
     user_crops = database.get_user_crops(user_id)
