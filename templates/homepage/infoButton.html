@@ -14,7 +14,9 @@
 
 </head>
 <body>
+  {% if todos|length > 0 %}
     <button class="btn btn-danger" onclick="deleteCrop({{ todos[0]['user_crop_id'] }})">Delete Crop</button>
+  {% endif %}
     
          <!-- modal popup -->
          <div class="modal" tabindex="-1" id="infoModal">
