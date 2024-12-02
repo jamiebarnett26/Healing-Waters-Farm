@@ -3,7 +3,7 @@
         <div class="col-2 p-0">
             <input type="checkbox" class="check" id="check-{{ todo.task_id }}" {% if todo.completed %} checked {% endif %} />
             <label for="check-{{ todo.task_id }}" 
-                onclick="updateTaskStatus({{ todo.task_id }}, {{ todo.completed}})" 
+                onclick="updateTaskStatus({{ todo.task_id }}, {{ todo.completed | lower }})" 
                 class="label" 
                 data-task-id="{{ todo.task_id }}">
                 <svg width="45" height="45" viewBox="0 0 95 95">
@@ -36,12 +36,12 @@
             success: function(response) {
                 if (response.success) {
                     // Find the checkbox element by ID
-                    const checkbox = document.getElementById(`check-${taskId}`);
-                    if (checkbox) {
-                        checkbox.checked = !checkbox.checked; // Toggle the checkbox state
-                    } else {
-                        console.error("Checkbox not found for taskId: ", taskId);
-                    }
+                    // const checkbox = document.getElementById(`check-${taskId}`);
+                    // if (checkbox) {
+                    //     checkbox.checked = completed; // Toggle the checkbox state
+                    // } else {
+                    //     console.error("Checkbox not found for taskId: ", taskId);
+                    // }
                 } else {
                     alert("Failed to update task status.");
                 }

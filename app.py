@@ -44,6 +44,7 @@ def index():
 # Helper function, returns crop to do list for cards
 @app.route('/checkBox', methods=['POST'])
 def check_box():
+    app.logger.info("AH")
     data = flask.request.get_json()
     task_id = data.get('task_id')
     completed = data.get('completed')

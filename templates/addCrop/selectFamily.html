@@ -370,7 +370,6 @@
         getVarietyResults(selectedValue);
         var speciesActionsContainer = document.getElementById('editSpeciesActions');
         speciesActionsContainer.innerHTML = `
-            
             <button type="button" onclick="togglePopup('editSpeciesPopup${selectedValue}')" class="btn btn-success btn-sm">Edit</button>
             <form action="/deletespecies/${selectedValue}" method="post" class="d-inline">
                 <input type="submit" value="Delete" class="btn btn-danger btn-sm">
@@ -386,7 +385,7 @@
                 </form>
             </div>
             <button type="button" onclick="togglePopup('addVarietyPopup')" class="btn btn-success btn-sm">Add Variety</button>
-             <div id="addVarietyPopup" style="display: none; 
+            <div id="addVarietyPopup" style="display: none; 
                 position: fixed; 
                 top: 50%; 
                 left: 50%; 
