@@ -11,6 +11,8 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <!-- Bootstrap Icons! -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <!-- CSS for todo list element -->
+    <link rel = "stylesheet" href = "../../static/css/todo.css">
 
 
     <meta name="theme-color" content="#e7fff5"/>
@@ -93,7 +95,12 @@
         </div>
     </div>
     <div class="container-fluid">
-        {% include 'calendar.html' %}
+        <div class="row">
+            <div class="checkbox-wrapper-11">
+                <input id="02-11" type="checkbox" name="r" value="2">
+                <label for="02-11">Task 1</label>
+            </div>
+        </div>
     </div>
     
 
@@ -107,4 +114,8 @@
                 $(this).text('Done!');
             });
     });
+
+    function show_edit_tasks(task_id) {
+
+    }
 </script>
