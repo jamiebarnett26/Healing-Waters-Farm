@@ -35,7 +35,7 @@
                 <div class="col">
                     <a href="/showcrop/{{ crop_info['variety_id'] }}" class="btn btn-light w-100">
                         <!-- Placeholder image; you can customize to dynamically load specific images -->
-                        <img src="/static/icon/corn.png" class="img-fluid crop-icon" alt="crop_info['variety_name']">
+                        <img src="/static/icon/crop.png" class="img-fluid crop-icon" alt="crop_info['variety_name']">
                         <div class="mt-2">{{ crop_info['variety_name'] }}</div>
                         <small class="text-muted">{{ crop_info['latin_name'] }}</small>
                     </a>
@@ -43,7 +43,7 @@
             {% endfor %}
         </div>
         <div class="mt-4">
-            <a href="/selectFamily" class="btn btn-custom-green w-100">Add Crop</a>
+            <a href="/selectFamily" class="btn btn-custom-green w-100">Add New Crop +</a>
         </div>
     </div>
 
