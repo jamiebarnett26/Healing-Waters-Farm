@@ -76,7 +76,7 @@ def getCardInfo():
 
         user_crop_infos.append(database.full_crop_info(user_crop['crop_info_id']))
 
-        user_crop_id_list.append(user_crop_id)
+        user_crop_id_list.append(user_crop['user_crop_id'])
         
         todos = getWeeklyTasks(user_crop, full_crop_info['frost_sensitivity_rating'])
 
@@ -84,6 +84,7 @@ def getCardInfo():
         all_todos.append(todos)
     
     crops_with_todos = zip(user_crop_infos, all_todos, user_crop_id_list)
+    print(user_crop_id_list)
     
     return crops_with_todos
 
