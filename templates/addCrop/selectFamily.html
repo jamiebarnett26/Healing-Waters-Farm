@@ -74,7 +74,7 @@
             </div>
 
         
-        <div id="footer"> </div>
+        {<div id="footer"> </div>}
 
 
 
@@ -108,7 +108,8 @@
         if (!document.getElementById('addFamilyButton')) {
             const addFamilyButton = document.createElement('button');
             addFamilyButton.textContent = 'Add New Family';
-            addFamilyButton.id = 'addFamilyButton';  // Add an ID to the button
+            addFamilyButton.id = 'addFamilyButton';
+            addFamilyButton.classList.add('btn', 'btn-success', 'btn-lg', 'mt-3');
             addFamilyButton.onclick = () => togglePopup('addFamilyPopup');
             familyDiv.appendChild(addFamilyButton);
         }
@@ -332,27 +333,30 @@
             var familyActionsContainer = document.getElementById('editFamilyActions');
             console.log(familyActionsContainer);
             familyActionsContainer.innerHTML = `
-                <button type="button" onclick="togglePopup('editFamilyPopup${selectedValue}')">Edit</button>
-                <form action="/deletefamily/${selectedValue}" method="post">
-                    <input type="submit" value="Delete">
+                <button type="button" onclick="togglePopup('editFamilyPopup${selectedValue}')" class="btn btn-success btn-sm">Edit</button>
+                <form action="/deletefamily/${selectedValue}" method="post" class="d-inline">
+                    <input type="submit" value="Delete" class="btn btn-danger btn-sm">
                 </form>
-                <div id="editFamilyPopup${selectedValue}" class="popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); z-index: 1000;">
+
+                <div id="editFamilyPopup${selectedValue}" class="popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); z-index: 1000; border-radius: 8px;">
                     <form action="/editfamily/${selectedValue}" method="post">
                         <strong>Family Name</strong>
-                        <input type="text" name="family_name" autofocus> <br>
-                        <input type="submit" value="Edit Family">
-                        <button type="button" onclick="togglePopup('editFamilyPopup${selectedValue}')">Cancel</button>
+                        <input type="text" name="family_name" class="form-control mb-2" autofocus> <br>
+                        <input type="submit" value="Edit Family" class="btn btn-success">
+                        <button type="button" onclick="togglePopup('editFamilyPopup${selectedValue}')" class="btn btn-secondary btn-sm">Cancel</button>
                     </form>
                 </div>
-                <button onclick="togglePopup('addSpeciesPopup')">Add New Species</button>
-                <div id="addSpeciesPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); z-index: 1000;">
+
+                <button onclick="togglePopup('addSpeciesPopup')" class="btn btn-primary btn-sm">Add New Species</button>
+                <div id="addSpeciesPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); z-index: 1000; border-radius: 8px;">
                     <form action="/addspecies/${selectedValue}" method="post">
                         <strong>Species Name</strong>
-                        <input type="text" name="species_name" autofocus><br>
-                        <input type="submit" value="Add Species">
-                        <button type="button" onclick="togglePopup('addSpeciesPopup')">Cancel</button>
+                        <input type="text" name="species_name" class="form-control mb-2" autofocus><br>
+                        <input type="submit" value="Add Species" class="btn btn-success">
+                        <button type="button" onclick="togglePopup('addSpeciesPopup')" class="btn btn-secondary btn-sm">Cancel</button>
                     </form>
                 </div>
+
             `;
         });
     });
@@ -365,18 +369,18 @@
         var speciesActionsContainer = document.getElementById('editSpeciesActions');
         speciesActionsContainer.innerHTML = `
             
-            <button type="button" onclick="togglePopup('editSpeciesPopup${selectedValue}')">Edit</button>
-            <form action="/deletespecies/${selectedValue}" method="post">
-                <input type="submit" value="Delete">
+            <button type="button" onclick="togglePopup('editSpeciesPopup${selectedValue}')" class="btn btn-success btn-sm">Edit</button>
+            <form action="/deletespecies/${selectedValue}" method="post" class="d-inline">
+                <input type="submit" value="Delete" class="btn btn-danger btn-sm">
             </form>
-            <div id="editSpeciesPopup${selectedValue}" class="popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); z-index: 1000;">
-                <form action="/editspecies/{{ species['species_id'] }}" method="post">
+            <div id="editSpeciesPopup${selectedValue}" class="popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); z-index: 1000; border-radius: 8px;">
+                <form action="/editspecies/${selectedValue}" method="post">
                     <strong>Species Name</strong>
-                    <input type="text" name="species_name", autofocus> <br>
+                    <input type="text" name="species_name" class="form-control mb-2" autofocus> <br>
                     <strong>Latin Name</strong>
-                    <input type="text" name="latin_name",  autofocus> <br>
-                    <input type="submit" value="Edit species">
-                    <button type="button" onclick="togglePopup('editFamilyPopup${selectedValue}')">Cancel</button>
+                    <input type="text" name="latin_name" class="form-control mb-2" autofocus> <br>
+                    <input type="submit" value="Edit species" class="btn btn-success">
+                    <button type="button" onclick="togglePopup('editSpeciesPopup${selectedValue}')" class="btn btn-secondary btn-sm">Cancel</button>
                 </form>
             </div>
                    ` ;

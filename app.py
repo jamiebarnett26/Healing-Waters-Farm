@@ -9,7 +9,7 @@ import datetime
 
 from authlib.integrations.flask_client import OAuth
 from authlib.integrations.flask_client import OAuth
-from top import app
+from top import app, redirect, url_for
 import json
 import auth
 import crop_infos
@@ -263,9 +263,16 @@ def community():
 def add_question(user_id):
     title = flask.request.form.get('title')
     text = flask.request.form.get('text')
-    question = {'user_id':user_id, 'title':title, 'text':text, 'status':'Unresolved'}
+    if not user_id:
+        return flask.redirect('/login')
+    user = database.get_user(user_id, 'user_id')
+    if not user:
+        return flask.redirect('/login')
+     
+    user_name = user.first_name + " " + user.last_name
+    question = {'user_id':user_id, 'user_name':user_name, 'title':title, 'text':text, 'status':'Unresolved'}
     database.add_question(question)
-    return community()
+    return redirect(url_for('community'))
 
     
 #-----------------------------------------------------------------------
@@ -276,7 +283,7 @@ def post_edit_question(question_id):
     text  = flask.request.form.get('text')
     question = {'title':title, 'text':text}
     database.edit_question(question_id, question)
-    return community()
+    return redirect(url_for('community'))
 
 #-----------------------------------------------------------------------
 # functionality to delete
@@ -284,7 +291,7 @@ def post_edit_question(question_id):
 def delete_question(question_id):
     user_id = flask.request.cookies.get('user_id')
     database.delete_question(user_id, question_id)
-    return community()
+    return redirect(url_for('community'))
 
 
 #-----------------------------------------------------------------------
@@ -292,10 +299,17 @@ def delete_question(question_id):
 @app.route('/addreply/<question_id>', methods=['POST'])
 def add_reply(question_id):
     user_id = flask.request.cookies.get('user_id')
+    if not user_id:
+        return flask.redirect('/login')
+    user = database.get_user(user_id, 'user_id')
+    if not user:
+        return flask.redirect('/login')
+     
+    user_name = user.first_name + " " + user.last_name
     text = flask.request.form.get('text')
-    reply = {'question_id':question_id,'user_id':user_id, 'text':text}
+    reply = {'question_id':question_id,'user_id':user_id, 'user_name':user_name, 'text':text}
     database.add_reply(reply)
-    return community()
+    return redirect(url_for('community'))
 
 #-----------------------------------------------------------------------
 
@@ -304,7 +318,7 @@ def post_edit_reply(reply_id):
     text  = flask.request.form.get('text')
     reply = {'text':text}
     database.edit_reply(reply_id, reply)
-    return community()
+    return redirect(url_for('community'))
 
 #-----------------------------------------------------------------------
 # functionality to delete
@@ -312,18 +326,25 @@ def post_edit_reply(reply_id):
 def delete_reply(reply_id):
     user_id = flask.request.cookies.get('user_id')
     database.delete_reply(user_id, reply_id)
-    return community()
+    return redirect(url_for('community'))
 
 #-----------------------------------------------------------------------
 
 @app.route('/addannouncement/', methods=['POST'])
 def add_announcement():
     user_id = flask.request.cookies.get('user_id')
+    if not user_id:
+        return flask.redirect('/login')
+    user = database.get_user(user_id, 'user_id')
+    if not user:
+        return flask.redirect('/login')
+     
+    user_name = user.first_name + " " + user.last_name
     text = flask.request.form.get('text')
     title = flask.request.form.get('title')
-    announcement = {'user_id':user_id, 'text':text, 'title':title}
+    announcement = {'user_id':user_id, 'user_name':user_name, 'text':text, 'title':title}
     database.add_announcement(announcement)
-    return community()
+    return redirect(url_for('community'))
     
 #-----------------------------------------------------------------------
 
@@ -333,7 +354,7 @@ def post_edit_announcement(announcement_id):
     title = flask.request.form.get('title')
     announcement = {'text':text, 'title':title}
     database.edit_announcement(announcement_id, announcement)
-    return community()
+    return redirect(url_for('community'))
 
 #-----------------------------------------------------------------------
 # functionality to delete
@@ -341,7 +362,7 @@ def post_edit_announcement(announcement_id):
 def delete_announcement(announcement_id):
     user_id = flask.request.cookies.get('user_id')
     database.delete_announcement(user_id, announcement_id)
-    return community()
+    return redirect(url_for('community'))
 
 # helper method to get varieties and latin names as lists for user crops
 def get_crop_varieties_and_latin(user_id):
@@ -398,51 +419,6 @@ def show_crop(variety_id):
     return response
 
 
-#-----------------------------------------------------------------------
-
-# @app.route('/selectCropSpecification', methods=['GET'])
-# def show_species():
-#     family = flask.request.args.get('family', '')
-#     families = database.search_field_name('family', family)
-
-#     json_doc = json.dumps(families)
-#     response = flask.make_response(json_doc)
-#     response.headers['Content-Type'] = 'application/json'
-#     return response
-
-# #-----------------------------------------------------------------------
-
-# @app.route('/selectVariety/<species_id>', methods=['GET'])
-# def show_variety(species_id):
-#     admin = flask.request.cookies.get('admin') == 'true'
-#     varieties = database.variety_from_species(species_id)
-    
-#     html_code = flask.render_template(
-#         'addCrop/selectVariety.html',
-#         varieties=varieties,
-#         species_id=species_id,
-#         admin=admin,
-#         current_time=get_current_time()
-#     )
-    
-#     response = flask.make_response(html_code)
-#     return response
-
-# #-----------------------------------------------------------------------
-
-# @app.route('/createfamily', methods=['GET'])
-# def create_family():
-#     admin = flask.request.cookies.get('admin') == 'true'
-#     html_code = flask.render_template('createfamily.html',
-#                                       admin=admin,
-#                                       crop_infos=full_crop_infos,
-#                                       current_time=get_current_time())
-#     response = flask.make_response(html_code)
-#     return response
-
-#-----------------------------------------------------------------------
-
-
 @app.route('/addusercrop/<crop_info_id>')
 def add_user_crop(crop_info_id):
     user_id = flask.request.cookies.get('user_id')
@@ -476,6 +452,8 @@ def add_user_crop(crop_info_id):
 @app.route('/showusercrops', methods=['GET'])
 def my_crops():
     user_id = flask.request.cookies.get('user_id')
+    admin = flask.request.cookies.get('admin') == 'true'
+    print(admin, file=sys.stderr)
     if not user_id:
         return flask.redirect('/login')
     user_crops = database.get_user_crops(user_id)
@@ -483,7 +461,7 @@ def my_crops():
     for user_crop in user_crops:
         user_crop_info = database.full_crop_info(user_crop['crop_info_id'])
         user_crop_infos.append(user_crop_info)
-    return flask.render_template('showusercrops.html', crops=user_crop_infos)
+    return flask.render_template('showusercrops.html', crops=user_crop_infos, admin=admin)
 
 
 #-----------------------------------------------------------------------

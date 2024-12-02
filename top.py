@@ -1,5 +1,7 @@
 import flask
 from authlib.integrations.flask_client import OAuth
+from flask import redirect, url_for
+
 app = flask.Flask(__name__, template_folder='templates')
 
 
