@@ -442,14 +442,27 @@ def get_user_crops(user_id):
             user_crops.append(user_crop)
         return user_crops
 
-def edit_user_tasks(user_id, user_crop_id, date_field, new_date):
+def edit_default_tasks(user_id, user_crop_id, date_field, new_date):
     with sqlalchemy.orm.Session(_engine) as session:
-
         user_crops = session.query(User_Crop).filter(User_Crop.user_id == user_id).all()
         for crop in user_crops:
             if hasattr(crop, date_field):  
                 setattr(crop, date_field, new_date) 
         session.commit()
+
+def edit_user_tasks(user_id, user_crop_id, task_name, new_date):
+    with sqlalchemy.orm.Session(_engine) as session:
+        task = (
+            session.query(Tasks)
+            .filter(Tasks.user_crop_id == user_crop_id, Tasks.task_name == task_name)
+            .first()
+        )
+        
+        if not task:
+            raise ValueError(f"No task found for user_crop_id {user_crop_id} and task_name {task_name}")
+        task.task_date = new_date
+        session.commit()
+
 
 def delete_template(user_crop_id):
     with sqlalchemy.orm.Session(_engine) as session:

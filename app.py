@@ -98,17 +98,32 @@ def deleteTemplate():
         return flask.jsonify({'success': False, 'message': str(e)}), 500
 
 
-
-
-@app.route('/edit_task', methods = ['POST'])
+@app.route('/edit_task', methods=['POST'])
 def editTask():
+    TASK_FIELD_MAP = {
+        "Start indoor seeding": "indoor_seed_starting_date",
+        "Transplant plants outdoors": "transplanting_date",
+        "Direct sowing": "direct_sow_date",
+        "Prepare for harvest": "harvest_date",
+        "Prepare for seed harvest": "seed_harvest_date"
+    }
+
     user_id = flask.request.cookies.get('user_id')
     data = flask.request.get_json()
+
     user_crop_id = data.get('user_crop_id')
     date_field = data.get('date_field')
     new_date = data.get('new_date')
-    try: 
-        database.edit_user_tasks(user_id, user_crop_id, date_field, new_date)
+
+    db_field = TASK_FIELD_MAP.get(date_field, date_field)
+
+    try:
+        # Determine which database function to call
+        if db_field in TASK_FIELD_MAP.values():
+            database.edit_default_tasks(user_id, user_crop_id, db_field, new_date)
+        else:
+            database.edit_user_tasks(user_id, user_crop_id, db_field, new_date)
+
         return flask.jsonify({'success': True, 'message': 'Date updated successfully'})
     except Exception as e:
         return flask.jsonify({'success': False, 'message': str(e)}), 500
@@ -208,8 +223,8 @@ def load_cropCards():
         }
         for user_crop, todos, id in crops_with_todos
     ]
+
     json_doc = json.dumps(crops_with_todos_list, cls=CustomJSONEncoder)
-    print(json_doc)
     response = flask.make_response(json_doc)
     response.headers['Content-Type'] = 'application/json'
     return response

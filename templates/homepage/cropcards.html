@@ -34,16 +34,19 @@
 <!-------------------------------Static HTML---------------------------------->
     <body>
     <!-- Crop Cards -->
-    <div class="d-flex flex-row flex-nowrap overflow-scroll px-2 pe-5">
-        <div id="cropcards"> </div>
-        <!-- Last Card - for adding crop -->
-        <div class="card card-body text-white m-2 mb-3 d-flex align-items-center" style="min-width: 75vw; min-height: 300px; background-color: #517D5A;">
-            <h1 class = "mb-4" style = "font-size: 10vw; text-align: center;"> <b>Add New Crop</b></h1>
-            <div class="add_crop_card text-white flex-column bg-dark" id= "end_add_crop">
-                <img src="../static/img/plus.svg" class = "mb-2" style = "height: 30vw;">
+     <div id="cropContainer">
+        <div class="d-flex flex-row flex-nowrap overflow-scroll px-2 pe-5">
+            <div id="cropcards"> </div>
+            <!-- Last Card - for adding crop -->
+            <div class="card card-body text-white m-2 mb-3 d-flex align-items-center" style="min-width: 75vw; min-height: 300px; background-color: #517D5A;">
+                <h1 class = "mb-4" style = "font-size: 10vw; text-align: center;"> <b>Add New Crop</b></h1>
+                <div class="add_crop_card text-white flex-column bg-dark" id= "end_add_crop">
+                    <img src="../static/img/plus.svg" class = "mb-2" style = "height: 30vw;">
+                </div>
             </div>
         </div>
-    </div>
+     </div>
+
 
      <!-- modal popup -->
      <div class="modal" tabindex="-1" id="infoModal">
@@ -98,8 +101,40 @@
             <div class="todo">
                 <input type="checkbox" {{#done}}checked{{/done}} disabled />
                 <span>{{task}}</span>
+                <div>{{date}}<div>
             </div>
             {{/todos}}
+        </div>
+        <!-- Edit Tasks and Forms -->
+        <div id=edit-add-button>
+            <button id="edit-button-{{ user_crop_id }}" onclick="showEditForm({{ user_crop_id }})">Edit Task Dates</button>
+            <div id="edit-form-{{user_crop_id}}" style="display: none;">
+            <h3>Select a task to edit</h3>
+            <label for="taskDropdown-{{user_crop_id}}">Task:</label>
+            <select id="taskDropdown-{{user_crop_id}}">
+                {{#todos}}
+                    <option value="{{task}}"> {{task}} </option>
+                {{/todos}}
+            </select>
+            <label for="taskDateInput-{{ user_crop_id }}">New Date:</label>
+            <input type="date" id="taskDateInput-{{ user_crop_id }}">
+            <button onclick="submitEdit({{ user_crop_id }})">Save</button>
+            <button onclick="cancelEdit({{ user_crop_id }})">Cancel</button>
+        </div>
+
+        <!-- Add Tasks and Forms -->
+        <div id=addButton>
+            <button id="add-button-{{ user_crop_id }}" onclick="showAddForm({{ user_crop_id }})">Add Task</button>
+            <div id="add-form-{{ user_crop_id }}" style="display: none;">
+                <h3> Add a task </h3>
+                <label for="newTaskInput-{{ user_crop_id }}">New Task:</label>
+                <input type"text" id="newTaskInput-{{ user_crop_id }}">
+
+                <label for="addTaskDate-{{ user_crop_id }}">Date:</label>
+                <input type="date" id="addTaskDate-{{ user_crop_id }}">
+                <button onclick="submitAdd({{ user_crop_id }})">Save</button>
+                <button onclick="cancelAdd({{ user_crop_id }})">Cancel</button>  
+        
         </div>
     </div>
     {{/crops_with_todos}}
@@ -114,7 +149,89 @@ let templateModalBody = `
 
 `;
 
+//---------------------------------------------------------------------------------
+// Edit button
+//---------------------------------------------------------------------------------
 
+
+function showEditForm(userCropId) {
+            document.getElementById(`edit-form-${userCropId}`).style.display = 'block';
+        }
+
+function cancelEdit(userCropId) {
+    document.getElementById(`edit-form-${userCropId}`).style.display = 'none';
+}
+
+function submitEdit(userCropId) {
+    const taskField = document.getElementById(`taskDropdown-${userCropId}`).value;
+    const newDate = document.getElementById(`taskDateInput-${userCropId}`).value;
+
+    if (!taskField || !newDate) {
+        alert("Please select a task and a date!");
+        return;
+    }
+    
+    $.ajax({
+        url: '/edit_task',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            user_crop_id: userCropId,
+            date_field: taskField,
+            new_date: newDate
+        }),
+        success: function (response) {
+            setTimeout(() => {
+                getCropCards();
+            }, 1000);
+        },
+        error: function (xhr, status, error) {
+            alert("An error occurred while updating the task: " + error);
+        }
+    });
+}
+
+//---------------------------------------------------------------------------------
+// Add button
+//---------------------------------------------------------------------------------
+
+function showAddForm(userCropId) {
+            document.getElementById(`add-form-${userCropId}`).style.display = 'block';
+}
+
+function cancelAdd(userCropId) {
+    document.getElementById(`add-form-${userCropId}`).style.display = 'none';
+}
+
+function submitAdd(userCropId) {
+    const newTask = document.getElementById(`newTaskInput-${userCropId}`).value;
+    const taskDate = document.getElementById(`addTaskDate-${userCropId}`).value;
+
+    if (!newTask || !taskDate) {
+        alert("Please enter a task name and date!");
+        return;
+    }
+    $.ajax({
+        url: '/add_task',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            user_crop_id: userCropId,
+            new_task: newTask,
+            new_date: taskDate
+        }),
+        success: function (response) {
+            setTimeout(() => {
+                getCropCards();
+            }, 1000);
+        },
+        error: function (xhr, status, error) {
+            alert("An error occurred while adding the task: " + error);
+        }
+    });
+
+
+}
 //---------------------------------------------------------------------------------
 // Delete Crop
 //---------------------------------------------------------------------------------
@@ -163,7 +280,6 @@ let templateModalBody = `
         function handleResponse(crop_with_todos) {
             if (crop_with_todos.length === 0) {
                 $('#cropcards').html('');
-                $('#crop-card-').html('');
             } else {
                 let html = makeCropCard(crop_with_todos);
                 $('#cropcards').html(html);
