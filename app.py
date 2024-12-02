@@ -151,6 +151,9 @@ def getWeeklyTasks(todos, user_crop_id, user_id, frost_rating):
     for todo in todos:    
         if todo['date'] <= enddate:
             weekly_todos.append(todo)
+    
+    if frost_rating is not None and frost_rating > 1 and inFrost():
+        todos.append({"user_crop_id":user_crop_id, "task": "This plant is frost-sensitive and you are in a frost!", "date": today, "done": False})
 
     return weekly_todos
 
