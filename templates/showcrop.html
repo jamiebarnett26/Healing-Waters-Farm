@@ -120,9 +120,9 @@
     max-width: 600px; /* Prevent it from being too wide */">
         <form action="/editvariety/{{ crop_infos[0]['variety_id'] }}" method="post">
             <strong>Variety</strong>
-            <input type="text", name="variety_name", autofocus> <br>
+            <input type="text", name="variety_name" value='{{ crop_infos[0]['variety_name'] }}' autofocus> <br>
             <strong>Crop Type</strong>
-            <input type="text", name="crop_type_name", autofocus> <br>
+            <input type="text", name="crop_type_name" value='{{ crop_infos[0]['crop_type_name'] }}' autofocus> <br>
             <strong>Seed Spacing for Harvesting Crops:</strong>
             <input type="text", name="plant_spacing_harvest", value={{ crop_infos[0]['plant_spacing_harvest'] }} autofocus> <br>
             <strong>Seed Spacing for Harvesting Seeds:</strong>

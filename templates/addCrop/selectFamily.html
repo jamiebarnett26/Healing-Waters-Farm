@@ -74,7 +74,7 @@
             </div>
 
         
-        {<div id="footer"> </div>}
+        <div id="footer"> </div>
 
 
 
@@ -352,6 +352,8 @@
                     <form action="/addspecies/${selectedValue}" method="post">
                         <strong>Species Name</strong>
                         <input type="text" name="species_name" class="form-control mb-2" autofocus><br>
+                        <strong>Latin Name</strong>
+                        <input type="text" name="latin_name" class="form-control mb-2" autofocus><br>
                         <input type="submit" value="Add Species" class="btn btn-success">
                         <button type="button" onclick="togglePopup('addSpeciesPopup')" class="btn btn-secondary btn-sm">Cancel</button>
                     </form>
@@ -383,6 +385,52 @@
                     <button type="button" onclick="togglePopup('editSpeciesPopup${selectedValue}')" class="btn btn-secondary btn-sm">Cancel</button>
                 </form>
             </div>
+            <button type="button" onclick="togglePopup('addVarietyPopup')" class="btn btn-success btn-sm">Add Variety</button>
+             <div id="addVarietyPopup" style="display: none; 
+                position: fixed; 
+                top: 50%; 
+                left: 50%; 
+                transform: translate(-50%, -50%); 
+                border: 1px solid #ccc; 
+                background: #fff; 
+                padding: 20px; 
+                box-shadow: 0px 4px 6px rgba(0,0,0,0.2); 
+                z-index: 1000; 
+                max-height: 80vh; /* Limit the height */
+                overflow-y: auto; /* Make it scrollable */ 
+                width: 90%; /* Adjust width for smaller screens */
+                max-width: 600px; /* Prevent it from being too wide */">
+                    <form action="/addvariety/${selectedValue}" method="post">
+                        <strong>Variety</strong>
+                        <input type="text", name="variety_name", autofocus> <br>
+                        <strong>Crop Type</strong>
+                        <input type="text", name="crop_type_name", autofocus> <br>
+                        <strong>Seed Spacing for Harvesting Crops:</strong>
+                        <input type="text", name="plant_spacing_harvest", value=0 autofocus> <br>
+                        <strong>Seed Spacing for Harvesting Seeds:</strong>
+                        <input type="text", name="plant_spacing_seed", value=0 autofocus> <br>
+                        <strong>Row Spacing for Harvesting Crops:</strong>
+                        <input type="text", name="row_spacing_harvest", value=0 autofocus> <br>
+                        <strong>Row Spacing for Harvesting Seeds:</strong>
+                        <input type="text", name="row_spacing_seed'", value=0 autofocus> <br>
+                        <strong>Days to Maturity for Harvesting Crops:</strong>
+                        <input type="text", name="days_to_maturity_harvest", value=0 autofocus> <br>
+                        <strong>Days to Maturity for Harvesting Seed:</strong>
+                        <input type="text", name="days_to_maturity_seed", value=0 autofocus> <br>
+                        <strong>Days to Transplantation:</strong>
+                        <input type="text", name="days_to_transplantation", value=0 autofocus> <br>
+                        <strong>Days to Direct Sow:</strong>
+                        <input type="text", name="days_to_direct_sow", value=0 autofocus> <br>
+                        <strong>Days for Harvesting Crops:</strong>
+                        <input type="text", name="days_to_harvest", value=0 autofocus> <br>
+                        <strong>Days for Harvesting Seeds:</strong>
+                        <input type="text", name="days_to_seed_harvest", value=0 autofocus> <br>
+                        <strong>Frost Sensitivity Rating:</strong>
+                        <input type="text", name="frost_sensitivity_rating", value=0 autofocus> <br>
+                        <input type="submit" value="Add Variety">
+                        <button type="button" onclick="togglePopup('addVarietyPopup')">Cancel</button>
+                    </form>
+                </div>
                    ` ;
     });
 

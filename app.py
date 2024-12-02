@@ -382,7 +382,6 @@ def cropPage(variety_name):
     return response
 
 #-----------------------------------------------------------------------
-# Loads the My Crops page (Showcasing all crops)
 @app.route('/showcrop/<variety_id>', methods=['GET'])
 def show_crop(variety_id):
     admin = flask.request.cookies.get('admin') == 'true'
@@ -392,13 +391,11 @@ def show_crop(variety_id):
         full_crop_info = database.full_crop_info(crop_info['crop_info_id'])
         full_crop_infos.append(full_crop_info)
 
-    app.logger.info(variety_id)
-    app.logger.info(database.species_from_variety(variety_id))
     species_id = database.species_from_variety(variety_id).species_id
-    app.logger.info(species_id)
     html_code = flask.render_template('showcrop.html',
                                       crop_info_id=crop_infos[0]['crop_info_id'],
                                       species_id=species_id,
+                                      admin=admin,
                                       crop_infos=full_crop_infos)
     response = flask.make_response(html_code)
     return response
