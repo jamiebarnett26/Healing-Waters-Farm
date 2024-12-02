@@ -203,8 +203,13 @@ def homepage():
     return response
 
 @app.route('/testingnewcropinfo', methods = ['GET'])
-def new_show_crop():
-    return flask.send_file('templates/newcropinfo.html')
+def new_show_crop( ):
+    user_id = flask.request.cookies.get('user_id')
+    if not user_id:
+        return flask.redirect('/login')
+
+    user_crops = database.get_user_crops(user_id)
+    return flask.render_template('newcropinfo.html', user_crops=user_crops)
 
 #-----------------------------------------------------------------------
 # @app.route('/showcrop/<int:crop_info_id>')

@@ -5,12 +5,48 @@ import database
 import time
 import json
 import sys
+import app
+import datetime
 
 def get_current_time():
     return time.asctime(time.localtime())
 
 @app.route('/getTasks', methods=['GET'])
 def get_tasks():
+    user_id = flask.request.cookies.get('user_id')
+    if not user_id:
+        return flask.redirect('/login')
+    
+    user_crop = "burh"
+    
+    today = datetime.date.today()
+    enddate = today + datetime.timedelta(days=7)
+    todos = []
+    
+    if user_crop['indoor_seed_starting_date'] is not None and user_crop['indoor_seed_starting_date'] <= enddate:
+        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Start indoor seeding", "date": user_crop['indoor_seed_starting_date'], "done": False})
+    if user_crop['transplanting_date'] is not None and  user_crop['transplanting_date'] <= enddate:
+        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Transplant plants outdoors", "date": user_crop['transplanting_date'], "done": False})
+    if user_crop['direct_sow_date'] is not None and user_crop['direct_sow_date'] <= enddate:
+        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Direct sowing", "date": user_crop['direct_sow_date'], "done": False})
+    if user_crop['harvest_date'] is not None and user_crop['harvest_date'] <= enddate:
+        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Prepare for harvest", "date": user_crop['harvest_date'], "done": False})
+    if user_crop['seed_harvest_date'] is not None and user_crop['seed_harvest_date'] <= enddate:
+        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "Prepare for seed harvest", "date": user_crop['seed_harvest_date'], "done": False})
+    if frost_rating is not None and frost_rating > 1 and inFrost():
+        todos.append({"user_crop_id":user_crop['user_crop_id'], "task": "This plant is frost-sensitive and you are in a frost!", "date": today, "done": False})
+
+    return todos
+
+
+
+    user_crops = database.get_user_crops(user_id)
+    todos = app.getWeeklyTasks(user_crop, full_crop_info.get('frost_sensitivity_rating', 0))
+    
+
+
+@app.route('/getTasks2', methods=['GET'])
+def get_tasks2():
     user_id = flask.request.cookies.get('user_id')
     if not user_id:
         return flask.redirect('/login')
@@ -53,7 +89,7 @@ def get_tasks():
             continue
 
         # Safely get todos
-        todos = getWeeklyTasks(user_crop, full_crop_info.get('frost_sensitivity_rating', 0))
+        todos = app.getWeeklyTasks(user_crop, full_crop_info.get('frost_sensitivity_rating', 0))
         if todos is None:
             todos = []  # Default to an empty list if no tasks found.
 
