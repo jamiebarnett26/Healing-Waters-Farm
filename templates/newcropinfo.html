@@ -79,8 +79,8 @@
                 </div>
             </div>
             <div class="col-6 d-flex flex-column justify-content-middle"> 
-                <div class="crop-name" id = "crop-name-block"> {{ variety_name }} </div>
-                <div class="latin-name" id="latin-name-block"> {{ latin_name }}</div> 
+                <div class="crop-name"> {{ variety_name }} </div>
+                <div class="latin-name"> {{ latin_name }}</div> 
                 </div>
                 
             <div class="col-2 d-flex flex-column justify-content-end text-center align-content-center">
@@ -105,7 +105,7 @@
 
     <div>
         <h1>Your Tasks</h1>
-        <ul id="taskList"></ul>
+        <ul id="taskList" style="font-size: large;"></ul>
     </div>
 </body>
 
@@ -130,10 +130,16 @@
             return Mustache.render(templateFamilyList, map);
         }
     }
+ 
+    // function to create the inner text for the html element with the todo list
+    const createTodoItem = (todo) => 
+    `
+        <li>
+            Task: ${todo.task}, Date: ${todo.date}, Done: ${todo.done}
+        </li>
+    `
 
     $(document).ready(function() {
-        
-        $
 
         $.ajax({
             url: '/getTasks',
@@ -143,11 +149,7 @@
                 console.log('Todos:', todos);
 
                 todos.forEach(todo => {
-                    $('#taskList').append(`
-                        <li>
-                            Task: ${todo.task}, Date: ${todo.date}, Done: ${todo.done}
-                        </li>
-                    `);
+                    $('#taskList').append(createTodoItem(todo));
                 });
             },
             error: function(xhr, status, error) {
