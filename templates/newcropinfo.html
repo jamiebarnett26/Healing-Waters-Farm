@@ -70,6 +70,22 @@
         .tasks {
             font-size: clamp(15px, 4vw, 45px);
         }
+
+        .checkbox-wrapper-11 {
+            transform: scale(1.5); 
+            transform-origin: top left; 
+        }
+
+        /* For the checkbox tasks and dates below */
+        .checkbox-wrapper-11 label span.task {
+            display: block; /* Ensure task is on its own line */
+            font-weight: bold;
+        }
+
+        .checkbox-wrapper-11 label span.date {
+            display: block; /* Ensure date is on its own line */
+            font-size: 0.8em;
+        }
     </style>
 </head>
 
@@ -100,13 +116,7 @@
     </div>
     <div class="container-fluid">
         <div class="row">
-            <div class="checkbox-wrapper-11">
-                <input id="02-11" type="checkbox" name="r" value="2">
-                <label for="02-11">Task 1</label>
-            </div>
-        </div>
-        <div class="row">
-            <h1>Your Tasks</h1>
+            <h1 style = "font-size: 10vw; font-weight: bold;"><u>Tasks:</u></h1>
             <span id="taskList" class = "tasks"></span>
         </div>
     </div>
@@ -125,22 +135,18 @@
                 $(this).text('Done!');
             });
     });
-
-    
-    function show_tasks(task_id) {
-        const tasksDiv = $('#tasksDiv')
-        function makeCropList(family) {
-            let map = {family: family};
-            return Mustache.render(templateFamilyList, map);
-        }
-    }
  
     // function to create the inner text for the html element with the todo list
-    const createTodoItem = (todo) => 
+    const createTodoItem = (todo, index) => 
     `
         <div class="checkbox-wrapper-11">
-                <input id="02-12" type="checkbox" value="2">
-                <label for="02-12"> ${todo.task} </label>
+                <input id="02-${index}" type="checkbox" value="2">
+                <label for="02-${index}">
+                    <span class="task"> ${todo.task} </span>
+                    <span class="date">Due: ${todo.date} </span>
+                </label>
+            <hr>
+            <br>
         </div>
     `
 
@@ -153,10 +159,11 @@
             success: function(todos) {
                 console.log('Todos:', todos);
 
-                todos.forEach(todo => {
-                    $('#taskList').append(createTodoItem(todo));
+                todos.forEach((todo, index) => {
+                    $('#taskList').append(createTodoItem(todo, index));
                 });
             },
+
             error: function(xhr, status, error) {
                 console.error('Error fetching tasks:', error);
             }
