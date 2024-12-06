@@ -42,7 +42,6 @@ class Crop_Info (Base):
     crop_info_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     variety_id = sqlalchemy.Column(sqlalchemy.Integer)
     crop_type = sqlalchemy.Column(sqlalchemy.String)
-    template = sqlalchemy.Column(sqlalchemy.Boolean)
     days_to_maturity = sqlalchemy.Column(sqlalchemy.Integer)
     plant_spacing_harvest = sqlalchemy.Column(sqlalchemy.Integer)
     plant_spacing_seed = sqlalchemy.Column(sqlalchemy.Integer)
@@ -376,7 +375,6 @@ def search_field_id(search_field, search_value):
                 'crop_info_id': row.crop_info_id,  # Use ':' instead of '='
                 'variety_id': row.variety_id,
                 'crop_type': row.crop_type,
-                'template': row.template,
                 'days_to_maturity': row.days_to_maturity,
                 'plant_spacing_harvest': row.plant_spacing_harvest,
                 'plant_spacing_seed': row.plant_spacing_seed,
@@ -488,7 +486,6 @@ def crop_info_from_variety(variety_id):
                 'crop_info_id': row.crop_info_id,  # Use ':' instead of '='
                 'variety_id': variety_id,
                 'crop_type': row.crop_type,
-                'template': row.template,
                 'days_to_maturity': row.days_to_maturity,
                 'plant_spacing_harvest': row.plant_spacing_harvest,
                 'plant_spacing_seed': row.plant_spacing_seed,
@@ -561,7 +558,6 @@ def full_crop_info(crop_info_id):
             'latin_name': species_table.latin_name,
             'variety_name': variety_table.variety_name,
             'crop_type': info_table.crop_type,
-            'template': info_table.template,
             'days_to_maturity': info_table.days_to_maturity,
             'plant_spacing_harvest': info_table.plant_spacing_harvest,
             'plant_spacing_seed': info_table.plant_spacing_seed,
@@ -576,23 +572,6 @@ def full_crop_info(crop_info_id):
             'frost_sensitivity_rating': info_table.frost_sensitivity_rating
         }
         return crop_info
-
-
-def get_template_crop(species_id):
-    with get_session() as session:
-        varieties = variety_from_species(species_id)
-        variety_ids = []
-        for variety in varieties:
-            variety_ids.append(variety['variety_id'])
-        # Now, retrieve all Crop_Info entries for the found variety IDs
-        crop_info_id = session.query(Crop_Info.crop_info_id).filter(
-            Crop_Info.variety_id.in_(variety_ids),
-            Crop_Info.template == True
-        ).first()
-    if crop_info_id is not None:
-        return crop_info_id[0]
-    else:
-        return -1
 
 def get_user_crops(user_id):
      with get_session() as session:

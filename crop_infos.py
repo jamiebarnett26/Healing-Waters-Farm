@@ -120,7 +120,7 @@ def edit_variety(variety_id):
 
     variety = {'variety_name':variety_name}
 
-    crop_info = {'crop_type':crop_type, 'template':False, 'plant_spacing_harvest':plant_spacing_harvest,
+    crop_info = {'crop_type':crop_type,  'plant_spacing_harvest':plant_spacing_harvest,
                  'plant_spacing_seed':plant_spacing_seed, 'row_spacing_harvest':row_spacing_harvest,
                  'row_spacing_seed':row_spacing_seed, 'days_to_maturity_harvest':days_to_maturity_harvest,
                  'days_to_maturity_seed':days_to_maturity_seed, 'days_to_transplantation':days_to_transplantation,
@@ -156,7 +156,6 @@ def create_variety(species_id):
             'latin_name': species_table[0]['latin_name'],
             'variety_name': None,
             'crop_type': None,
-            'template': None,
             'days_to_maturity': None,
             'plant_spacing_harvest': None,
             'plant_spacing_seed': None,
@@ -218,7 +217,7 @@ def add_variety(species_id):
 
     variety = {'species_id':species_id, 'variety_name':variety_name}
 
-    crop_info = {'crop_type':crop_type, 'template':False, 'plant_spacing_harvest':plant_spacing_harvest,
+    crop_info = {'crop_type':crop_type, 'plant_spacing_harvest':plant_spacing_harvest,
                  'plant_spacing_seed':plant_spacing_seed, 'row_spacing_harvest':row_spacing_harvest,
                  'row_spacing_seed':row_spacing_seed, 'days_to_maturity_harvest':days_to_maturity_harvest,
                  'days_to_maturity_seed':days_to_maturity_seed, 'days_to_transplantation':days_to_transplantation,
