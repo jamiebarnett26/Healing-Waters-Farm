@@ -132,13 +132,17 @@
     }
 
     $(document).ready(function() {
+        
+        $
+
         $.ajax({
             url: '/getTasks',
             method: 'GET',
-            success: function(response) {
-                console.log('Todos:', response);
+            // data: full_crop_infos, not working
+            success: function(todos) {
+                console.log('Todos:', todos);
 
-                response.forEach(todo => {
+                todos.forEach(todo => {
                     $('#taskList').append(`
                         <li>
                             Task: ${todo.task}, Date: ${todo.date}, Done: ${todo.done}
