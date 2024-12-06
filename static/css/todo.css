@@ -21,9 +21,13 @@
     cursor: pointer;
     display: grid;
     align-items: center;
-    width: -webkit-fit-content;
-    width: -moz-fit-content;
-    width: fit-content;
+
+    /* added with my own research */
+    word-wrap: break-word;
+    overflow-wrap: break-word; 
+    word-break: break-word; 
+    white-space: normal; 
+    hyphens: auto;
     transition: color 0.3s ease;
   }
   .checkbox-wrapper-11 label::before,
@@ -122,22 +126,22 @@
   }
   @-webkit-keyframes slice-11 {
     60% {
-      width: 100%;
+      width: fit-content;
       left: 4px;
     }
     100% {
-      width: 100%;
+      width: fit-content;
       left: -2px;
       padding-left: 0;
     }
   }
   @keyframes slice-11 {
     60% {
-      width: 100%;
+      width: 65%;
       left: 4px;
     }
     100% {
-      width: 100%;
+      width: 65%;
       left: -2px;
       padding-left: 0;
     }

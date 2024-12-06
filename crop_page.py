@@ -25,11 +25,13 @@ def get_tasks():
     today = datetime.date.today()
     enddate = today + datetime.timedelta(days=7)
     todos = []
+
+    long_string = "hey"
     
     if user_crop['indoor_seed_starting_date'] is not None:
         todos.append({"task": "Start indoor seeding", "date": user_crop['indoor_seed_starting_date'], "done": False})
     if user_crop['transplanting_date'] is not None:
-        todos.append({"task": "Transplant plants outdoors", "date": user_crop['transplanting_date'], "done": False})
+        todos.append({"task": long_string, "date": user_crop['transplanting_date'], "done": False})
     if user_crop['direct_sow_date'] is not None:
         todos.append({"task": "Direct sowing", "date": user_crop['direct_sow_date'], "done": False})
     if user_crop['harvest_date'] is not None:

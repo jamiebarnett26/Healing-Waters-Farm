@@ -71,6 +71,7 @@
             font-size: clamp(15px, 4vw, 45px);
         }
 
+        /* Below are my custom changes to the css provided by the source cited in the todo.css file */
         .checkbox-wrapper-11 {
             transform: scale(1.5); 
             transform-origin: top left; 
@@ -78,14 +79,20 @@
 
         /* For the checkbox tasks and dates below */
         .checkbox-wrapper-11 label span.task {
-            display: block; /* Ensure task is on its own line */
             font-weight: bold;
+            display: block;
         }
 
         .checkbox-wrapper-11 label span.date {
-            display: block; /* Ensure date is on its own line */
             font-size: 0.8em;
+            display: block;
         }
+
+        #taskRowsContainer {
+            max-width: 2%; /* Ensure the container does not exceed the screen width */
+            overflow-x: hidden; /* Prevent horizontal overflow */
+        }
+
     </style>
 </head>
 
@@ -114,10 +121,13 @@
             <div id = "calendar"></div>
         </div>
     </div>
+    
     <div class="container-fluid">
         <div class="row">
             <h1 style = "font-size: 10vw; font-weight: bold;"><u>Tasks:</u></h1>
-            <span id="taskList" class = "tasks"></span>
+        </div>
+        <div id="taskList" class = "container-fluid">
+            
         </div>
     </div>
     
@@ -140,12 +150,11 @@
     const createTodoItem = (todo, index) => 
     `
         <div class="checkbox-wrapper-11">
-                <input id="02-${index}" type="checkbox" value="2">
-                <label for="02-${index}">
+                <input id="${index}" type="checkbox" value="2">
+                <label for="${index}">
                     <span class="task"> ${todo.task} </span>
                     <span class="date">Due: ${todo.date} </span>
                 </label>
-            <hr>
             <br>
         </div>
     `
@@ -161,6 +170,7 @@
 
                 todos.forEach((todo, index) => {
                     $('#taskList').append(createTodoItem(todo, index));
+                    $('#taskList').append("<hr>")
                 });
             },
 
