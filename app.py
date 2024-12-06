@@ -194,7 +194,7 @@ def homepage():
     response = flask.make_response(html_code)
     return response
 
-@app.route('/testingnewcropinfo/<variety_id>', methods = ['GET'])
+@app.route('/newshowcrop/<variety_id>', methods = ['GET'])
 def new_show_crop(variety_id):
     user_id = flask.request.cookies.get('user_id')
     if not user_id:

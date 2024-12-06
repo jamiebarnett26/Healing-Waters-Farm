@@ -66,6 +66,10 @@
             width: 50px;
             border-radius: 50%;
         }
+
+        .tasks {
+            font-size: clamp(15px, 4vw, 45px);
+        }
     </style>
 </head>
 
@@ -101,12 +105,12 @@
                 <label for="02-11">Task 1</label>
             </div>
         </div>
+        <div class="row">
+            <h1>Your Tasks</h1>
+            <span id="taskList" class = "tasks"></span>
+        </div>
     </div>
-
-    <div>
-        <h1>Your Tasks</h1>
-        <ul id="taskList" style="font-size: large;"></ul>
-    </div>
+    
 </body>
 
 <!-- Link to Mustache -->
@@ -135,7 +139,7 @@
     const createTodoItem = (todo) => 
     `
         <li>
-            Task: ${todo.task}, Date: ${todo.date}, Done: ${todo.done}
+            ${todo.task} \n Date: ${todo.date}, Done: ${todo.done}
         </li>
     `
 
