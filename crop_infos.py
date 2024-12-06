@@ -1,7 +1,7 @@
 
 from top import app, oauth
 import flask
-from flask import redirect
+from flask import redirect, url_for
 import database
 import time
 import json
@@ -79,43 +79,6 @@ def show_variety():
     return response
 
 
-
-
-
-# @app.route('/selectSpecies/<family_id>', methods=['GET'])
-# def show_species(family_id):
-#     species = database.species_from_family(family_id)
-#     admin = flask.request.cookies.get('admin') == 'true'
-
-#     html_code = flask.render_template('addCrop/selectSpecies.html', 
-#                                       species=species,
-#                                       family_id=family_id,
-#                                       admin = admin,
-#                                       current_time = get_current_time())
-#     response = flask.make_response(html_code)
-#     return response
-
-# #-----------------------------------------------------------------------
-
-# @app.route('/selectVariety/<species_id>', methods=['GET'])
-# def show_variety(species_id):
-#     admin = flask.request.cookies.get('admin') == 'true'
-#     varieties = database.variety_from_species(species_id)
-    
-#     html_code = flask.render_template(
-#         'addCrop/selectVariety.html',
-#         varieties=varieties,
-#         species_id=species_id,
-#         admin=admin,
-#         current_time=get_current_time()
-#     )
-    
-#     response = flask.make_response(html_code)
-#     return response
-
-
-#-----------------------------------------------------------------------
-
     
 
 @app.route('/editfamily/<family_id>', methods=['POST'])
@@ -123,7 +86,7 @@ def post_edit_family(family_id):
     family_name = flask.request.form.get('family_name')
     family = {'family_name':family_name}
     database.edit_family(family_id, family)
-    return select_family()
+    return redirect(url_for('select_family'))
 
 
 
@@ -133,7 +96,8 @@ def post_edit_species(species_id):
     latin_name = flask.request.form.get('latin_name')
     species = {'species_name':species_name, 'latin_name':latin_name}
     database.edit_species(species_id, species)
-    return select_family()
+    return redirect(url_for('select_family'))
+
 
 #-----------------------------------------------------------------------
 
@@ -165,7 +129,7 @@ def edit_variety(variety_id):
                  }
 
     database.edit_variety(variety_id, variety, crop_info)
-    return select_family()
+    return redirect(url_for('show_crop', variety_id=variety_id))
 
 #-----------------------------------------------------------------------
 @app.route('/createspecies/<family_id>', methods=['GET'])
@@ -223,7 +187,8 @@ def add_family():
     family_name = flask.request.form.get('family_name')
     family = {'family_name':family_name}
     database.add_family(family)
-    return select_family()
+    return redirect(url_for('select_family'))
+
 
 @app.route('/addspecies/<family_id>', methods=['POST'])
 def add_species(family_id):
@@ -231,7 +196,8 @@ def add_species(family_id):
     latin_name = flask.request.form.get('latin_name')
     species = {'family_id':family_id, 'species_name':species_name, 'latin_name':latin_name}
     database.add_species(species)
-    return select_family()
+    return redirect(url_for('select_family'))
+
 
 
 @app.route('/addvariety/<species_id>', methods=['POST'])
@@ -261,21 +227,22 @@ def add_variety(species_id):
                  }
 
     database.add_variety(variety, crop_info)
-    return select_family()
+    return redirect(url_for('select_family'))
 #-----------------------------------------------------------------------
 # functionality to delete
 @app.route('/deletefamily/<family_id>', methods=['POST'])
 def delete_family(family_id):
     database.delete_family(family_id)
-    return select_family()
+    return redirect(url_for('select_family'))
+
 
 @app.route('/deletespecies/<species_id>', methods=['POST'])
 def delete_species(species_id):
     database.delete_species(species_id)
-    return select_family()
+    return redirect(url_for('select_family'))
 
 @app.route('/deletevariety/<variety_id>', methods=['POST'])
 def delete_variety(variety_id):
     database.delete_variety(variety_id)
-    return select_family()
+    return redirect(url_for('select_family'))
 

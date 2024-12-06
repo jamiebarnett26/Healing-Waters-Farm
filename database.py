@@ -110,6 +110,15 @@ class Announcement (Base):
     title = sqlalchemy.Column(sqlalchemy.String)
     text = sqlalchemy.Column(sqlalchemy.String)
 
+class Tasks (Base):
+    __tablename__ = 'tasks'
+    task_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
+    user_crop_id = sqlalchemy.Column(sqlalchemy.Integer)
+    user_id = sqlalchemy.Column(sqlalchemy.Integer)
+    task_name = sqlalchemy.Column(sqlalchemy.String(255))
+    task_date = sqlalchemy.Column(sqlalchemy.Date)
+    completed = sqlalchemy.Column(sqlalchemy.Boolean)
+
 
 _engine = sqlalchemy.create_engine(_DATABASE_URL, pool_size=10, max_overflow=20, pool_timeout=30, pool_recycle=3600)
 Session = sqlalchemy.orm.scoped_session(sqlalchemy.orm.sessionmaker(autocommit=False, autoflush=False, bind=_engine))
@@ -117,6 +126,15 @@ Session = sqlalchemy.orm.scoped_session(sqlalchemy.orm.sessionmaker(autocommit=F
 def get_session():
     """Helper function to retrieve a session from the scoped session factory"""
     return Session()
+
+def checkbox(task_id, completed):
+    with get_session() as session:
+        print(completed, file=sys.stderr)
+        query = session.query(Tasks).filter_by(task_id=task_id)
+        task = query.first()
+        if task: 
+            task.completed = completed
+            session.commit()
 
 def add_question(question):
     with get_session() as session:
@@ -138,13 +156,6 @@ def add_announcement(announcement):
         session.add(new_announcement)
         session.commit()
     return
-class Tasks (Base):
-    __tablename__ = 'tasks'
-    task_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    user_crop_id = sqlalchemy.Column(sqlalchemy.Integer)
-    user_id = sqlalchemy.Column(sqlalchemy.Integer)
-    task_name = sqlalchemy.Column(sqlalchemy.String(255))
-    task_date = sqlalchemy.Column(sqlalchemy.Date)
 
 
 
@@ -606,13 +617,11 @@ def get_user_crops(user_id):
             user_crops.append(user_crop)
         return user_crops
 
-def edit_user_tasks(user_id, user_crop_id, date_field, new_date):
+def edit_tasks(task_id, task_name, new_date):
     with sqlalchemy.orm.Session(_engine) as session:
-
-        user_crops = session.query(User_Crop).filter(User_Crop.user_id == user_id).all()
-        for crop in user_crops:
-            if hasattr(crop, date_field):  
-                setattr(crop, date_field, new_date) 
+        task = session.query(Tasks).filter(Tasks.task_id == task_id).first()
+        task.task_name = task_name
+        task.task_date = new_date
         session.commit()
 
 def delete_template(user_crop_id):
@@ -628,22 +637,26 @@ def add_task(user_id, user_crop_id, task_name, task_date):
             user_crop_id=user_crop_id, 
             user_id=user_id, 
             task_name=task_name, 
-            task_date=task_date)
+            task_date=task_date,
+            completed=False)
         session.add(new_task)
         session.commit()
 
-def get_user_added_tasks(user_crop_id, todos):
+def get_tasks(user_crop_id):
     with sqlalchemy.orm.Session(_engine) as session:
         user_tasks = session.query(Tasks).filter(
             Tasks.user_crop_id == user_crop_id
         ).all()
 
+        todos = []
+
         for task in user_tasks:
             todos.append({
                 "user_crop_id": task.user_crop_id,
+                "task_id":task.task_id,
                 "task": task.task_name,
                 "date": task.task_date,
-                "done": False
+                "completed": task.completed
             })
         
         return todos
@@ -730,11 +743,28 @@ def edit_announcement(announcement_id, updated_data):
                 setattr(announcement, key, value)
             session.commit()
 
-def add_user_crop(user_crop):
+def add_user_crop(user_crop, user_id):
     with get_session() as session:
+        # Add the new user crop
         new_crop = User_Crop(**user_crop)
         session.add(new_crop)
-        session.commit()
+        session.commit()  # Commit to get the generated user_crop_id
+        
+        # Get the generated primary key
+        user_crop_id = new_crop.user_crop_id  # Access the primary key after commit
+        
+        # Add tasks if relevant dates exist
+        if user_crop.get("indoor_seed_starting_date"):
+            add_task(user_id, user_crop_id, "Start indoor seeding", user_crop["indoor_seed_starting_date"])
+        if user_crop.get("transplanting_date"):
+            add_task(user_id, user_crop_id, "Transplant plants outdoors", user_crop["transplanting_date"])
+        if user_crop.get("direct_sow_date"):
+            add_task(user_id, user_crop_id, "Direct sowing", user_crop["direct_sow_date"])
+        if user_crop.get("harvest_date"):
+            add_task(user_id, user_crop_id, "Prepare for harvest", user_crop["harvest_date"])
+        if user_crop.get("seed_harvest_date"):
+            add_task(user_id, user_crop_id, "Prepare for seed harvest", user_crop["seed_harvest_date"])
+
 
 def delete_family(family_id):
     with get_session() as session:

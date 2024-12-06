@@ -230,14 +230,17 @@
             <div id="replies-{{ question['question_id'] }}" class="replies-section" style="display: none;">
                 <strong>Replies:</strong><br>
                 {% for reply in replies %}
-                    {% if reply['question_id'] == question['question_id'] %}
-                        <em>{{ reply['text'] }}</em> - by {{ reply['user_name'] }}<br>
-                        {% if user_id|string == reply['user_id']|string %}
+                {% if reply['question_id'] == question['question_id'] %}
+                    <em>{{ reply['text'] }}</em> - by {{ reply['user_name'] }}
+                    {% if user_id|string == reply['user_id']|string %}
+                        <div class="float-end">
                             <button onclick="togglePopup('editReplyPopup{{ reply['reply_id'] }}')" class="btn btn-warning btn-sm">Edit</button>
                             <form action="/deletereply/{{ reply['reply_id'] }}" method="post" class="d-inline-block">
                                 <input type="submit" value="Delete" class="btn btn-danger btn-sm">
                             </form>
-                        {% endif %}
+                        </div>
+                    {% endif %}
+                    <br>
                         <!-- Popup for editing a reply -->
                         <div id="editReplyPopup{{ reply['reply_id'] }}" class="popup-form" style="display: none;">
                             <form action="/editreply/{{ reply['reply_id'] }}" method="post">
