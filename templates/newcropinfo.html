@@ -138,9 +138,10 @@
     // function to create the inner text for the html element with the todo list
     const createTodoItem = (todo) => 
     `
-        <li>
-            ${todo.task} \n Date: ${todo.date}, Done: ${todo.done}
-        </li>
+        <div class="checkbox-wrapper-11">
+                <input id="02-12" type="checkbox" value="2">
+                <label for="02-12"> ${todo.task} </label>
+        </div>
     `
 
     $(document).ready(function() {
