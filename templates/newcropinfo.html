@@ -33,7 +33,7 @@
             background-color: #dddddd;
         }
         .crop-name {
-            font-size: clamp(50px, 8vw, 80px);
+            font-size: clamp(35px, 7vw, 70px);
             font-weight: bold;
 
             display: -webkit-box; 
@@ -71,26 +71,31 @@
             font-size: clamp(15px, 4vw, 45px);
         }
 
-        /* Below are my custom changes to the css provided by the source cited in the todo.css file */
+        /* Below are my custom changes to the css provided by the source cited in the todo.css file 
         .checkbox-wrapper-11 {
             transform: scale(1.5); 
             transform-origin: top left; 
         }
+            */
 
         /* For the checkbox tasks and dates below */
         .checkbox-wrapper-11 label span.task {
             font-weight: bold;
+            font-size: clamp(30px, 4vw, 55px);
             display: block;
         }
 
         .checkbox-wrapper-11 label span.date {
-            font-size: 0.8em;
+            font-size: clamp(24px, 3.5vw, 45px);
             display: block;
+            color: gray; 
+        }
+        .checkbox-wrapper-11 input:checked + label span.date {
+            color: lightgray;
         }
 
-        #taskRowsContainer {
-            max-width: 2%; /* Ensure the container does not exceed the screen width */
-            overflow-x: hidden; /* Prevent horizontal overflow */
+        html, body {
+            overflow-x: hidden;
         }
 
     </style>
@@ -105,7 +110,7 @@
                     Crop Image Here
                 </div>
             </div>
-            <div class="col-6 d-flex flex-column justify-content-middle"> 
+            <div class="col-6 d-flex flex-column"> 
                 <div class="crop-name"> {{ variety_name }} </div>
                 <div class="latin-name"> {{ latin_name }}</div> 
                 </div>
@@ -122,11 +127,12 @@
         </div>
     </div>
     
-    <div class="container-fluid">
+    <div class="container-fluid m-2">
         <div class="row">
-            <h1 style = "font-size: 10vw; font-weight: bold;"><u>Tasks:</u></h1>
+            <h1 style = "font-size: 8.5vw; font-weight: bold;"><u>Tasks:</u></h1>
         </div>
-        <div id="taskList" class = "container-fluid">
+        <!-- width needs to be 67.5% so that it doesn't go further than the screen width -->
+        <div id="taskList" class = "p-0">
             
         </div>
     </div>
@@ -155,9 +161,16 @@
                     <span class="task"> ${todo.task} </span>
                     <span class="date">Due: ${todo.date} </span>
                 </label>
-            <br>
         </div>
     `
+
+    function shortenLongString(long_string, len) {
+        if (long_string.length > len) {
+            return long_string.substring(0, len) + "..."; 
+        }
+        return long_string;
+    }
+    
 
     $(document).ready(function() {
 
@@ -169,8 +182,10 @@
                 console.log('Todos:', todos);
 
                 todos.forEach((todo, index) => {
+                    todo.task = shortenLongString(todo.task, 350);
+                    todo.date = shortenLongString(todo.date, 100);
                     $('#taskList').append(createTodoItem(todo, index));
-                    $('#taskList').append("<hr>")
+                    $('#taskList').append('<hr>')
                 });
             },
 
