@@ -100,23 +100,25 @@ def post_edit_species(species_id):
 
 
 #-----------------------------------------------------------------------
-
+def get_form_value(field_name):
+    value = flask.request.form.get(field_name)
+    return None if value == 'None' else value
 
 @app.route('/editvariety/<variety_id>', methods=['POST'])
 def edit_variety(variety_id):
-    variety_name = flask.request.form.get('variety_name')
-    crop_type = flask.request.form.get('crop_type_name')
-    plant_spacing_harvest = flask.request.form.get('plant_spacing_harvest')
-    row_spacing_harvest = flask.request.form.get('row_spacing_harvest')
-    plant_spacing_seed = flask.request.form.get('plant_spacing_seed')
-    row_spacing_seed = flask.request.form.get('row_spacing_seed')
-    days_to_maturity_harvest = flask.request.form.get('days_to_maturity_harvest')
-    days_to_maturity_seed = flask.request.form.get('days_to_maturity_seed')
-    days_to_transplantation = flask.request.form.get('days_to_transplantation')
-    days_to_direct_sow = flask.request.form.get('days_to_direct_sow')
-    days_to_harvest = flask.request.form.get('days_to_harvest')
-    days_to_seed_harvest = flask.request.form.get('days_to_seed_harvest')
-    frost_sensitivity_rating = flask.request.form.get('frost_sensitivity_rating')
+    variety_name = get_form_value('variety_name')
+    crop_type = get_form_value('crop_type_name')
+    plant_spacing_harvest = get_form_value('plant_spacing_harvest')
+    row_spacing_harvest = get_form_value('row_spacing_harvest')
+    plant_spacing_seed = get_form_value('plant_spacing_seed')
+    row_spacing_seed = get_form_value('row_spacing_seed')
+    days_to_maturity_harvest = get_form_value('days_to_maturity_harvest')
+    days_to_maturity_seed = get_form_value('days_to_maturity_seed')
+    days_to_transplantation = get_form_value('days_to_transplantation')
+    days_to_direct_sow = get_form_value('days_to_direct_sow')
+    days_to_harvest = get_form_value('days_to_harvest')
+    days_to_seed_harvest = get_form_value('days_to_seed_harvest')
+    frost_sensitivity_rating = get_form_value('frost_sensitivity_rating')
 
     variety = {'variety_name':variety_name}
 

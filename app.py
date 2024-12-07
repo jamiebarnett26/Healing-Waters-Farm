@@ -40,6 +40,8 @@ def index():
     return flask.redirect('/login')
 
 
+
+
 #-----------------------------------------------------------------------
 # Helper function, returns crop to do list for cards
 @app.route('/checkBox', methods=['POST'])
@@ -103,7 +105,7 @@ def getCardInfo():
     if len(user_crop_infos) != len(all_todos) or len(user_crop_infos) != len(variety_id):
         app.logger.error("Mismatch in lengths of user_crop_infos, all_todos, and variety_id")
 
-    crops_with_todos = zip(user_crop_infos, all_todos, variety_id)
+    crops_with_todos = list(zip(user_crop_infos, all_todos, variety_id))
     return crops_with_todos
 
 
@@ -149,7 +151,7 @@ def getWeeklyTasks(todos, user_crop_id, user_id, frost_rating):
     weekly_todos = []
     
     for todo in todos:    
-        if todo['date'] <= enddate:
+        if todo['date'] is not None and todo['date'] <= enddate:
             weekly_todos.append(todo)
     
     if frost_rating is not None and frost_rating > 1 and inFrost():
@@ -186,12 +188,18 @@ def homepage():
     user_name = user.first_name + " " + user.last_name
 
     crops_with_todos = getCardInfo()
+    print("AHHHH")
+    print(crops_with_todos, file=sys.stderr)
     html_code = flask.render_template('homepage/homepage.html',
                                       user_name=user_name,
                                       admin=admin,
                                       crops_with_todos=crops_with_todos)
     response = flask.make_response(html_code)
     return response
+
+@app.route('/offline', methods = ["GET"])
+def offline():
+    return flask.render_template('offline.html')
 
 #-----------------------------------------------------------------------
 # Admin functionality of seeing all profiles, loads profile_list.html
@@ -399,12 +407,25 @@ def add_user_crop(crop_info_id):
         return flask.redirect('/login')
     crop_info = database.search_field_id('crop_info', crop_info_id)[0]
 
+    # Initialize date variables, set to None if necessary
     date1 = datetime.datetime.now()
-    date2 = date1 + datetime.timedelta(days=crop_info['days_to_transplantation'])
-    date3 = date2 + datetime.timedelta(crop_info['days_to_direct_sow'])
-    date4 = date3 + datetime.timedelta(crop_info['days_to_harvest'])
-    date5 = date3 + datetime.timedelta(crop_info['days_to_seed_harvest'])
     
+    date2 = date1 + datetime.timedelta(days=crop_info['days_to_transplantation']) if crop_info.get('days_to_transplantation') is not None else None
+
+    if date2 is not None:
+        date3 = date2 + datetime.timedelta(days=crop_info['days_to_direct_sow']) if crop_info.get('days_to_direct_sow') is not None else None
+    else:
+        date3 = date1 +  datetime.timedelta(days=crop_info['days_to_direct_sow']) if crop_info.get('days_to_direct_sow') is not None else None
+
+    if date3 is not None:
+        date4 = date3 + datetime.timedelta(days=crop_info['days_to_harvest']) if crop_info.get('days_to_harvest') is not None else None
+    elif date2 is not None:
+        date4 = date2 + datetime.timedelta(days=crop_info['days_to_harvest']) if crop_info.get('days_to_harvest') is not None else None
+    else:
+        date4 = date1 + datetime.timedelta(days=crop_info['days_to_harvest']) if crop_info.get('days_to_harvest') is not None else None
+
+    if date4 is not None:
+        date5 = date4 + datetime.timedelta(days=crop_info['days_to_seed_harvest']) if crop_info.get('days_to_seed_harvest') is not None else None
     
     user_crop = {
         'user_id': user_id,
@@ -418,8 +439,8 @@ def add_user_crop(crop_info_id):
 
     database.add_user_crop(user_crop, user_id)
 
-
     return redirect('/homepage')
+
 
 #-----------------------------------------------------------------------
 

@@ -53,37 +53,6 @@
                 {% include 'homepage/checkbox.html' %}
                 <hr>
                 {% endfor %}
-
-                <!-- Edit Tasks and Forms
-                <button id="edit-button-{{todos[0]['user_crop_id']}}" onclick="showEditForm({{ todos[0]['user_crop_id'] }})">Edit Task</button>
-                <div id="edit-form-{{todos[0]['user_crop_id']}}" style="display: none;"> -->
-                    <!-- <h3>Select a task to edit</h3>
-                    <label for="taskDropdown-{{todos[0]['user_crop_id']}}">Task:</label>
-                    <select id="taskDropdown-{{todos[0]['user_crop_id']}}">
-                        
-                        {% for todo in todos %}
-                            <option value={{ todo['task_id'] }}>{{ todo['task'] }}</option>
-                        {% endfor %}
-                    </select>
-                    <label for="editTaskInput-{{todos[0]['user_crop_id']}}">Task Name:</label>
-                    <input type="text" id="editTaskInput-{{todos[0]['user_crop_id']}}">
-                    <label for="taskDateInput-{{todos[0]['user_crop_id']}}">New Date:</label>
-                    <input type="date" id="taskDateInput-{{todos[0]['user_crop_id']}}">
-                    <button onclick="submitEdit({{ todos[0]['user_crop_id'] }})">Save</button>
-                    <button onclick="cancelEdit({{ todos[0]['user_crop_id'] }})">Cancel</button>
-                </div>  
-
-                Add Tasks and Forms -->
-                <!-- <button id="add-button-{{todos[0]['user_crop_id']}}" onclick="showAddForm({{ todos[0]['user_crop_id'] }})">Add Task</button>
-                <div id="add-form-{{todos[0]['user_crop_id']}}" style="display: none;">
-                    <h3>Add a task</h3>
-                    <label for="newTaskInput-{{todos[0]['user_crop_id']}}">Task Name:</label>
-                    <input type="text" id="newTaskInput-{{todos[0]['user_crop_id']}}">
-                    <label for="addTaskDate-{{todos[0]['user_crop_id']}}">Date:</label>
-                    <input type="date" id="addTaskDate-{{todos[0]['user_crop_id']}}">
-                    <button onclick="submitAdd({{ todos[0]['user_crop_id'] }})">Save</button>
-                    <button onclick="cancelAdd({{ todos[0]['user_crop_id'] }})">Cancel</button>
-                </div>                 -->
             </div>
         {% endfor %}
         
@@ -99,14 +68,17 @@
     <script>
         function deleteCrop(userCropId) {
             let encodedUserCropId = encodeURIComponent(userCropId);
-            let url = '/delete_template?cropid=' + encodedUserCropId
+            let url = '/delete_template?cropid=' + encodedUserCropId;
 
             let requestData = {
                 type: 'POST',
                 url: url, 
                 success: function (response) {
                     if (response.success) {
-                        //TODO: Use AJAX to update dynamically instead of reloading page
+                        // Delete the crop from IndexedDB
+                        loadCropsFromLocal(); 
+
+                        // Optionally reload the page (or you could dynamically update the UI)
                         location.reload(); 
                     } else {
                         alert("Failed to delete task: " + response.message);
