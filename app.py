@@ -205,7 +205,7 @@ def new_show_crop(variety_id):
     variety_name = full_crop_infos['variety_name']
     latin_name = full_crop_infos['latin_name']
 
-    return flask.render_template('newcropinfo.html', 
+    return flask.render_template('/cropInfoPage/newcropinfo.html', 
                                  full_crop_infos=full_crop_infos,
                                  crop_info_id = crop_infos[0]['crop_info_id'],
                                  variety_name = variety_name,

@@ -1,0 +1,69 @@
+<!-- This page defines the crop tasks that appear on the crop info page -->
+
+<style>
+    /* For the checkbox tasks and dates below */
+    .checkbox-wrapper-11 label span.task {
+        font-weight: bold;
+        font-size: clamp(30px, 5vw, 55px);
+        display: block;
+        color: #313641
+    }
+
+    .checkbox-wrapper-11 label span.date {
+        font-size: clamp(24px, 4vw, 45px);
+        display: block;
+        color: gray; 
+    }
+
+    .checkbox-wrapper-11 input:checked + label span.task {
+        color: #7A87A3;
+    }
+
+    .checkbox-wrapper-11 input:checked + label span.date {
+        color: lightgray;
+    }
+</style>
+
+
+<!-- Where tasks appear -->
+<div class="container-fluid m-3">
+    <div id="taskList" class = "p-0">
+    </div>
+</div>
+
+<script>
+
+    // function to create the inner text for the html element with the todo list
+    const createTodoItem = (todo, index) => 
+    `
+        <div class="checkbox-wrapper-11">
+                <input id="${index}" type="checkbox" value="2">
+                <label for="${index}">
+                    <span class="task"> ${todo.task} </span>
+                    <span class="date">Due: ${todo.date} </span>
+                </label>
+        </div>
+    `
+
+    // For actually displaying the tasks
+    $(document).ready(function() {
+        $.ajax({
+            url: '/getTasks',
+            method: 'GET',
+            success: function(todos) {
+                console.log('Todos:', todos);
+                // shortening strings to display properly if too long
+                todos.forEach((todo, index) => {
+                    todo.task = shortenLongString(todo.task, 350);
+                    todo.date = shortenLongString(todo.date, 100);
+                    $('#taskList').append(createTodoItem(todo, index));
+                    $('#taskList').append('<hr style = "width: 96%;">')
+                });
+            },
+
+            error: function(xhr, status, error) {
+                console.error('Error fetching tasks:', error);
+            }
+        });
+    })
+</script>

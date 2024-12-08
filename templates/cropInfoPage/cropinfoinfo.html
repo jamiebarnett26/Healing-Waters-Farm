@@ -1,0 +1,40 @@
+<style>
+    .info_thing {
+        font-size: clamp(15px, 5vw, 45px);
+    }
+
+    .edit-button {
+        aspect-ratio: 10;
+        width: 100%;
+        background-color: #dddddd;
+        font-size: 4vw;
+        color: black;
+    }
+</style>
+
+<div class="container-fluid py-1 px-4">
+    <div class="row">
+        <button type="button" class="btn btn-outline-success edit-button w-100 h-25" id="test-button">
+            <img src = "../../static/icon/edit.png" style = "height: 6vw;" class = "pb-2">
+            <span style = "font-size: 5vw;"> &nbsp; Edit </span>
+        </button>
+    </div>
+</div>
+
+<div class = "info_thing mx-3 my-1 px-5 py-3" style = "border-radius: 5.5%; background-color: #e7fff5;">
+    <strong>Family:</strong> {{ full_crop_infos['family_name'] }}<br>
+    <strong>Latin Name:</strong> {{ full_crop_infos['latin_name'] }}<br>
+    <strong>Variety:</strong> {{ full_crop_infos['variety_name'] }}<br>
+    <strong>Type:</strong> {{ full_crop_infos['crop_type'] }}<br>
+    <strong>Seed Spacing for Harvesting Crops:</strong> {{ full_crop_infos['plant_spacing_harvest'] }}<br>
+    <strong>Row Spacing for Harvesting Crops:</strong> {{ full_crop_infos['row_spacing_harvest'] }}<br>
+    <strong>Seed Spacing for Harvesting Seeds:</strong> {{ full_crop_infos['plant_spacing_seed'] }}<br>
+    <strong>Row Spacing for Harvesting Seeds:</strong> {{ full_crop_infos['row_spacing_seed'] }}<br>
+    <strong>Days to Maturity for Harvesting Crops:</strong> {{ full_crop_infos['days_to_maturity_harvest'] }}<br>
+    <strong>Days to Maturity for Harvesting Seeds:</strong> {{ full_crop_infos['days_to_maturity_seed'] }}<br>
+    <strong>Days to Transplantation:</strong> {{ full_crop_infos['days_to_transplantation'] }}<br>
+    <strong>Days to Direct Sow:</strong> {{ full_crop_infos['days_to_direct_sow'] }}<br>
+    <strong>Days for Harvesting Crops:</strong> {{ full_crop_infos['days_to_harvest'] }}<br>
+    <strong>Days for Harvesting Seeds:</strong> {{ full_crop_infos['days_to_seed_harvest'] }}<br>
+    <strong>Frost Sensitivity Rating:</strong> {{ full_crop_infos['frost_sensitivity_rating'] }}<br>
+</div>
