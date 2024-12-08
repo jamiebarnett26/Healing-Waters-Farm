@@ -200,16 +200,24 @@ def new_show_crop(variety_id):
     if not user_id:
         return flask.redirect('/login')
     
+    
+    
     crop_infos = database.crop_info_from_variety(variety_id)
     full_crop_infos = database.full_crop_info(crop_infos[0]['crop_info_id'])
     variety_name = full_crop_infos['variety_name']
     latin_name = full_crop_infos['latin_name']
 
-    return flask.render_template('/cropInfoPage/newcropinfo.html', 
+    resp = flask.make_response(
+        flask.render_template('/cropInfoPage/newcropinfo.html', 
                                  full_crop_infos=full_crop_infos,
                                  crop_info_id = crop_infos[0]['crop_info_id'],
                                  variety_name = variety_name,
-                                 latin_name = latin_name)
+                                 latin_name = latin_name))
+    
+    resp.set_cookie('crop_id', '2', expires=0)
+    return resp
+    
+
 
 #-----------------------------------------------------------------------
 # @app.route('/showcrop/<int:crop_info_id>')
