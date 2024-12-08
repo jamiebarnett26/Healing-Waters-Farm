@@ -22,21 +22,34 @@
     .checkbox-wrapper-11 input:checked + label span.date {
         color: lightgray;
     }
+
+    .edit-button {
+        aspect-ratio: 10;
+        width: 100%;
+        background-color: #dddddd;
+        font-size: 4vw;
+        color: black;
+    }
 </style>
 
-
-<!-- Where tasks appear -->
-<div class="container-fluid m-3">
-    <div id="taskList" class = "p-0">
+<div class="container-fluid py-1 px-4">
+    <div class="row">
+        <button type="button" class="btn btn-outline-success edit-button w-100 h-25" id="test-button">
+            <img src = "../../static/icon/edit.png" style = "height: 6vw;" class = "pb-2">
+            <span style = "font-size: 5vw;"> &nbsp; Edit </span>
+        </button>
     </div>
 </div>
+<!-- Where tasks appear -->
+<div id="taskList" class = "p-0"> </div>
+
 
 <script>
 
     // function to create the inner text for the html element with the todo list
     const createTodoItem = (todo, index) => 
     `
-        <div class="checkbox-wrapper-11">
+        <div class="checkbox-wrapper-11 mx-4">
                 <input id="${index}" type="checkbox" value="2">
                 <label for="${index}">
                     <span class="task"> ${todo.task} </span>
