@@ -208,8 +208,6 @@ def new_show_crop(variety_id):
     if not user_id:
         return flask.redirect('/login')
     
-    
-    
     crop_infos = database.crop_info_from_variety(variety_id)
     full_crop_infos = database.full_crop_info(crop_infos[0]['crop_info_id'])
     variety_name = full_crop_infos['variety_name']

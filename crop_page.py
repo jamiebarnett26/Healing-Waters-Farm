@@ -22,6 +22,9 @@ def get_tasks():
                  'harvest_date': 'Thursday',
                  'seed_harvest_date': 'Friday'}
     
+    # user_crop_id = flask.request.cookies.get("user_crop_id")
+    # user_crop_tasks = bruh
+    
     today = datetime.date.today()
     enddate = today + datetime.timedelta(days=7)
     todos = []
