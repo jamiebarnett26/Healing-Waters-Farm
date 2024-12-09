@@ -1,41 +1,74 @@
-const staticPhoneStore = "phone-store-site-v1"; // Versioned cache name
+const staticPhoneStore = "phone-store-site-v1"; 
 
 const assets = [
   "/static/css/styles.css",
+  "/static/css/checkbox.css",
   "/static/js/script.js",
-  "/manifest.json"
+  "/manifest.json",
+  "/offline.html",  
+  "/homepage"       
 ];
 
 self.addEventListener("install", installEvent => {
   installEvent.waitUntil(
-    caches.open(staticPhoneStore).then(cache => {
-      return cache.addAll(assets).catch(error => {
-        console.error("Failed to cache assets:", error);
-      });
-    })
-  );
-});
-
-self.addEventListener("fetch", fetchEvent => {
-  fetchEvent.respondWith(
-    caches.match(fetchEvent.request).then(res => {
-      if (res) {
-        return res;
-      }
-      return fetch(fetchEvent.request).catch(() => {
-        if (fetchEvent.request.url.includes('/images/')) {
-          return caches.match('/images/fallback.jpg');
+    caches.open(staticPhoneStore).then(async (cache) => {
+      try {
+        for (const asset of assets) {
+          await cache.add(asset);  // Attempt to cache each asset individually
+          console.log(`Successfully cached: ${asset}`);  // Log successful caching
         }
-      });
+      } catch (error) {
+        console.error(`Failed to cache asset: ${asset}`, error);  // Log which asset failed
+      }
     })
   );
 });
 
-// In service-worker.js
-self.addEventListener('fetch', function(event) {
-  if (event.request.url.includes('/home') || event.request.url.includes('/')) {
-    event.respondWith(fetch(event.request)); // Always fetch fresh content
+self.addEventListener("fetch", (fetchEvent) => {
+  console.log('Fetch request for:', fetchEvent.request.url);  // Debug log
+
+  if (fetchEvent.request.url.includes('/homepage')) {
+    fetchEvent.respondWith(
+      fetch(fetchEvent.request).then((networkResponse) => {
+        caches.open(staticPhoneStore).then((cache) => {
+          cache.put(fetchEvent.request, networkResponse);
+        });
+        return networkResponse;  
+      }).catch(() => {
+        return caches.match(fetchEvent.request);
+      })
+    );
   } else {
-    event.respondWith(caches.match(event.request)); // For static assets
+    fetchEvent.respondWith(
+      caches.match(fetchEvent.request).then((res) => {
+        if (res) {
+          return res; 
+        }
+
+        return fetch(fetchEvent.request).catch(() => {
+          return caches.match('/offline.html');
+        });
+      }).catch((err) => {
+        console.error('Error in fetching:', err);
+        return caches.match('/offline.html'); 
+      })
+    );
   }
+});
+
+
+self.addEventListener('activate', (event) => {
+  const currentCache = staticPhoneStore;
+  
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== currentCache) {
+            return caches.delete(cacheName); 
+          }
+        })
+      );
+    })
+  );
 });
