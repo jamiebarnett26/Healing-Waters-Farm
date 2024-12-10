@@ -69,7 +69,7 @@ def getCardInfo():
 
     user_crop_infos = []
     all_todos = []
-    variety_id = []
+    user_crop_id_list = []
 
     for i, user_crop in enumerate(user_crops):
         # Safely fetch full_crop_info
@@ -79,34 +79,15 @@ def getCardInfo():
             continue  # Skip this crop if no info is found.
 
         user_crop_infos.append(full_crop_info)
-        app.logger.info("Added crop info: %s", full_crop_info)
+        user_crop_infos.append(database.full_crop_info(user_crop['crop_info_id']))
+        user_crop_id_list.append(user_crop['user_crop_id'])
 
-        # Safely fetch variety_dict
-        variety_name = full_crop_info.get('variety_name')  # Use .get() for safe access
-        if not variety_name:
-            app.logger.error("Variety name missing in crop info: %s", full_crop_info)
-            continue
-
-        variety_dict = database.search_field_name("variety", variety_name)
-        if not variety_dict:
-            app.logger.error("No variety found for variety_name: %s", variety_name)
-            continue
-
-        variety_id.append(variety_dict[0].get('variety_id', None))
-        if variety_id[-1] is None:
-            app.logger.error("Variety ID missing for variety_name: %s", variety_name)
-            continue
 
         todos = database.get_tasks(user_crop.get('user_crop_id'))
         weekly_todos = getWeeklyTasks(todos, user_crop['user_crop_id'], user_id, full_crop_info.get('frost_sensitivity_rating', 0))
         all_todos.append(weekly_todos)
 
-
-    # Ensure all lists have the same length
-    if len(user_crop_infos) != len(all_todos) or len(user_crop_infos) != len(variety_id):
-        app.logger.error("Mismatch in lengths of user_crop_infos, all_todos, and variety_id")
-
-    crops_with_todos = list(zip(user_crop_infos, all_todos, variety_id))
+    crops_with_todos = list(zip(user_crop_infos, all_todos, user_crop_id_list))
     return crops_with_todos
 
 
@@ -189,8 +170,6 @@ def homepage():
     user_name = user.first_name + " " + user.last_name
 
     crops_with_todos = getCardInfo()
-    print("AHHHH")
-    print(crops_with_todos, file=sys.stderr)
     html_code = flask.render_template('homepage/homepage.html',
                                       user_name=user_name,
                                       admin=admin,
@@ -202,23 +181,27 @@ def homepage():
 def offline():
     return flask.render_template('offline.html')
 
-@app.route('/newshowcrop/<variety_id>', methods = ['GET'])
-def new_show_crop(variety_id):
+@app.route('/newshowcrop/<user_crop_id>', methods = ['GET'])
+def new_show_crop(user_crop_id):
     user_id = flask.request.cookies.get('user_id')
     if not user_id:
         return flask.redirect('/login')
     
-    crop_infos = database.crop_info_from_variety(variety_id)
+    tasks = database.get_tasks(user_crop_id)
+
+    crop_infos = database.crop_info_from_variety(user_crop_id)
     full_crop_infos = database.full_crop_info(crop_infos[0]['crop_info_id'])
     variety_name = full_crop_infos['variety_name']
     latin_name = full_crop_infos['latin_name']
+    print(tasks)
 
     resp = flask.make_response(
         flask.render_template('/cropInfoPage/newcropinfo.html', 
                                  full_crop_infos=full_crop_infos,
                                  crop_info_id = crop_infos[0]['crop_info_id'],
                                  variety_name = variety_name,
-                                 latin_name = latin_name))
+                                 latin_name = latin_name,
+                                 tasks=tasks))
     
     resp.set_cookie('crop_id', '2', expires=0)
     return resp

@@ -44,10 +44,19 @@
 
 
 <!-- Where tasks appear -->
-<div id="taskList" class = "p-0"> </div>
+<!-- <div id="taskList" class = "p-0"> </div> -->
+<div>
+    {% for task in tasks %}
+    <div class="task">
+      <p><strong>Task:</strong> {{ task.task }}</p>
+      <p><strong>Date:</strong> {{ task.date }}</p>
+    </div>
+    {% endfor %}
+  </div>
+  
 
 
-<script>
+<!-- <script>
 
     // function to create the inner text for the html element with the todo list
     const createTodoItem = (todo, index) => 
@@ -82,4 +91,4 @@
             }
         });
     })
-</script>
+</script> -->
