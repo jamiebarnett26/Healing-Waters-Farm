@@ -10,20 +10,23 @@ url = BASE_URL + "appid=" + API_KEY + "&id=" + CITY_ID
 
 response = requests.get(url).json()
 
-def kelvin_to_celsius_fahrenheit(kelvin):
+def kelvin_to_celsius(kelvin):
+    celsius = kelvin - 273.15
+    return round(celsius)
+
+def kelvin_to_fahrenheit(kelvin):
     celsius = kelvin - 273.15
     fahrenheit = celsius * (9/5) + 32
-    return celsius, fahrenheit
-
-# return tuple(celsius, fahrenheit)
-def get_weather():
+    return round(fahrenheit)
+    
+def get_fahrenheit():
     temp_kelvin = response['main']['temp']
-    return kelvin_to_celsius_fahrenheit(temp_kelvin)   
+    return kelvin_to_fahrenheit(temp_kelvin)  
 
-# return tuple(celsius, fahrenheit)
-def get_feels_like_weather():
-    feels_like_kelvin = response['main']['feels_like']
-    return kelvin_to_celsius_fahrenheit(feels_like_kelvin)
+def get_celsius():
+    temp_kelvin = response['main']['temp']
+    return kelvin_to_celsius(temp_kelvin)  
+
 
 def get_humidity():
     return response['main']['humidity']
@@ -38,7 +41,7 @@ def get_city():
 def get_wind_speed():
     wind_speed_mps = response['wind']['speed']
     wind_speed_mph = wind_speed_mps * 2.23694
-    return wind_speed_mph
+    return round(wind_speed_mph, 2)
 
 def get_kelvin():
     return response['main']['temp']
