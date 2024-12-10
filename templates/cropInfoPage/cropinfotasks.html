@@ -44,8 +44,8 @@
 
 
 <!-- Where tasks appear -->
-<!-- <div id="taskList" class = "p-0"> </div> -->
-<div>
+<div id="taskList" class = "p-0"> </div>
+<!-- <div>
     {% for task in tasks %}
     <div class="task">
       <p><strong>Task:</strong> {{ task.task }}</p>
@@ -53,10 +53,13 @@
     </div>
     {% endfor %}
   </div>
+-->
   
 
 
-<!-- <script>
+<script>
+
+    
 
     // function to create the inner text for the html element with the todo list
     const createTodoItem = (todo, index) => 
@@ -70,13 +73,18 @@
         </div>
     `
 
+    
+
     // For actually displaying the tasks
     $(document).ready(function() {
+        const user_crop_id = "{{ user_crop_id }}";
         $.ajax({
-            url: '/getTasks',
+            url: '/getTasks/' + user_crop_id,
             method: 'GET',
+            // using "todos" instead of "tasks" as a name because easier to follow in template above
             success: function(todos) {
                 console.log('Todos:', todos);
+                console.log(user_crop_id);
                 // shortening strings to display properly if too long
                 todos.forEach((todo, index) => {
                     todo.task = shortenLongString(todo.task, 350);
@@ -91,4 +99,4 @@
             }
         });
     })
-</script> -->
+</script>

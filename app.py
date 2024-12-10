@@ -201,9 +201,9 @@ def new_show_crop(user_crop_id):
                                  crop_info_id = crop_infos[0]['crop_info_id'],
                                  variety_name = variety_name,
                                  latin_name = latin_name,
-                                 tasks=tasks))
+                                 tasks=tasks,
+                                 user_crop_id = user_crop_id))
     
-    resp.set_cookie('crop_id', '2', expires=0)
     return resp
     
 
