@@ -14,6 +14,7 @@ import json
 import auth
 import crop_infos
 import sys
+import weather_script
 
 #-----------------------------------------------------------------------
 
@@ -179,6 +180,11 @@ def homepage():
     admin = flask.request.cookies.get('admin') == 'true'
     app.logger.info(admin)
 
+    weather = weather_script.get_fahrenheit()
+    humidity = weather_script.get_humidity()
+    wind = weather_script.get_wind_speed()
+
+
     if not user_id:
         return flask.redirect('/login')
     user = database.get_user(user_id, 'user_id')
@@ -193,7 +199,10 @@ def homepage():
     html_code = flask.render_template('homepage/homepage.html',
                                       user_name=user_name,
                                       admin=admin,
-                                      crops_with_todos=crops_with_todos)
+                                      crops_with_todos=crops_with_todos,
+                                      weather=weather,
+                                      humidity=humidity,
+                                      wind=wind)
     response = flask.make_response(html_code)
     return response
 
