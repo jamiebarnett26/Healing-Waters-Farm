@@ -680,21 +680,34 @@ def edit_species(species_id, updated_data):
             session.commit()
 
 def edit_variety(variety_id, updated_data_variety, updated_data_crop):
-    for field in updated_data_crop:
-        if updated_data_crop.get(field) == "":
-            updated_data_crop[field] = None 
-
+    # Clean up "None" and empty string values
+    updated_data_crop = {key: value if value not in ["None", ""] else None for key, value in updated_data_crop.items()}
+    updated_data_variety = {key: value if value not in ["None", ""] else None for key, value in updated_data_variety.items()}
+    
     with get_session() as session:
-        crop_info = session.query(Crop_Info).get(variety_id)
-        variety = session.query(Variety).get(variety_id)
-        if crop_info:
-            for key, value in updated_data_crop.items():
-                setattr(crop_info, key, value)
-                session.commit()
-        if variety:
-            for key, value in updated_data_variety.items():
-                setattr(variety, key, value)
-                session.commit()
+        try:
+            # Update Crop_Info
+            crop_info = session.query(Crop_Info).get(variety_id)
+            if crop_info:
+                for key, value in updated_data_crop.items():
+                    setattr(crop_info, key, value)
+
+            # Update Variety
+            variety = session.query(Variety).get(variety_id)
+            if variety:
+                # Validate non-null fields
+                if "variety_name" in updated_data_variety and updated_data_variety["variety_name"] is None:
+                    raise ValueError("variety_name cannot be null")
+                for key, value in updated_data_variety.items():
+                    setattr(variety, key, value)
+
+            # Commit changes
+            session.commit()
+
+        except Exception as e:
+            session.rollback()  # Rollback in case of any error
+            raise e  # Re-raise the exception for debugging
+
 
 def edit_question(question_id, updated_data):
     with get_session() as session:

@@ -5,7 +5,6 @@ const assets = [
   "/static/css/checkbox.css",
   "/static/js/script.js",
   "/manifest.json",
-  "/offline.html",  
   "/homepage"       
 ];
 
@@ -18,7 +17,7 @@ self.addEventListener("install", installEvent => {
           console.log(`Successfully cached: ${asset}`);  // Log successful caching
         }
       } catch (error) {
-        console.error(`Failed to cache asset: ${asset}`, error);  // Log which asset failed
+        console.error(`Failed to cache asset:`, error);  // Log which asset failed
       }
     })
   );

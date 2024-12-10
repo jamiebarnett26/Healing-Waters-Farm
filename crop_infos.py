@@ -83,7 +83,9 @@ def show_variety():
 
 @app.route('/editfamily/<family_id>', methods=['POST'])
 def post_edit_family(family_id):
-    family_name = flask.request.form.get('family_name')
+    family_name = flask.request.form.get('family_edit_name')
+    if(family_name is None):
+        return redirect(url_for('select_family'))
     family = {'family_name':family_name}
     database.edit_family(family_id, family)
     return redirect(url_for('select_family'))
@@ -92,8 +94,10 @@ def post_edit_family(family_id):
 
 @app.route('/editspecies/<species_id>', methods=['POST'])
 def post_edit_species(species_id):
-    species_name = flask.request.form.get('species_name')
-    latin_name = flask.request.form.get('latin_name')
+    species_name = flask.request.form.get('species_edit_name')
+    latin_name = flask.request.form.get('latin_name_edit')
+    if(species_name is None or latin_name is None):
+        return redirect(url_for('select_family'))
     species = {'species_name':species_name, 'latin_name':latin_name}
     database.edit_species(species_id, species)
     return redirect(url_for('select_family'))
@@ -106,19 +110,19 @@ def get_form_value(field_name):
 
 @app.route('/editvariety/<variety_id>', methods=['POST'])
 def edit_variety(variety_id):
-    variety_name = get_form_value('variety_name')
-    crop_type = get_form_value('crop_type_name')
-    plant_spacing_harvest = get_form_value('plant_spacing_harvest')
-    row_spacing_harvest = get_form_value('row_spacing_harvest')
-    plant_spacing_seed = get_form_value('plant_spacing_seed')
-    row_spacing_seed = get_form_value('row_spacing_seed')
-    days_to_maturity_harvest = get_form_value('days_to_maturity_harvest')
-    days_to_maturity_seed = get_form_value('days_to_maturity_seed')
-    days_to_transplantation = get_form_value('days_to_transplantation')
-    days_to_direct_sow = get_form_value('days_to_direct_sow')
-    days_to_harvest = get_form_value('days_to_harvest')
-    days_to_seed_harvest = get_form_value('days_to_seed_harvest')
-    frost_sensitivity_rating = get_form_value('frost_sensitivity_rating')
+    variety_name = get_form_value('variety_edit_name')
+    crop_type = get_form_value('crop_type_name_edit')
+    plant_spacing_harvest = get_form_value('plant_spacing_harvest_edit')
+    row_spacing_harvest = get_form_value('row_spacing_harvest_edit')
+    plant_spacing_seed = get_form_value('plant_spacing_seed_edit')
+    row_spacing_seed = get_form_value('row_spacing_seed_edit')
+    days_to_maturity_harvest = get_form_value('days_to_maturity_harvest_edit')
+    days_to_maturity_seed = get_form_value('days_to_maturity_seed_edit')
+    days_to_transplantation = get_form_value('days_to_transplantation_edit')
+    days_to_direct_sow = get_form_value('days_to_direct_sow_edit')
+    days_to_harvest = get_form_value('days_to_harvest_edit')
+    days_to_seed_harvest = get_form_value('days_to_seed_harvest_edit')
+    frost_sensitivity_rating = get_form_value('frost_sensitivity_rating_edit')
 
     variety = {'variety_name':variety_name}
 
@@ -133,16 +137,6 @@ def edit_variety(variety_id):
     database.edit_variety(variety_id, variety, crop_info)
     return redirect(url_for('show_crop', variety_id=variety_id))
 
-#-----------------------------------------------------------------------
-@app.route('/createspecies/<family_id>', methods=['GET'])
-def create_species(family_id):
-    admin = flask.request.cookies.get('admin') == 'true'
-    html_code = flask.render_template('createspecies.html',
-                                      admin=admin,
-                                      family_id=family_id,
-                                      current_time=get_current_time())
-    response = flask.make_response(html_code)
-    return response
 
 #-----------------------------------------------------------------------
 @app.route('/createvariety/<species_id>', methods=['GET'])
@@ -185,7 +179,9 @@ def create_variety(species_id):
 
 @app.route('/addfamily', methods=['POST'])
 def add_family():
-    family_name = flask.request.form.get('family_name')
+    family_name = flask.request.form.get('family_add_name')
+    if(family_name is None):
+        return redirect(url_for('select_family'))
     family = {'family_name':family_name}
     database.add_family(family)
     return redirect(url_for('select_family'))
@@ -193,8 +189,10 @@ def add_family():
 
 @app.route('/addspecies/<family_id>', methods=['POST'])
 def add_species(family_id):
-    species_name = flask.request.form.get('species_name')
-    latin_name = flask.request.form.get('latin_name')
+    species_name = flask.request.form.get('species_add_name')
+    latin_name = flask.request.form.get('latin_name_add')
+    if(species_name is None or latin_name is None):
+        return redirect(url_for('select_family'))
     species = {'family_id':family_id, 'species_name':species_name, 'latin_name':latin_name}
     database.add_species(species)
     return redirect(url_for('select_family'))

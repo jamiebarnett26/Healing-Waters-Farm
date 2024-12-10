@@ -148,14 +148,14 @@
 
     <!-- Popup form for adding a new question -->
     <div id="addQuestionPopup" class="popup-form" style="display: none;">
-        <form action="/addquestion/{{ user_id }}" method="post">
+        <form action="/addquestion/{{ user_id }}" onsubmit='return validateAddQuestionForm()' method="post">
             <div class="form-group">
                 <label for="title"><strong>Title</strong></label>
-                <input type="text" name="title" id="title" autofocus required class="form-control">
+                <input type="text" name="title_add" id="title_add" autofocus required class="form-control">
             </div>
             <div class="form-group">
                 <label for="text"><strong>Text</strong></label>
-                <textarea name="text" id="text" rows="4" class="form-control" required></textarea>
+                <textarea name="text" id="text" rows="4" class="form-control"></textarea>
             </div>
             <div class="form-actions">
                 <input type="submit" value="Ask Question" class="btn btn-primary">
@@ -196,7 +196,7 @@
                 <form action="/editquestion/{{ question['question_id'] }}" method="post">
                     <div class="form-group">
                         <label for="edit-title{{ question['question_id'] }}"><strong>Title</strong></label>
-                        <input type="text" name="title" id="edit-title{{ question['question_id'] }}" value="{{ question['title'] }}" class="form-control">
+                        <input type="text" name="title" id="edit-title{{ question['question_id'] }}" value="{{ question['title'] }}" required class="form-control">
                     </div>
                     <div class="form-group">
                         <label for="edit-text{{ question['question_id'] }}"><strong>Text</strong></label>
@@ -214,7 +214,7 @@
                 <form action="/addreply/{{ question['question_id'] }}" method="post">
                     <div class="form-group">
                         <label for="reply-text{{ question['question_id'] }}"><strong>Text</strong></label>
-                        <input type="text" name="text" id="reply-text{{ question['question_id'] }}" autofocus class="form-control">
+                        <input type="text" name="text" id="reply-text{{ question['question_id'] }}" required class="form-control" autofocus>
                     </div>
                     <div class="form-actions">
                         <input type="submit" value="Reply" class="btn btn-primary">
@@ -246,7 +246,7 @@
                             <form action="/editreply/{{ reply['reply_id'] }}" method="post">
                                 <div class="form-group">
                                     <label for="reply-edit-text{{ reply['reply_id'] }}"><strong>Edit Reply</strong></label>
-                                    <textarea name="text" id="reply-edit-text{{ reply['reply_id'] }}" rows="4" class="form-control">{{ reply['text'] }}</textarea>
+                                    <textarea name="text" id="reply-edit-text{{ reply['reply_id'] }}" rows="4" required class="form-control">{{ reply['text'] }}</textarea>
                                 </div>
                                 <div class="form-actions">
                                     <input type="submit" value="Save Changes" class="btn btn-primary">
@@ -277,6 +277,14 @@
                 popupForm.style.display = 'none';
                 overlay.style.display = 'none';
             }
+        }
+        function validateAddQiestionForm() { 
+            const questionAdd = document.getElementById('title_add').value;
+            if (!questionAdd) {
+                alert("Qiestion must have a title.");
+                return false;
+            }
+            return true;
         }
     </script>
 

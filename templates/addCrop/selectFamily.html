@@ -34,8 +34,6 @@
          <!-- Title and Search Bar  -->
         <div class="container">
             <br>
-            <h1 id="Title">Select Family</h1>
-            <input type="text", id="textInput", autofocus> <input type="submit" value="Submit">
 
         </div>
             <!-- Card(Background)  -->
@@ -65,12 +63,13 @@
             </div>
 
             <div id="addFamilyPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); z-index: 1000;">
-                <form action="/addfamily" method="post">
+                <form id="familyForm" action="/addfamily" method="post">
                     <strong>Family Name</strong>
-                    <input type="text", name="family_name", autofocus> <br>
+                    <input type="text", id="family_add_name", required class="form-control" autofocus> <br>
                     <input type="submit" value="Add Family">
                     <button type="button" onclick="togglePopup('addFamilyPopup')">Cancel</button>
                 </form>
+                
             </div>
 
         
@@ -94,8 +93,6 @@
     });
 
     function setup() {
-        let familyInput = document.getElementById('textInput');
-        familyInput.addEventListener('input', debouncedGetResults);
         getFamilyResults();  // Fetch family results on setup
     }
 
@@ -130,7 +127,7 @@
 
     let templateFamilyList = ` 
         <select class="form-select" id="templateFamilyList" aria-label="Default select Family">
-            <option selected>Open this select menu</option>
+            <option selected>Select Family</option>
             {{#family}}
             <option value={{family_id}}>{{family_name}}</option>
             {{/family}}
@@ -139,7 +136,7 @@
 
     let templateSpeciesList = ` 
         <select class="form-select" id="templateSpeciesList" aria-label="Default select Family">
-            <option selected>Open this select menu</option>
+            <option selected>Select Species</option>
             {{#species}}
             <option value={{species_id}}>{{species_name}}</option>
             {{/species}}
@@ -148,7 +145,7 @@
 
     let templateVarietyList = ` 
         <select class="form-select" id="templateVarietyList" aria-label="Default select Family">
-            <option selected>Open this select menu</option>
+            <option selected>Select Variety</option>
             {{#variety}}
             <option value={{variety_id}}>{{variety_name}}</option>
             {{/variety}}
@@ -210,9 +207,7 @@
             alert('Error: Failed to fetch data from server');
         }
 
-        let familyId = $('#textInput').val();
-        let encodedFamilyId = encodeURIComponent(familyId);
-        let url = '/showFamily?family=' + encodedFamilyId;
+        let url = '/showFamily?family=';
 
         if (request !== null) {
             request.abort();
@@ -332,6 +327,27 @@
             getSpeciesResults(selectedValue);
             var familyActionsContainer = document.getElementById('editFamilyActions');
             console.log(familyActionsContainer);
+
+            // Assign the validation function globally
+            window.validateAddSpeciesForm = function() { 
+                const speciesAddName = document.getElementById('species_add_name').value;
+                const latinNameAdd = document.getElementById('latin_name_add').value;
+                console.log('Species Add Name:', speciesAddName);
+                console.log('Latin Name Add:', latinNameAdd);
+                
+                // Validation checks
+                if (!speciesAddName) {
+                    alert("Species name cannot be empty.");
+                    return false;
+                }
+                if (!latinNameAdd) {
+                    alert("Latin name cannot be empty.");
+                    return false;
+                }
+                return true;
+            };
+
+            // Dynamically update the family actions container
             familyActionsContainer.innerHTML = `
                 <button type="button" onclick="togglePopup('editFamilyPopup${selectedValue}')" class="btn btn-success btn-sm">Edit</button>
                 <form action="/deletefamily/${selectedValue}" method="post" class="d-inline">
@@ -341,9 +357,9 @@
                 <div id="editFamilyPopup${selectedValue}" class="popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); z-index: 1000; border-radius: 8px;">
                     <form action="/editfamily/${selectedValue}" method="post">
                         <strong>Family Name</strong>
-                        <input type="text" name="family_name" class="form-control mb-2" autofocus> <br>
+                        <input type="text" id="family_edit_name" class="form-control mb-2" required class="form-control" autofocus> <br>
                         <input type="submit" value="Edit Family" class="btn btn-success">
-                        <button type="button" onclick="togglePopup('editFamilyPopup${selectedValue}')" class="btn btn-secondary btn-sm">Cancel</button>
+                        <button type="button" onclick="togglePopup('addSpeciesPopup${selectedValue}')" class="btn btn-secondary btn-sm">Cancel</button>
                     </form>
                 </div>
 
@@ -351,24 +367,76 @@
                 <div id="addSpeciesPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); z-index: 1000; border-radius: 8px;">
                     <form action="/addspecies/${selectedValue}" method="post">
                         <strong>Species Name</strong>
-                        <input type="text" name="species_name" class="form-control mb-2" autofocus><br>
+                        <input type="text" name="species_add_name" class="form-control mb-2" id="species_add_name" required class="form-control" autofocus><br>
                         <strong>Latin Name</strong>
-                        <input type="text" name="latin_name" class="form-control mb-2" autofocus><br>
+                        <input type="text" name="latin_name_add" class="form-control mb-2" id="latin_name_add" required class="form-control" autofocus><br>
                         <input type="submit" value="Add Species" class="btn btn-success">
                         <button type="button" onclick="togglePopup('addSpeciesPopup')" class="btn btn-secondary btn-sm">Cancel</button>
                     </form>
                 </div>
-
             `;
         });
+
+    
+
     });
 
     $(document).on('change', '#templateSpeciesList', function() {
-        var selectedValue = $(this).val();
-        console.log(selectedValue);
+    var selectedValue = $(this).val();
+    console.log("Selected Species Value:", selectedValue);
 
-        getVarietyResults(selectedValue);
-        var speciesActionsContainer = document.getElementById('editSpeciesActions');
+    getVarietyResults(selectedValue);
+    var speciesActionsContainer = document.getElementById('editSpeciesActions');
+
+    window.validateAddVarietyForm = function() {
+        // Helper function to validate integer values (non-negative and valid integer)
+        function validInteger(intVal) {
+            const parsedValue = parseInt(intVal);
+            // Check if parsed value is a valid non-negative integer
+            return Number.isInteger(parsedValue) && parsedValue >= 0;
+        }
+
+        // Get form field values
+        const varietyName = document.querySelector('input[name="variety_name"]').value;
+        const cropTypeName = document.querySelector('input[name="crop_type_name"]').value;
+        const plantSpacingHarvest = document.querySelector('input[name="plant_spacing_harvest"]').value;
+        const plantSpacingSeed = document.querySelector('input[name="plant_spacing_seed"]').value;
+        const rowSpacingHarvest = document.querySelector('input[name="row_spacing_harvest"]').value;
+        const rowSpacingSeed = document.querySelector('input[name="row_spacing_seed"]').value;
+        const daysToMaturityHarvest = document.querySelector('input[name="days_to_maturity_harvest"]').value;
+        const daysToMaturitySeed = document.querySelector('input[name="days_to_maturity_seed"]').value;
+        const daysToTransplantation = document.querySelector('input[name="days_to_transplantation"]').value;
+        const daysToDirectSow = document.querySelector('input[name="days_to_direct_sow"]').value;
+        const daysToHarvest = document.querySelector('input[name="days_to_harvest"]').value;
+        const daysToSeedHarvest = document.querySelector('input[name="days_to_seed_harvest"]').value;
+        const frostSensitivityRating = document.querySelector('input[name="frost_sensitivity_rating"]').value;
+
+
+        // Combined validation for integer fields using validInteger function in one if statement
+        if (
+            !validInteger(plantSpacingHarvest) && plantSpacingHarvest !== "" ||
+            !validInteger(plantSpacingSeed) && plantSpacingSeed !== "" ||
+            !validInteger(rowSpacingHarvest) && rowSpacingHarvest !== "" ||
+            !validInteger(rowSpacingSeed) && rowSpacingSeed !== "" ||
+            !validInteger(daysToMaturityHarvest) && daysToMaturityHarvest !== "" ||
+            !validInteger(daysToMaturitySeed) && daysToMaturitySeed !== "" ||
+            !validInteger(daysToTransplantation) && daysToTransplantation !== "" ||
+            !validInteger(daysToDirectSow) && daysToDirectSow !== "" ||
+            !validInteger(daysToHarvest) && daysToHarvest !== "" ||
+            !validInteger(daysToSeedHarvest) && daysToSeedHarvest !== "" ||
+            !validInteger(frostSensitivityRating) && frostSensitivityRating !== ""
+        ) {
+            alert("Please ensure all integer fields contain valid integers or are left blank, and no negative values are entered.");
+            return false;
+        }
+
+        // If all checks pass, return true to allow form submission
+        return true;
+    }
+
+
+
+        // Dynamically update the species actions container
         speciesActionsContainer.innerHTML = `
             <button type="button" onclick="togglePopup('editSpeciesPopup${selectedValue}')" class="btn btn-success btn-sm">Edit</button>
             <form action="/deletespecies/${selectedValue}" method="post" class="d-inline">
@@ -377,13 +445,14 @@
             <div id="editSpeciesPopup${selectedValue}" class="popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); z-index: 1000; border-radius: 8px;">
                 <form action="/editspecies/${selectedValue}" method="post">
                     <strong>Species Name</strong>
-                    <input type="text" name="species_name" class="form-control mb-2" autofocus> <br>
+                    <input type="text" id="species_edit_name" name="species_edit_name" class="form-control mb-2" required class="form-control" autofocus> <br>
                     <strong>Latin Name</strong>
-                    <input type="text" name="latin_name" class="form-control mb-2" autofocus> <br>
+                    <input type="text" id="latin_name_edit" name="latin_name_edit" class="form-control mb-2" required class="form-control" autofocus> <br>
                     <input type="submit" value="Edit species" class="btn btn-success">
                     <button type="button" onclick="togglePopup('editSpeciesPopup${selectedValue}')" class="btn btn-secondary btn-sm">Cancel</button>
                 </form>
             </div>
+            
             <button type="button" onclick="togglePopup('addVarietyPopup')" class="btn btn-success btn-sm">Add Variety</button>
             <div id="addVarietyPopup" style="display: none; 
                 position: fixed; 
@@ -399,44 +468,46 @@
                 overflow-y: auto; /* Make it scrollable */ 
                 width: 90%; /* Adjust width for smaller screens */
                 max-width: 600px; /* Prevent it from being too wide */">
-                    <form action="/addvariety/${selectedValue}" method="post">
-                        <strong>Variety</strong>
-                        <input type="text", name="variety_name", autofocus> <br>
-                        <strong>Crop Type</strong>
-                        <input type="text", name="crop_type_name", autofocus> <br>
-                        <strong>Seed Spacing for Harvesting Crops:</strong>
-                        <input type="text", name="plant_spacing_harvest", value=0 autofocus> <br>
-                        <strong>Seed Spacing for Harvesting Seeds:</strong>
-                        <input type="text", name="plant_spacing_seed", value=0 autofocus> <br>
-                        <strong>Row Spacing for Harvesting Crops:</strong>
-                        <input type="text", name="row_spacing_harvest", value=0 autofocus> <br>
-                        <strong>Row Spacing for Harvesting Seeds:</strong>
-                        <input type="text", name="row_spacing_seed'", value=0 autofocus> <br>
-                        <strong>Days to Maturity for Harvesting Crops:</strong>
-                        <input type="text", name="days_to_maturity_harvest", value=0 autofocus> <br>
-                        <strong>Days to Maturity for Harvesting Seed:</strong>
-                        <input type="text", name="days_to_maturity_seed", value=0 autofocus> <br>
-                        <strong>Days to Transplantation:</strong>
-                        <input type="text", name="days_to_transplantation", value=0 autofocus> <br>
-                        <strong>Days to Direct Sow:</strong>
-                        <input type="text", name="days_to_direct_sow", value=0 autofocus> <br>
-                        <strong>Days for Harvesting Crops:</strong>
-                        <input type="text", name="days_to_harvest", value=0 autofocus> <br>
-                        <strong>Days for Harvesting Seeds:</strong>
-                        <input type="text", name="days_to_seed_harvest", value=0 autofocus> <br>
-                        <strong>Frost Sensitivity Rating:</strong>
-                        <input type="text", name="frost_sensitivity_rating", value=0 autofocus> <br>
-                        <input type="submit" value="Add Variety">
-                        <button type="button" onclick="togglePopup('addVarietyPopup')">Cancel</button>
-                    </form>
-                </div>
-                   ` ;
+                <form action="/addvariety/${selectedValue}" onsubmit='return validateAddVarietyForm()' method="post">
+                    <strong>Variety</strong>
+                    <input type="text" name="variety_name" required class="form-control" autofocus> <br>
+                    <strong>Crop Type</strong>
+                    <input type="text" name="crop_type_name" autofocus> <br>
+                    <strong>Seed Spacing for Harvesting Crops:</strong>
+                    <input type="text" name="plant_spacing_harvest" value="0" autofocus> <br>
+                    <strong>Seed Spacing for Harvesting Seeds:</strong>
+                    <input type="text" name="plant_spacing_seed" value="0" autofocus> <br>
+                    <strong>Row Spacing for Harvesting Crops:</strong>
+                    <input type="text" name="row_spacing_harvest" value="0" autofocus> <br>
+                    <strong>Row Spacing for Harvesting Seeds:</strong>
+                    <input type="text" name="row_spacing_seed" value="0" autofocus> <br>
+                    <strong>Days to Maturity for Harvesting Crops:</strong>
+                    <input type="text" name="days_to_maturity_harvest" value="0" autofocus> <br>
+                    <strong>Days to Maturity for Harvesting Seed:</strong>
+                    <input type="text" name="days_to_maturity_seed" value="0" autofocus> <br>
+                    <strong>Days to Transplantation:</strong>
+                    <input type="text" name="days_to_transplantation" value="0" autofocus> <br>
+                    <strong>Days to Direct Sow:</strong>
+                    <input type="text" name="days_to_direct_sow" value="0" autofocus> <br>
+                    <strong>Days for Harvesting Crops:</strong>
+                    <input type="text" name="days_to_harvest" value="0" autofocus> <br>
+                    <strong>Days for Harvesting Seeds:</strong>
+                    <input type="text" name="days_to_seed_harvest" value="0" autofocus> <br>
+                    <strong>Frost Sensitivity Rating:</strong>
+                    <input type="text" name="frost_sensitivity_rating" value="0" autofocus> <br>
+                    <input type="submit" value="Add Variety">
+                    <button type="button" onclick="togglePopup('addVarietyPopup')">Cancel</button>
+                </form>
+            </div>
+        `;
     });
+
 
     $(document).on('change', '#templateVarietyList', function() {
         var selectedValue = $(this).val();
         window.location = '/showcrop/' + selectedValue
     });
+    
 
 
     </script>

@@ -73,7 +73,7 @@
     overflow-y: auto; /* Make it scrollable */ 
     width: 90%; /* Adjust width for smaller screens */
     max-width: 600px; /* Prevent it from being too wide */">
-        <form action="/addvariety/{{ species_id }}" method="post">
+        <form action="/addvariety/{{ species_id }}" onsubmit='return validateAddVarietyForm(event)' method="post">
             <strong>Variety</strong>
             <input type="text", name="variety_name", autofocus> <br>
             <strong>Crop Type</strong>
@@ -118,33 +118,33 @@
     overflow-y: auto; /* Make it scrollable */ 
     width: 90%; /* Adjust width for smaller screens */
     max-width: 600px; /* Prevent it from being too wide */">
-        <form action="/editvariety/{{ crop_infos[0]['variety_id'] }}" method="post">
+        <form action="/editvariety/{{ crop_infos[0]['variety_id'] }}" onsubmit='return validateEditVarietyForm(event)' method="post">
             <strong>Variety</strong>
-            <input type="text", name="variety_name" value='{{ crop_infos[0]['variety_name'] }}' autofocus> <br>
+            <input type="text" name="variety_edit_name" value='{{ crop_infos[0]['variety_name'] }}' required class="form-control" autofocus> <br>
             <strong>Crop Type</strong>
-            <input type="text", name="crop_type_name" value='{{ crop_infos[0]['crop_type_name'] }}' autofocus> <br>
+            <input type="text" name="crop_type_name_edit" value='{{ crop_infos[0]['crop_type_name'] }}' autofocus> <br>
             <strong>Seed Spacing for Harvesting Crops:</strong>
-            <input type="text", name="plant_spacing_harvest", value={{ crop_infos[0]['plant_spacing_harvest'] }} autofocus> <br>
+            <input type="text" name="plant_spacing_harvest_edit" value={{ crop_infos[0]['plant_spacing_harvest'] }} autofocus> <br>
             <strong>Seed Spacing for Harvesting Seeds:</strong>
-            <input type="text", name="plant_spacing_seed", value={{ crop_infos[0]['plant_spacing_seed'] }} autofocus> <br>
+            <input type="text" name="plant_spacing_seed_edit" value={{ crop_infos[0]['plant_spacing_seed'] }} autofocus> <br>
             <strong>Row Spacing for Harvesting Crops:</strong>
-            <input type="text", name="row_spacing_harvest", value={{ crop_infos[0]['row_spacing_harvest'] }} autofocus> <br>
+            <input type="text" name="row_spacing_harvest_edit" value={{ crop_infos[0]['row_spacing_harvest'] }} autofocus> <br>
             <strong>Row Spacing for Harvesting Seeds:</strong>
-            <input type="text", name="row_spacing_seed'", value={{ crop_infos[0]['row_spacing_seed'] }} autofocus> <br>
+            <input type="text" name="row_spacing_seed_edit" value={{ crop_infos[0]['row_spacing_seed'] }} autofocus> <br>
             <strong>Days to Maturity for Harvesting Crops:</strong>
-            <input type="text", name="days_to_maturity_harvest", value={{ crop_infos[0]['days_to_maturity_harvest'] }} autofocus> <br>
+            <input type="text" name="days_to_maturity_harvest_edit" value={{ crop_infos[0]['days_to_maturity_harvest'] }} autofocus> <br>
             <strong>Days to Maturity for Harvesting Seed:</strong>
-            <input type="text", name="days_to_maturity_seed", value={{ crop_infos[0]['days_to_maturity_seed'] }} autofocus> <br>
+            <input type="text" name="days_to_maturity_seed_edit" value={{ crop_infos[0]['days_to_maturity_seed'] }} autofocus> <br>
             <strong>Days to Transplantation:</strong>
-            <input type="text", name="days_to_transplantation", value={{ crop_infos[0]['days_to_transplantation'] }} autofocus> <br>
+            <input type="text" name="days_to_transplantation_edit" value={{ crop_infos[0]['days_to_transplantation'] }} autofocus> <br>
             <strong>Days to Direct Sow:</strong>
-            <input type="text", name="days_to_direct_sow", value={{ crop_infos[0]['days_to_direct_sow'] }} autofocus> <br>
+            <input type="text" name="days_to_direct_sow_edit" value={{ crop_infos[0]['days_to_direct_sow'] }} autofocus> <br>
             <strong>Days for Harvesting Crops:</strong>
-            <input type="text", name="days_to_harvest", value={{ crop_infos[0]['days_to_harvest'] }} autofocus> <br>
+            <input type="text" name="days_to_harvest_edit" value={{ crop_infos[0]['days_to_harvest'] }} autofocus> <br>
             <strong>Days for Harvesting Seeds:</strong>
-            <input type="text", name="days_to_seed_harvest", value={{ crop_infos[0]['days_to_seed_harvest'] }} autofocus> <br>
+            <input type="text" name="days_to_seed_harvest_edit" value={{ crop_infos[0]['days_to_seed_harvest'] }} autofocus> <br>
             <strong>Frost Sensitivity Rating:</strong>
-            <input type="text", name="frost_sensitivity_rating", value={{ crop_infos[0]['frost_sensitivity_rating'] }} autofocus> <br>
+            <input type="text" name="frost_sensitivity_rating_edit" value={{ crop_infos[0]['frost_sensitivity_rating'] }} autofocus> <br>
             <input type="submit" value="Edit Variety">
             <button type="button" onclick="togglePopup('editVarietyPopup')">Cancel</button>
         </form>
@@ -215,6 +215,123 @@
                 popupForm.style.display = 'none';
             }
         }
+        function validateEditVarietyForm(event) {
+            // Utility function to get and validate form field values
+            function getValidatedFieldValue(fieldName) {
+                const value = document.querySelector(`input[name="${fieldName}"]`)?.value;
+                return value === 'None' || value === '' ? '' : value;
+            }
+
+            // Function to validate integer values
+            function validInteger(intVal) {
+                const parsedValue = parseInt(intVal);
+                // Check if parsed value is a valid non-negative integer
+                return Number.isInteger(parsedValue) && parsedValue >= 0;
+            }
+
+            // Get form field values using the utility function
+            const varietyName = getValidatedFieldValue('variety_edit_name');
+            const cropTypeName = getValidatedFieldValue('crop_type_name_edit');
+            const plantSpacingHarvest = getValidatedFieldValue('plant_spacing_harvest_edit');
+            const plantSpacingSeed = getValidatedFieldValue('plant_spacing_seed_edit');
+            const rowSpacingHarvest = getValidatedFieldValue('row_spacing_harvest_edit');
+            const rowSpacingSeed = getValidatedFieldValue('row_spacing_seed_edit');
+            const daysToMaturityHarvest = getValidatedFieldValue('days_to_maturity_harvest_edit');
+            const daysToMaturitySeed = getValidatedFieldValue('days_to_maturity_seed_edit');
+            const daysToTransplantation = getValidatedFieldValue('days_to_transplantation_edit');
+            const daysToDirectSow = getValidatedFieldValue('days_to_direct_sow_edit');
+            const daysToHarvest = getValidatedFieldValue('days_to_harvest_edit');
+            const daysToSeedHarvest = getValidatedFieldValue('days_to_seed_harvest_edit');
+            const frostSensitivityRating = getValidatedFieldValue('frost_sensitivity_rating_edit');
+
+                                    
+            // Check if required fields (variety name and crop type) are not empty
+            if (!varietyName) {
+                alert("Variety name cannot be empty.");
+                return false;  // Prevent form submission
+            }
+
+            // Combined validation for integer fields using validInteger function in one if statement
+            if (
+                !validInteger(plantSpacingHarvest) && plantSpacingHarvest !== '' ||
+                !validInteger(plantSpacingSeed) && plantSpacingSeed !== '' ||
+                !validInteger(rowSpacingHarvest) && rowSpacingHarvest !== '' ||
+                !validInteger(rowSpacingSeed) && rowSpacingSeed !== '' ||
+                !validInteger(daysToMaturityHarvest) && daysToMaturityHarvest !== ''||
+                !validInteger(daysToMaturitySeed) && daysToMaturitySeed !== '' ||
+                !validInteger(daysToTransplantation) && daysToTransplantation !== '' ||
+                !validInteger(daysToDirectSow) && daysToDirectSow !== '' ||
+                !validInteger(daysToHarvest) && daysToHarvest !== '' ||
+                !validInteger(daysToSeedHarvest) && daysToSeedHarvest !== '' ||
+                !validInteger(frostSensitivityRating) && frostSensitivityRating !== ''
+            ) {
+                alert("Please ensure all integer fields contain valid integers or are left blank, and no negative values are entered.");
+                return false;  // Prevent form submission
+            }
+
+            // If all checks pass, allow form submission
+            return true;
+        }
+
+        function validateAddVarietyForm(event) {
+            // Utility function to get and validate form field values
+            function getValidatedFieldValue(fieldName) {
+                const value = document.querySelector(`input[name="${fieldName}"]`)?.value;
+                return value === 'None' || value === '' ? '' : value;
+            }
+
+            // Function to validate integer values
+            function validInteger(intVal) {
+                const parsedValue = parseInt(intVal);
+                // Check if parsed value is a valid non-negative integer
+                return Number.isInteger(parsedValue) && parsedValue >= 0;
+            }
+
+            // Get form field values using the utility function
+            const varietyName = getValidatedFieldValue('variety_name');
+            const cropTypeName = getValidatedFieldValue('crop_type_name');
+            const plantSpacingHarvest = getValidatedFieldValue('plant_spacing_harvest');
+            const plantSpacingSeed = getValidatedFieldValue('plant_spacing_seed');
+            const rowSpacingHarvest = getValidatedFieldValue('row_spacing_harvest');
+            const rowSpacingSeed = getValidatedFieldValue('row_spacing_seed');
+            const daysToMaturityHarvest = getValidatedFieldValue('days_to_maturity_harvest');
+            const daysToMaturitySeed = getValidatedFieldValue('days_to_maturity_seed');
+            const daysToTransplantation = getValidatedFieldValue('days_to_transplantation');
+            const daysToDirectSow = getValidatedFieldValue('days_to_direct_sow');
+            const daysToHarvest = getValidatedFieldValue('days_to_harvest');
+            const daysToSeedHarvest = getValidatedFieldValue('days_to_seed_harvest');
+            const frostSensitivityRating = getValidatedFieldValue('frost_sensitivity_rating');
+
+                                    
+            // Check if required fields (variety name and crop type) are not empty
+            if (!varietyName) {
+                alert("Variety name cannot be empty.");
+                return false;  // Prevent form submission
+            }
+
+            // Combined validation for integer fields using validInteger function in one if statement
+            if (
+                !validInteger(plantSpacingHarvest) && plantSpacingHarvest !== '' ||
+                !validInteger(plantSpacingSeed) && plantSpacingSeed !== '' ||
+                !validInteger(rowSpacingHarvest) && rowSpacingHarvest !== '' ||
+                !validInteger(rowSpacingSeed) && rowSpacingSeed !== '' ||
+                !validInteger(daysToMaturityHarvest) && daysToMaturityHarvest !== ''||
+                !validInteger(daysToMaturitySeed) && daysToMaturitySeed !== '' ||
+                !validInteger(daysToTransplantation) && daysToTransplantation !== '' ||
+                !validInteger(daysToDirectSow) && daysToDirectSow !== '' ||
+                !validInteger(daysToHarvest) && daysToHarvest !== '' ||
+                !validInteger(daysToSeedHarvest) && daysToSeedHarvest !== '' ||
+                !validInteger(frostSensitivityRating) && frostSensitivityRating !== ''
+            ) {
+                alert("Please ensure all integer fields contain valid integers or are left blank, and no negative values are entered.");
+                return false;  // Prevent form submission
+            }
+
+            // If all checks pass, allow form submission
+            return true;
+        }
+
+
     </script>
 </body>
 </html>
