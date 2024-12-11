@@ -189,11 +189,15 @@ def new_show_crop(user_crop_id):
     if not user_id:
         return flask.redirect('/login')
     
-    tasks = database.get_tasks(user_crop_id)
+    variety_id = flask.request.args.get('variety_id')
+    print("variety_id:", variety_id)
 
-    crop_infos = database.crop_info_from_variety(user_crop_id)
+    tasks = database.get_tasks(user_crop_id)
+    
+    crop_infos = database.crop_info_from_variety(variety_id)
+
+    print("crop infos: ", crop_infos)
     full_crop_infos = database.full_crop_info(crop_infos[0]['crop_info_id'])
-    variety_id = full_crop_infos.get('variety_id')
     variety_name = full_crop_infos['variety_name']
     latin_name = full_crop_infos['latin_name']
     admin = flask.request.cookies.get('admin') == 'true'
@@ -479,12 +483,15 @@ def my_crops():
     user_crops = database.get_user_crops(user_id)
     user_crop_infos = []
     user_crop_ids = []
+    variety_ids = []
+
     for user_crop in user_crops:
         user_crop_info = database.full_crop_info(user_crop['crop_info_id'])
         user_crop_infos.append(user_crop_info)
         user_crop_ids.append(user_crop['crop_info_id'])
+        variety_ids.append(user_crop['variety_id'])
     
-    crops = list(zip(user_crop_infos, user_crop_ids))
+    crops = list(zip(user_crop_infos, user_crop_ids, variety_ids))
     return flask.render_template('showusercrops.html', crops=crops, user_crop_ids=user_crop_ids, admin=admin)
 
 
