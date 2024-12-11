@@ -32,7 +32,7 @@
     }
 
     .add-task {
-        font-size: clamp(30px, 5vw, 55px);
+        font-size: clamp(25px, 5vw, 55px);
         color: #313641
     }
 
@@ -42,14 +42,24 @@
 </style>
 
 <!-- Edit Button -->
-<div class="container-fluid py-1 px-4 pb-2">
-    <div class="row d-flex justify-content-center">
-        <button type="button" class="btn btn-outline-success edit-button" 
-                id="edit-button-{{ user_crop_id }}" 
-                onclick="showEditForm({{ user_crop_id }})">
-            <img src="../../static/icon/edit.png" style="height: 6vw;" class="pb-2">
-            <span style="font-size: 5vw;">&nbsp; Edit Tasks</span>
-        </button>
+<div class="container-fluid py-1 px-4 pb-0">
+    <div class="row d-flex justify-content-center pb-0">
+        <div class = 'col-6 d-flex justify-content-center'>
+            <button type="button" class="btn btn-outline-success edit-button d-flex justify-content-center align-content-start" style = "height: 9vw; width: 23vw;" 
+                    id="edit-button-{{ user_crop_id }}" 
+                    onclick="showEditForm({{ user_crop_id }})">
+                <img src="../../static/icon/edit.png" style="height: 6vw;" class="pb-2">
+                <span style="font-size: 3.5vw;"> &nbsp; Edit </span>
+            </button>
+        </div>
+        <div class = "col-6 d-flex justify-content-center">
+            <button type="button" class="btn btn-outline-danger delete-button d-flex justify-content-center align-content-start" style = "height: 9vw; width: 24vw;"
+                    id="delete-button-{{ user_crop_id }}" 
+                    onclick="showDeleteForm({{ user_crop_id }})">
+                <img src="../../static/icon/bin.png" style="height: 6vw;" class="pb-2">
+                <span style="font-size: 3.5vw;"> &nbsp; Delete</span>
+            </button>
+        </div>
     </div>
 
     <!-- Edit form -->
@@ -61,18 +71,6 @@
         <input type="date" id="taskDateInput-{{ user_crop_id }}">
         <button onclick="submitEdit({{ user_crop_id }})" class="btn btn-success">Save</button>
         <button onclick="cancelEdit({{ user_crop_id }})" class="btn btn-secondary">Cancel</button>
-    </div>
-</div>
-
-<!-- Delete Button -->
-<div class="container-fluid py-1 px-4 pb-2">
-    <div class="row d-flex justify-content-center">
-        <button type="button" class="btn btn-outline-danger delete-button" 
-                id="delete-button-{{ user_crop_id }}" 
-                onclick="showDeleteForm({{ user_crop_id }})">
-            <img src="../../static/icon/edit.png" style="height: 6vw;" class="pb-2">
-            <span style="font-size: 5vw;">&nbsp; Delete Tasks</span>
-        </button>
     </div>
 
     <!-- Delete form -->
@@ -119,7 +117,7 @@
 <div class="container-fluid">
     <div class="row" style="margin: auto; width: 50%; text-align: center;">
         <div id="addTask" class="py-0 add-task">
-            +
+            New Task +
         </div>
     </div>
 </div>
