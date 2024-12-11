@@ -10,18 +10,22 @@
     <style>
         /* Footer Styling */
         .footer {
-            background-color: #28a745; /* Bright orange background */
-            padding: 3vh 0;  /* Reduced padding */
+            background-color: #e7fff5; /* Updated background color */
+            height: clamp(50px, 8vw, 65px);  
+            display: flex;
+            justify-content: space-around; 
+            align-items: center;  /* Vertically center the buttons */
             position: fixed;
             bottom: 0;
             width: 100%;
             z-index: 1000;
+            padding: 0 10px;
         }
 
         .footer .btn {
             width: 100%;
             margin: 2px 0;  /* Reduced margin */
-            font-size: 12px;  /* Smaller font size for buttons */
+            font-size: 3.8vw;  /* Smaller font size for buttons */
             padding: 5px 0;  /* Reduced padding inside buttons */
         }
 
@@ -43,28 +47,46 @@
 </head>
 <body>
     
-    <footer class="footer fixed-bottom p-0" style = "background-color: white; height: 15vw">
-        <div class="container-fluid text-center bg-dark-subtle p-0">
+    <footer class="footer">
+        <div class="container text-center px-2">
             <div class="row p-0">
-                <div class="col-3">
-                    <div class="btn btn-dark">
-                        My Crops
-                    </div>
-                </div>
-                <div class="col-3">
-                    <div class="btn btn-dark">
-                        Home
-                    </div>
-                </div>
-                <div class="col-3">
-                    <div class="btn btn-dark">
-                        Community
-                    </div>
-                </div>
+
                 {% if admin %}
-                    <div class="xs-col col-lg-2 p-sm-0" style="margin-bottom: 1vh;">
+                    <div class="col-3">
                         <div class="btn btn-dark">
-                            Profiles
+                            My Crops
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="btn btn-dark">
+                            Home
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="btn btn-dark">
+                            Community
+                        </div>
+                    </div>
+                        <div class="col-3">
+                            <div class="btn btn-dark">
+                                Profiles
+                            </div>
+                        </div>
+
+                {% else %}
+                    <div class="col-4">
+                        <div class="btn btn-dark">
+                            My Crops
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="btn btn-dark">
+                            Home
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="btn btn-dark">
+                            Community
                         </div>
                     </div>
                 {% endif %}

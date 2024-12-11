@@ -4,13 +4,13 @@
     /* For the checkbox tasks and dates below */
     .checkbox-wrapper-11 label span.task {
         font-weight: bold;
-        font-size: clamp(30px, 5vw, 55px);
+        font-size: clamp(20px, 5vw, 55px);
         display: block;
         color: #313641
     }
 
     .checkbox-wrapper-11 label span.date {
-        font-size: clamp(24px, 4vw, 45px);
+        font-size: clamp(15px, 4vw, 45px);
         display: block;
         color: gray; 
     }
@@ -30,6 +30,15 @@
         font-size: 4vw;
         color: black;
     }
+
+    .add-task {
+        font-size: clamp(30px, 5vw, 55px);
+        color: #313641
+    }
+
+    body {
+    padding-bottom: 8vh; /* Adjust this value to the height of your footer */
+}
 </style>
 
 <!-- Edit Button -->
@@ -43,30 +52,39 @@
 </div>
 
 
+<div class="container-fluid">
+    <div class="row" style="margin: auto; width: 50%; text-align: center;">
+        <div id="addTask" class="p-0 add-task">
+            testing
+        </div>
+    </div>
+</div>
+
 <!-- Where tasks appear -->
-<div id="taskList" class = "p-0"> </div>
-  
+<div class="container-fluid p-0">
+    <div id="taskList" class = "p-0" style = "align-content: center;"> </div>
+</div>
+
 
 
 <script>
     'use strict';
 
-    // function to create the inner text for the html element with the todo list
+    const user_crop_id = "{{ user_crop_id }}";
 
+    // function to create the inner text for the html element with the todo list
     // includes data-task-id so that the task can be later selected for event listening with the task_id included in that information
     function createTodoItem(todo, index) {
-        return `
-            <div class="checkbox-wrapper-11 mx-4">
-                <input id="todo-${todo.task_id}" type="checkbox" value="2">
-                <label for="todo-${todo.task_id}" data-task-id="${todo.task_id}" data-completed = "${todo.completed}">
-                    <span class="task"> ${todo.task} </span>
-                    <span class="date">Due: ${todo.date} </span>
-                </label>
-            </div>
-        `;
-    }
-
-    const user_crop_id = "{{ user_crop_id }}";
+    return `
+        <div class="checkbox-wrapper-11 mx-4">
+            <input id="todo-${todo.task_id}" type="checkbox" value="2" ${todo.completed ? 'checked' : ''}>
+            <label for="todo-${todo.task_id}" data-task-id="${todo.task_id}" data-completed="${todo.completed}">
+                <span class="task"> ${todo.task} </span>
+                <span class="date">Due: ${todo.date} </span>
+            </label>
+        </div>
+    `;
+}
 
     function showTasks() {
         $.ajax({
@@ -78,7 +96,7 @@
                     todo.task = shortenLongString(todo.task, 350);
                     todo.date = shortenLongString(todo.date, 100);
                     $('#taskList').append(createTodoItem(todo, index));
-                    $('#taskList').append('<hr style="width: 96%;">');
+                    $('#taskList').append('<hr class "pb-5" style="width: 96%;">');
                 });
                 attachEventListeners();
             },
@@ -121,13 +139,23 @@
             }),
             success: function(response) {
                 if (response.success) {
-                    // Find the checkbox element by ID
-                    // const checkbox = document.getElementById(`check-${taskId}`);
-                    // if (checkbox) {
-                    //     checkbox.checked = completed; // Toggle the checkbox state
-                    // } else {
-                    //     console.error("Checkbox not found for taskId: ", taskId);
-                    // }
+                    // Find the checkbox element by task_id
+                    const todo = $('#todo-' + taskId);
+                    
+                    // toggling todo checked attribute
+                    if (todo) {
+                        todo.checked = !completed; 
+                    } 
+                    else {
+                        console.error("Todo not found for taskId:", taskId);
+                    }
+
+                    const label = $('label[for="todo-' + taskId + '"]');
+
+                    if (label) {
+                        // Dynamically update the data-completed attribute with the new state
+                        label.setAttribute('data-completed', !completed);
+                    }
                 } else {
                     alert("Failed to update task status.");
                 }
