@@ -497,7 +497,7 @@ def my_crops():
         user_crop_info = database.full_crop_info(user_crop['crop_info_id'])
         user_crop_infos.append(user_crop_info)
         user_crop_ids.append(user_crop['crop_info_id'])
-        variety_ids.append(user_crop['variety_id'])
+        variety_ids.append(user_crop_info['variety_id'])
     
     crops = list(zip(user_crop_infos, user_crop_ids, variety_ids))
     return flask.render_template('showusercrops.html', crops=crops, user_crop_ids=user_crop_ids, admin=admin)
