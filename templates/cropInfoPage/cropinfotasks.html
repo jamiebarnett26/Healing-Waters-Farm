@@ -45,58 +45,97 @@
 
 <!-- Where tasks appear -->
 <div id="taskList" class = "p-0"> </div>
-<!-- <div>
-    {% for task in tasks %}
-    <div class="task">
-      <p><strong>Task:</strong> {{ task.task }}</p>
-      <p><strong>Date:</strong> {{ task.date }}</p>
-    </div>
-    {% endfor %}
-  </div>
--->
   
 
 
 <script>
-
-    
+    'use strict';
 
     // function to create the inner text for the html element with the todo list
-    const createTodoItem = (todo, index) => 
-    `
-        <div class="checkbox-wrapper-11 mx-4">
-                <input id="${index}" type="checkbox" value="2">
-                <label for="${index}">
+
+    // includes data-task-id so that the task can be later selected for event listening with the task_id included in that information
+    function createTodoItem(todo, index) {
+        return `
+            <div class="checkbox-wrapper-11 mx-4">
+                <input id="todo-${todo.task_id}" type="checkbox" value="2">
+                <label for="todo-${todo.task_id}" data-task-id="${todo.task_id}" data-completed = "${todo.completed}">
                     <span class="task"> ${todo.task} </span>
                     <span class="date">Due: ${todo.date} </span>
                 </label>
-        </div>
-    `
+            </div>
+        `;
+    }
 
-    
+    const user_crop_id = "{{ user_crop_id }}";
 
-    // For actually displaying the tasks
-    $(document).ready(function() {
-        const user_crop_id = "{{ user_crop_id }}";
+    function showTasks() {
         $.ajax({
             url: '/getTasks/' + user_crop_id,
             method: 'GET',
             // using "todos" instead of "tasks" as a name because easier to follow in template above
             success: function(todos) {
-                console.log('Todos:', todos);
-                console.log(user_crop_id);
-                // shortening strings to display properly if too long
-                todos.forEach((todo, index) => {
+                todos.forEach(function(todo, index) {
                     todo.task = shortenLongString(todo.task, 350);
                     todo.date = shortenLongString(todo.date, 100);
                     $('#taskList').append(createTodoItem(todo, index));
-                    $('#taskList').append('<hr style = "width: 96%;">')
+                    $('#taskList').append('<hr style="width: 96%;">');
                 });
+                attachEventListeners();
             },
 
             error: function(xhr, status, error) {
                 console.error('Error fetching tasks:', error);
             }
         });
-    })
+    }
+
+    // Attach event listeners for each todo item
+    function attachEventListeners() {
+        // Attach the click event to the labels using the `data-task-id` attribute
+        $('#taskList label').on('click', function() {
+            // Get task_id and completed from the data attribute
+            const taskId = $(this).data('task-id'); 
+            const completed = $(this).data('completed'); 
+
+            updateTaskStatus(taskId, completed);
+        });
+    }
+
+    // gets the tasks for the page
+    function setup() {
+        showTasks();
+    }
+
+    // runs the page setup
+    $(document).ready(setup);
+
+    function updateTaskStatus(taskId, completed) {
+        console.log(taskId);
+        $.ajax({
+            url: '/checked', 
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                task_id: taskId,
+                completed: !completed // Toggle the completed status
+            }),
+
+            success: function(response) {
+                // if (response.success) {
+                //     // Find the checkbox element by ID
+                //     const checkbox = document.getElementById(`todo-${taskId}`);
+                //     if (checkbox) {
+                //         checkbox.checked = completed; // Toggle the checkbox state
+                //     } else {
+                //         console.error("Checkbox not found for taskId: ", taskId);
+                //     }
+                // } else {
+                //     alert("Failed to update task status.");
+                // }
+            },
+            error: function(xhr, status, error) {
+                alert("An error occurred while updating task status: " + error);
+            }
+        });
+    }
 </script>

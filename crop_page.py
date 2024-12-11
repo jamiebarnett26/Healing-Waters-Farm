@@ -18,13 +18,27 @@ def get_tasks(user_crop_id):
         return flask.redirect('/login')
     
     todos = []
-
-    print(type(user_crop_id))
-    print(user_crop_id)
-
     todos = database.get_tasks(user_crop_id)
-
     if len(todos) == 0:
        todos.append({"task": "nothing", "date": "nothing", "done": "not done"})
 
+    todos = sorted(todos, key=lambda todo: todo['date'])
     return flask.jsonify(todos)
+
+# Helper function, returns crop to do list for cards
+@app.route('/checked', methods=['POST'])
+def checked():
+    data = flask.request.get_json()
+    task_id = data.get('task_id')
+    completed = data.get('completed')
+
+    print('Task before:', completed)
+
+    database.checkbox(task_id, completed)
+
+    print('Task after:', completed)
+
+    return flask.jsonify({
+        'success': True,
+        'completed': completed  # Return the updated status of the task
+    })
