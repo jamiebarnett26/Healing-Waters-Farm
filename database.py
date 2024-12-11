@@ -596,12 +596,23 @@ def get_user_crops(user_id):
             user_crops.append(user_crop)
         return user_crops
 
-def edit_tasks(task_id, task_name, new_date):
+def edit_task_date(task_id, new_date):
     with sqlalchemy.orm.Session(_engine) as session:
         task = session.query(Tasks).filter(Tasks.task_id == task_id).first()
-        task.task_name = task_name
-        task.task_date = new_date
-        session.commit()
+        if task:
+            task.task_date = new_date
+            session.commit()
+        else:
+            raise ValueError("Task not found")
+        
+def delete_task(task_id):
+    with sqlalchemy.orm.Session(_engine) as session:
+        task = session.query(Tasks).filter(Tasks.task_id == task_id).first()
+        if task:
+            session.delete(task)
+            session.commit()
+        else:
+            raise ValueError("Task not found")
 
 def delete_template(user_crop_id):
     with sqlalchemy.orm.Session(_engine) as session:

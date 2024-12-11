@@ -102,17 +102,28 @@ def deleteTemplate():
     except Exception as e:
         return flask.jsonify({'success': False, 'message': str(e)}), 500
 
-@app.route('/edit_task', methods = ['POST'])
+@app.route('/edit_task', methods=['POST'])
 def editTask():
     data = flask.request.get_json()
     task_id = data.get('task_id')
-    task_name = data.get('task_name')
     new_date = data.get('new_date')
-    try: 
-        database.edit_tasks(task_id, task_name, new_date)
+    try:
+        database.edit_task_date(task_id, new_date)
         return flask.jsonify({'success': True, 'message': 'Date updated successfully'})
     except Exception as e:
         return flask.jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/delete_task', methods=['POST'])
+def deleteTask():
+    data = flask.request.get_json()
+    task_id = data.get('task_id')
+
+    try:
+        database.delete_task(task_id)
+        return flask.jsonify({'success': True, 'message': 'Task deleted successfully'})
+    except Exception as e:
+        return flask.jsonify({'success': False, 'message': str(e)}), 500
+ 
 
 @app.route('/add_task', methods = ['POST'])
 def addTask():
