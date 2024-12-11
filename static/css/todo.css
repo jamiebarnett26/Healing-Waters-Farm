@@ -137,11 +137,11 @@
   }
   @keyframes slice-11 {
     60% {
-      width: 95%;
+      width: 100%;
       left: 4px;
     }
     100% {
-      width: 95%;
+      width: 100%;
       left: -2px;
       padding-left: 0;
     }

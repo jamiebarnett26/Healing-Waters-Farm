@@ -18,6 +18,7 @@ def get_tasks(user_crop_id):
     todos = database.get_tasks(user_crop_id)
     if len(todos) == 0:
        todos.append({"task": "nothing", "date": "nothing", "done": "not done"})
+       return flask.jsonify(todos)
 
     todos = sorted(todos, key=lambda todo: (todo['completed'], todo['date']))
     return flask.jsonify(todos)
@@ -34,5 +35,22 @@ def checked():
     
     return flask.jsonify({
         'success': True,
-        'completed': completed  # Return the updated status of the task
+        'completed': completed  # returning updated status of the task
+    })
+
+@app.route('/updateCropInfo', methods = ['POST'])
+def update_crop_info():
+
+    print('here')
+    data = flask.request.get_json()
+    variety_name = data.get('variety_name')
+    variety_id = data.get('variety_id')
+    updated_info = data.get('updatedFields')
+
+    variety = {'variety_name':variety_name}
+
+    database.edit_variety(variety_id, variety, updated_info)
+
+    return flask.jsonify({
+        'success': True,
     })

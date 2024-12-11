@@ -10,66 +10,107 @@
         font-size: 4vw;
         color: black;
     }
+
+    .editable {
+        border: 1px solid gray;
+        border-radius: 5px;
+        padding: 5px;
+    }
 </style>
 
 <div class="container-fluid py-1 px-4">
     <div class="row d-flex justify-content-center">
-        <button type="button" class="btn btn-outline-success edit-button" id="test-button-2">
-            <img src = "../../static/icon/edit.png" style = "height: 6vw;" class = "pb-2">
-            <span style = "font-size: 5vw;"> &nbsp; Edit </span>
+        <button type="button" class="btn btn-outline-success edit-button" id="edit-button">
+            <img src="../../static/icon/edit.png" style="height: 6vw;" class="pb-2">
+            <span style="font-size: 5vw;"> &nbsp; Edit </span>
         </button>
     </div>
 </div>
 
-<style>
-    .modal-content {
-        font-size: clamp(15px, 4.25vw, 45px);
+<div class = "info_thing mx-1 my-1 px-2 py-3" style = "border-radius: 5.5%; background-color: rgb(239, 239, 239);">
+    <strong>Family:</strong> <span id="family">{{ full_crop_infos['family_name'] }}</span><br>
+    <strong>Latin Name:</strong> <span id="latin-name">{{ full_crop_infos['latin_name'] }}</span><br>
+    <strong>Variety:</strong> <span id="variety">{{ full_crop_infos['variety_name'] }}</span><br>
+    <strong>Type:</strong> <span id="type">{{ full_crop_infos['crop_type'] }}</span><br>
+    <strong>Seed Spacing for Harvesting Crops (in.):</strong> <span class="editable-text" id="plant_spacing_harvest">{{ full_crop_infos['plant_spacing_harvest'] }} </span><br>
+    <strong>Row Spacing for Harvesting Crops (in.):</strong> <span class="editable-text" id="row_spacing_harvest">{{ full_crop_infos['row_spacing_harvest'] }}</span><br>
+    <strong>Seed Spacing for Harvesting Seeds (in.):</strong> <span class="editable-text" id="plant_spacing_seed">{{ full_crop_infos['plant_spacing_seed'] }}</span><br>
+    <strong>Row Spacing for Harvesting Seeds (in.):</strong> <span class="editable-text" id="row_spacing_seed">{{ full_crop_infos['row_spacing_seed'] }}</span><br>
+    <strong>Days to Maturity for Harvesting Crops:</strong> <span class="editable-text" id="days_to_maturity_harvest">{{ full_crop_infos['days_to_maturity_harvest'] }}</span><br>
+    <strong>Days to Maturity for Harvesting Seeds:</strong> <span class="editable-text" id="days_to_maturity_seed">{{ full_crop_infos['days_to_maturity_seed'] }}</span><br>
+    <strong>Days to Transplantation:</strong> <span class="editable-text" id="days_to_transplantation">{{ full_crop_infos['days_to_transplantation'] }}</span><br>
+    <strong>Days to Direct Sow:</strong> <span class="editable-text" id="ddays_to_direct_sow">{{ full_crop_infos['days_to_direct_sow'] }}</span><br>
+    <strong>Days for Harvesting Crops:</strong> <span class="editable-text" id="days_to_harvest">{{ full_crop_infos['days_to_harvest'] }}</span><br>
+    <strong>Days for Harvesting Seeds:</strong> <span class="editable-text" id="days_to_seed_harvest">{{ full_crop_infos['days_to_seed_harvest'] }}</span><br>
+    <strong>Frost Sensitivity Rating:</strong> <span class="editable-text" id="frost_sensitivity_rating">{{ full_crop_infos['frost_sensitivity_rating'] }}</span><br>
+</div>
+
+<script>
+    'use strict';
+
+    const variety_id = "{{ variety_id }}";
+    const variety_name = "{{ variety_name }}"
+
+    // send updated data
+    function sendText() {
+        var updatedFields = {};
+
+        $('.editable-text').each(function() {
+            var $this = $(this);
+            var fieldId = $this.attr('id');
+            var updatedValue = $this.find('input').val(); 
+            updatedFields[fieldId] = updatedValue;
+        });
+
+        $.ajax({
+            url: '/updateCropInfo', 
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(updatedFields, variety_name, variety_id),
+            success: function(response) {
+                location.reload(true);
+                // if (response.success) {
+                //     console.log('Data successfully updated!');
+                // } else {
+                //     console.error('Error updating data:', response.error);
+                // }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error with the AJAX request:', error);
+            }
+        });
     }
-    .btn {
-      font-size: 1.25rem; /* Larger button text */
-    }
-</style>
 
-<!-- Button to trigger the modal -->
-<!-- Button to trigger the modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">
-    Open Modal
-</button>
+    // toggling edit button to create edit state or not
+    $('#edit-button').on('click', function() {
+            // checking if text of button is 'save' or 'edit'
+            let isEditing = $(this).text().trim() === 'Save';
 
-<!-- Modal -->
-<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-<div class="modal-dialog modal-lg">
-    <div class="modal-content">
-    <div class="modal-header">
-        <h5 class="modal-title" id="editModalLabel">Edit!</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-    </div>
-    <div class="modal-body">
-        <p>edit</p>
-        <p>edit</p>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-    </div>
-    </div>
-</div>
-</div>
+            // toggle edit mode
+            $('.editable-text').each(function() {
+                if (isEditing) {
+                    let $editable_text = $(this)
+                    // convert input back to text
+                    var newText = $editable_text.find('input').val();
+                    $editable_text.text(newText);
+                } else {
+                    // make the text editable class
+                    var text = $(this).text();
+                    $(this).html('<input type="text" class="editable" value="' + text + '">');
+                }
+            });
 
-<div class = "info_thing mx-3 my-1 px-2 py-3" style = "border-radius: 5.5%; background-color: #e7fff5;">
-    <strong>Family:</strong> {{ full_crop_infos['family_name'] }}<br>
-    <strong>Latin Name:</strong> {{ full_crop_infos['latin_name'] }}<br>
-    <strong>Variety:</strong> {{ full_crop_infos['variety_name'] }}<br>
-    <strong>Type:</strong> {{ full_crop_infos['crop_type'] }}<br>
-    <strong>Seed Spacing for Harvesting Crops:</strong> {{ full_crop_infos['plant_spacing_harvest'] }} in.<br>
-    <strong>Row Spacing for Harvesting Crops:</strong> {{ full_crop_infos['row_spacing_harvest'] }} in.<br>
-    <strong>Seed Spacing for Harvesting Seeds:</strong> {{ full_crop_infos['plant_spacing_seed'] }} in.<br>
-    <strong>Row Spacing for Harvesting Seeds:</strong> {{ full_crop_infos['row_spacing_seed'] }} in.<br>
-    <strong>Days to Maturity for Harvesting Crops:</strong> {{ full_crop_infos['days_to_maturity_harvest'] }}<br>
-    <strong>Days to Maturity for Harvesting Seeds:</strong> {{ full_crop_infos['days_to_maturity_seed'] }}<br>
-    <strong>Days to Transplantation:</strong> {{ full_crop_infos['days_to_transplantation'] }}<br>
-    <strong>Days to Direct Sow:</strong> {{ full_crop_infos['days_to_direct_sow'] }}<br>
-    <strong>Days for Harvesting Crops:</strong> {{ full_crop_infos['days_to_harvest'] }}<br>
-    <strong>Days for Harvesting Seeds:</strong> {{ full_crop_infos['days_to_seed_harvest'] }}<br>
-    <strong>Frost Sensitivity Rating:</strong> {{ full_crop_infos['frost_sensitivity_rating'] }}<br>
-</div>
+            // Toggle button text between "Edit" and "Save"
+            if (isEditing) {
+                $(this).text('Edit');
+                sendText();
+            } else {
+                $(this).text('Save');
+            }
+        });
+
+    // making edit button into toggle state as default
+    $(document).ready(function() {
+        $('#edit-button').text('Edit');
+    });
+</script>

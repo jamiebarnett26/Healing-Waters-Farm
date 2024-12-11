@@ -86,12 +86,12 @@
 <body>
     <div class="container-fluid px-3" style = "background-color: #e7fff5;">
         <div class="row">
-            <div class="col-4">
+            <div class="col-3">
                 <div class="align-content-center text-center mb-4">
                     <img src = "../../static/icon/crop.png" style = "width: 20vw;">
                 </div>
             </div>
-            <div class="col-8 d-flex flex-column justify-content-end pb-4"> 
+            <div class="col-9 d-flex flex-column justify-content-end pb-4"> 
                 <div class="crop-name"> {{ variety_name }} </div>
                 <div class="latin-name"> {{ latin_name }}</div> 
             </div>
@@ -99,7 +99,7 @@
         </div>
     </div>
         
-    <div class="container-fluid mt-3">
+    <div class="container-fluid mt-1">
         <div class="d-flex justify-content-center">
             <ul class="nav nav-tabs w-100" id="contentTabs" role="tablist">
                 <li class="nav-item w-50 text-center" role="presentation">
@@ -139,12 +139,6 @@
 
 <script>
     'use strict';
-
-    $(document).ready(function() {
-        $('#test-button-1').on('click', function() {
-                $(this).text('Done!');
-            });
-    });
  
     //shortens string to desired length
     function shortenLongString(long_string, len) {

@@ -191,9 +191,10 @@ def new_show_crop(user_crop_id):
 
     crop_infos = database.crop_info_from_variety(user_crop_id)
     full_crop_infos = database.full_crop_info(crop_infos[0]['crop_info_id'])
+    variety_id = full_crop_infos.get('variety_id')
     variety_name = full_crop_infos['variety_name']
     latin_name = full_crop_infos['latin_name']
-    print(tasks)
+    admin = flask.request.cookies.get('admin') == 'true'
 
     resp = flask.make_response(
         flask.render_template('/cropInfoPage/newcropinfo.html', 
@@ -201,8 +202,10 @@ def new_show_crop(user_crop_id):
                                  crop_info_id = crop_infos[0]['crop_info_id'],
                                  variety_name = variety_name,
                                  latin_name = latin_name,
+                                 variety_id = variety_id,
                                  tasks=tasks,
-                                 user_crop_id = user_crop_id))
+                                 user_crop_id = user_crop_id,
+                                 admin = admin))
     
     return resp
     
