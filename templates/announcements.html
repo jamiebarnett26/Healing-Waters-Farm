@@ -123,7 +123,7 @@
             <form action="/addannouncement/{{ announcement_id }}" method="post">
                 <div class="form-group">
                     <label for="title"><strong>Title</strong></label>
-                    <input type="text" name="title" id="title" autofocus class="form-control">
+                    <input type="text" name="title" id="title" required class="form-control" autofocus>
                 </div>
                 <div class="form-group">
                     <label for="text"><strong>Text</strong></label>
@@ -148,7 +148,7 @@
             <form action="/editannouncement/{{ announcement['announcement_id'] }}" method="post">
                 <div class="form-group">
                     <label for="title{{ announcement['announcement_id'] }}"><strong>Title</strong></label>
-                    <input type="text" name="title" id="title{{ announcement['announcement_id'] }}" value="{{ announcement['title'] }}" class="form-control">
+                    <input type="text" name="title" id="title{{ announcement['announcement_id'] }}" value="{{ announcement['title'] }}" required class="form-control">
                 </div>
                 <div class="form-group">
                     <label for="text{{ announcement['announcement_id'] }}"><strong>Text</strong></label>
