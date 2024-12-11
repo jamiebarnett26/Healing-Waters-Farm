@@ -119,19 +119,18 @@
                 task_id: taskId,
                 completed: !completed // Toggle the completed status
             }),
-
             success: function(response) {
-                // if (response.success) {
-                //     // Find the checkbox element by ID
-                //     const checkbox = document.getElementById(`todo-${taskId}`);
-                //     if (checkbox) {
-                //         checkbox.checked = completed; // Toggle the checkbox state
-                //     } else {
-                //         console.error("Checkbox not found for taskId: ", taskId);
-                //     }
-                // } else {
-                //     alert("Failed to update task status.");
-                // }
+                if (response.success) {
+                    // Find the checkbox element by ID
+                    // const checkbox = document.getElementById(`check-${taskId}`);
+                    // if (checkbox) {
+                    //     checkbox.checked = completed; // Toggle the checkbox state
+                    // } else {
+                    //     console.error("Checkbox not found for taskId: ", taskId);
+                    // }
+                } else {
+                    alert("Failed to update task status.");
+                }
             },
             error: function(xhr, status, error) {
                 alert("An error occurred while updating task status: " + error);
