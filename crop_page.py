@@ -71,3 +71,8 @@ def add_task_page():
     database.add_task(user_id, user_crop_id, task_name, task_date)
 
     return flask.jsonify({"success": True})
+
+@app.route('/deleteCrop/<user_crop_id>', methods = ['POST'])
+def delete_crop(user_crop_id):
+    database.delete_template(user_crop_id)
+    return redirect('/homepage')

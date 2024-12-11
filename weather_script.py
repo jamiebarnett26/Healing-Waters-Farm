@@ -41,7 +41,7 @@ def get_city():
 def get_wind_speed():
     wind_speed_mps = response['wind']['speed']
     wind_speed_mph = wind_speed_mps * 2.23694
-    return round(wind_speed_mph, 2)
+    return int(round(wind_speed_mph, 0))
 
 def get_kelvin():
     return response['main']['temp']
