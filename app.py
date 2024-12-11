@@ -177,6 +177,8 @@ def homepage():
     response = flask.make_response(html_code)
     return response
 
+
+
 @app.route('/offline', methods = ["GET"])
 def offline():
     return flask.render_template('offline.html')
@@ -208,12 +210,6 @@ def new_show_crop(user_crop_id):
                                 admin = admin))
     
     return resp
-
-        
-    
-    
-    
-
 
 #-----------------------------------------------------------------------
 # @app.route('/showcrop/<int:crop_info_id>')

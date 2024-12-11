@@ -44,14 +44,33 @@
 <!-- Edit Button -->
 <div class="container-fluid py-1 px-4 pb-2">
     <div class="row d-flex justify-content-center">
-        <button type="button" class="btn btn-outline-success edit-button" id="test-button-1">
-            <img src = "../../static/icon/edit.png" style = "height: 6vw;" class = "pb-2">
-            <span style = "font-size: 5vw;"> &nbsp; Edit </span>
+        <button type="button" class="btn btn-outline-success edit-button" id="test-button-1" data-bs-toggle="modal" data-bs-target="#taskModal">
+            <img src="../../static/icon/edit.png" style="height: 6vw;" class="pb-2">
+            <span style="font-size: 5vw;">&nbsp; Edit or Delete Task</span>
         </button>
     </div>
 </div>
 
-<!-- Used chatGPT to generate -->
+ <!-- Edit Tasks and Forms -->
+<div id="edit-add-button">
+    <button id="edit-button-{{ user_crop_id }}" onclick="showEditForm({{ user_crop_id }})">Edit Task Dates</button>
+    <div id="edit-form-{{ user_crop_id }}" style="display: none;">
+        <h3>Select a task to edit</h3>
+        <label for="taskDropdown-{{ user_crop_id }}">Task:</label>
+        <select id="taskDropdown-{{ user_crop_id }}">
+            {% for todo in todos %}
+                <option value="{{ todo.task }}">{{ todo.task }}</option>
+            {% endfor %}
+        </select>
+        <label for="taskDateInput-{{ user_crop_id }}">New Date:</label>
+        <input type="date" id="taskDateInput-{{ user_crop_id }}">
+        <button onclick="submitEdit({{ user_crop_id }})">Save</button>
+        <button onclick="cancelEdit({{ user_crop_id }})">Cancel</button>
+    </div>
+</div>
+
+
+<!-- assited creating with chatGPT -->
 <!-- Modal for adding a task -->
 <div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -80,7 +99,7 @@
       </div>
     </div>
   </div>
-  
+
 
 <div class="container-fluid">
     <div class="row" style="margin: auto; width: 50%; text-align: center;">
@@ -154,27 +173,7 @@
                     <span class="date">Due: ${todo.date} </span>
                 </label>
             </div>
-        `;
-    }
-
-    function editTasks (todo, index) {
-        $.ajax({
-            url: '/getTasks/' + user_crop_id,
-            method: 'GET',
-            // using "todos" instead of "tasks" as a name because easier to follow in template above
-            success: function(todos) {
-                todos.forEach(function(todo, index) {
-                    todo.task = shortenLongString(todo.task, 350);
-                    todo.date = shortenLongString(todo.date, 100);
-                    $('#taskList').append(createTodoItem(todo, index));
-                    $('#taskList').append('<hr class "pb-5" style="width: 96%;">');
-                });
-            },
-
-            error: function(xhr, status, error) {
-                console.error('Error fetching tasks:', error);
-            }
-        });
+        `
     }
 
     function showTasks() {
