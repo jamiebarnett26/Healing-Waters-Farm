@@ -66,14 +66,12 @@
             url: '/updateCropInfo', 
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify(updatedFields, variety_name, variety_id),
+            data: JSON.stringify(
+                {updatedFields: updatedFields,
+                variety_name: variety_name, 
+                variety_id: variety_id}),
             success: function(response) {
-                location.reload(true);
-                // if (response.success) {
-                //     console.log('Data successfully updated!');
-                // } else {
-                //     console.error('Error updating data:', response.error);
-                // }
+                console.log('success');
             },
             error: function(xhr, status, error) {
                 console.error('Error with the AJAX request:', error);

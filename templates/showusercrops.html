@@ -31,9 +31,9 @@
     <div class="container py-4">
         <h1 class="text-center mb-4">My Crops</h1>
         <div class="row row-cols-2 g-3">
-            {% for crop_info in crops %}
+            {% for crop_info, user_crop_id in crops %}
                 <div class="col">
-                    <a href="/showcrop/{{ crop_info['variety_id'] }}" class="btn btn-light w-100">
+                    <a href="/newshowcrop/{{ user_crop_id }}" class="btn btn-light w-100">
                         <!-- Placeholder image; you can customize to dynamically load specific images -->
                         <img src="/static/icon/crop.png" class="img-fluid crop-icon" alt="crop_info['variety_name']">
                         <div class="mt-2">{{ crop_info['variety_name'] }}</div>

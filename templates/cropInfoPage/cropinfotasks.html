@@ -51,6 +51,36 @@
     </div>
 </div>
 
+<!-- Used chatGPT to generate -->
+<!-- Modal for adding a task -->
+<div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addTaskModalLabel">Add a New Task</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Form to input task details -->
+          <form id="addTaskForm">
+            <div class="mb-3">
+              <label for="taskTitle" class="form-label">Task Title</label>
+              <input type="text" class="form-control" id="taskTitle" required>
+            </div>
+            <div class="mb-3">
+              <label for="taskDate" class="form-label">Task Date</label>
+              <input type="date" class="form-control" id="taskDate" required>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="saveTaskBtn">Save Task</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
 
 <div class="container-fluid">
     <div class="row" style="margin: auto; width: 50%; text-align: center;">
@@ -72,9 +102,46 @@
 
     const user_crop_id = "{{ user_crop_id }}";
 
-    function addTask() {
-        
-    }
+    // show adding task modal
+    $('#addTask').on('click', function() {
+        $('#addTaskModal').modal('show');
+        });
+
+    $('#saveTaskBtn').on('click', function() {
+        const taskTitle = $('#taskTitle').val();
+        const taskDate = $('#taskDate').val();
+
+        if (taskTitle && taskDate) {
+            
+            $.ajax({
+                url: '/addTask', 
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    task_name: taskTitle,
+                    task_date: taskDate,
+                    user_crop_id: user_crop_id
+                }),
+                success: function(response) {
+                    if (response.success) {
+                        // Close the modal and refresh the task list
+                        $('#addTaskModal').modal('hide');
+                        $('#taskList').empty();
+                        //reload  
+                        showTasks();  
+                    } else {
+                        alert("Failed to add task.");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("An error occurred while adding the task: " + error);
+                }
+            });
+        } else {
+            alert("Please fill in both the task title and date.");
+        }
+    });
+
 
     // function to create the inner text for the html element with the todo list
     // includes data-task-id so that the task can be later selected for event listening with the task_id included in that information

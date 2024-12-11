@@ -91,10 +91,14 @@
                     <img src = "../../static/icon/crop.png" style = "width: 20vw;">
                 </div>
             </div>
-            <div class="col-9 d-flex flex-column justify-content-end pb-4"> 
+            <div class="col-9 d-flex flex-column justify-content-end p-0 pb-4"> 
                 <div class="crop-name"> {{ variety_name }} </div>
                 <div class="latin-name"> {{ latin_name }}</div> 
             </div>
+
+            <form action="/deletevariety/{{ full_crop_infos['variety_id'] }}" method="post">
+                <input type="submit" value="Delete">
+            </form>
                 
         </div>
     </div>

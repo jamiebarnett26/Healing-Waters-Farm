@@ -54,3 +54,19 @@ def update_crop_info():
     return flask.jsonify({
         'success': True,
     })
+
+@app.route('/addTask', methods=['POST'])
+def add_task_page():
+    data = flask.request.get_json()
+    user_id = flask.request.cookies.get('user_id')
+    if not user_id:
+        return flask.redirect('/login')
+
+    task_name = data.get('task_name')
+    task_date = data.get('task_date')
+    user_crop_id = data.get('user_crop_id')
+
+    print('here now')
+    database.add_task(user_id, user_crop_id, task_name, task_date)
+
+    return flask.jsonify({"success": True})
