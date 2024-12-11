@@ -185,6 +185,7 @@
                     // Clearing task list and populating it again
                     const taskList = document.getElementById(`taskList`);
                     taskList.innerHTML = '';
+                    document.getElementById(`edit-form-${userCropId}`).style.display = 'none';
                     showTasks(); 
                 } else {
                     alert("Error: " + response.message);
@@ -249,6 +250,7 @@
                     // Clearing task list and populating it again
                     const taskList = document.getElementById(`taskList`);
                     taskList.innerHTML = '';
+                    document.getElementById(`delete-form-${userCropId}`).style.display = 'none';
                     showTasks(); 
                 } else {
                     alert("Error: " + response.message);
