@@ -101,17 +101,28 @@ def deleteTemplate():
     except Exception as e:
         return flask.jsonify({'success': False, 'message': str(e)}), 500
 
-@app.route('/edit_task', methods = ['POST'])
+@app.route('/edit_task', methods=['POST'])
 def editTask():
     data = flask.request.get_json()
     task_id = data.get('task_id')
-    task_name = data.get('task_name')
     new_date = data.get('new_date')
-    try: 
-        database.edit_tasks(task_id, task_name, new_date)
+    try:
+        database.edit_task_date(task_id, new_date)
         return flask.jsonify({'success': True, 'message': 'Date updated successfully'})
     except Exception as e:
         return flask.jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/delete_task', methods=['POST'])
+def deleteTask():
+    data = flask.request.get_json()
+    task_id = data.get('task_id')
+
+    try:
+        database.delete_task(task_id)
+        return flask.jsonify({'success': True, 'message': 'Task deleted successfully'})
+    except Exception as e:
+        return flask.jsonify({'success': False, 'message': str(e)}), 500
+ 
 
 @app.route('/add_task', methods = ['POST'])
 def addTask():
@@ -198,17 +209,16 @@ def new_show_crop(user_crop_id):
         return flask.redirect('/login')
     
     variety_id = flask.request.args.get('variety_id')
-    print("variety_id:", variety_id)
 
     tasks = database.get_tasks(user_crop_id)
     
     crop_infos = database.crop_info_from_variety(variety_id)
 
-    print("crop infos: ", crop_infos)
     full_crop_infos = database.full_crop_info(crop_infos[0]['crop_info_id'])
     variety_name = full_crop_infos['variety_name']
     latin_name = full_crop_infos['latin_name']
     admin = flask.request.cookies.get('admin') == 'true'
+    print(tasks)
 
     resp = flask.make_response(
         flask.render_template('/cropInfoPage/newcropinfo.html', 
