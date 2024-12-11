@@ -51,24 +51,6 @@
     </div>
 </div>
 
- <!-- Edit Tasks and Forms -->
-<div id="edit-add-button">
-    <button id="edit-button-{{ user_crop_id }}" onclick="showEditForm({{ user_crop_id }})">Edit Task Dates</button>
-    <div id="edit-form-{{ user_crop_id }}" style="display: none;">
-        <h3>Select a task to edit</h3>
-        <label for="taskDropdown-{{ user_crop_id }}">Task:</label>
-        <select id="taskDropdown-{{ user_crop_id }}">
-            {% for todo in todos %}
-                <option value="{{ todo.task }}">{{ todo.task }}</option>
-            {% endfor %}
-        </select>
-        <label for="taskDateInput-{{ user_crop_id }}">New Date:</label>
-        <input type="date" id="taskDateInput-{{ user_crop_id }}">
-        <button onclick="submitEdit({{ user_crop_id }})">Save</button>
-        <button onclick="cancelEdit({{ user_crop_id }})">Cancel</button>
-    </div>
-</div>
-
 
 <!-- assited creating with chatGPT -->
 <!-- Modal for adding a task -->
