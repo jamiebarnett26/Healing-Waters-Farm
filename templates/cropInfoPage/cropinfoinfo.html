@@ -53,21 +53,23 @@
 
     // send updated data
     function sendText() {
-        var updatedFields = {};
+        var updated_fields = {};
 
         $('.editable-text').each(function() {
             var $this = $(this);
             var fieldId = $this.attr('id');
-            var updatedValue = $this.find('input').val(); 
-            updatedFields[fieldId] = updatedValue;
+            // for when it is span or input mode
+            var updatedValue = $this.find('input').val() || $this.text();
+            updated_fields[fieldId] = updatedValue;
         });
+        console.log(updated_fields);
 
         $.ajax({
             url: '/updateCropInfo', 
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(
-                {updatedFields: updatedFields,
+                {updated_fields: updated_fields,
                 variety_name: variety_name, 
                 variety_id: variety_id}),
             success: function(response) {
@@ -80,6 +82,7 @@
     }
 
     // toggling edit button to create edit state or not
+    // coded with the help of ChatGPT
     $('#edit-button').on('click', function() {
             // checking if text of button is 'save' or 'edit'
             let isEditing = $(this).text().trim() === 'Save';
@@ -87,10 +90,11 @@
             // toggle edit mode
             $('.editable-text').each(function() {
                 if (isEditing) {
+                    // explicityly accessing the editable text class instances
                     let $editable_text = $(this)
                     // convert input back to text
-                    var newText = $editable_text.find('input').val();
-                    $editable_text.text(newText);
+                    var new_text = $editable_text.find('input').val();
+                    $editable_text.text(new_text);
                 } else {
                     // make the text editable class
                     var text = $(this).text();

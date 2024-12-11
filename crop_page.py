@@ -41,11 +41,12 @@ def checked():
 @app.route('/updateCropInfo', methods = ['POST'])
 def update_crop_info():
 
-    print('here')
     data = flask.request.get_json()
     variety_name = data.get('variety_name')
     variety_id = data.get('variety_id')
-    updated_info = data.get('updatedFields')
+    updated_info = data.get('updated_fields')
+
+    print("updated_info is:", updated_info)
 
     variety = {'variety_name':variety_name}
 

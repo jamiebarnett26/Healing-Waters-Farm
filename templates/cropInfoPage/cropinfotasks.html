@@ -146,16 +146,36 @@
     // function to create the inner text for the html element with the todo list
     // includes data-task-id so that the task can be later selected for event listening with the task_id included in that information
     function createTodoItem(todo, index) {
-    return `
-        <div class="checkbox-wrapper-11 mx-4">
-            <input id="todo-${todo.task_id}" type="checkbox" value="2" ${todo.completed ? 'checked' : ''}>
-            <label for="todo-${todo.task_id}" data-task-id="${todo.task_id}" data-completed="${todo.completed}">
-                <span class="task"> ${todo.task} </span>
-                <span class="date">Due: ${todo.date} </span>
-            </label>
-        </div>
-    `;
-}
+        return `
+            <div class="checkbox-wrapper-11 mx-4">
+                <input id="todo-${todo.task_id}" type="checkbox" value="2" ${todo.completed ? 'checked' : ''}>
+                <label for="todo-${todo.task_id}" data-task-id="${todo.task_id}" data-completed="${todo.completed}">
+                    <span class="task"> ${todo.task} </span>
+                    <span class="date">Due: ${todo.date} </span>
+                </label>
+            </div>
+        `;
+    }
+
+    function editTasks (todo, index) {
+        $.ajax({
+            url: '/getTasks/' + user_crop_id,
+            method: 'GET',
+            // using "todos" instead of "tasks" as a name because easier to follow in template above
+            success: function(todos) {
+                todos.forEach(function(todo, index) {
+                    todo.task = shortenLongString(todo.task, 350);
+                    todo.date = shortenLongString(todo.date, 100);
+                    $('#taskList').append(createTodoItem(todo, index));
+                    $('#taskList').append('<hr class "pb-5" style="width: 96%;">');
+                });
+            },
+
+            error: function(xhr, status, error) {
+                console.error('Error fetching tasks:', error);
+            }
+        });
+    }
 
     function showTasks() {
         $.ajax({
@@ -178,7 +198,7 @@
         });
     }
 
-    // Attach event listeners for each todo item
+    // Attach event listeners for each todo item when clicked to shave state
     function attachEventListeners() {
         // Attach the click event to the labels using the `data-task-id` attribute
         $('#taskList label').on('click', function() {
@@ -214,15 +234,11 @@
                     const todo = $('#todo-' + taskId);
                     
                     // toggling todo checked attribute
-                    if (todo) {
-                        todo.checked = !completed; 
-                    } 
-                    else {
-                        console.error("Todo not found for taskId:", taskId);
-                    }
+                    if (todo) { todo.checked = !completed; }
+
+                    else { console.error("Todo not found for taskId:", taskId); }
 
                     const label = $('label[for="todo-' + taskId + '"]');
-
                     if (label) {
                         // Dynamically update the data-completed attribute with the new state
                         label.setAttribute('data-completed', !completed);
