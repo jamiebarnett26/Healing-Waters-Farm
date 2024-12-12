@@ -20,10 +20,10 @@ def verify_admin():
 
 def verify_login():
     user_id = flask.request.cookies.get('user_id')
-    if not user_id:
+    if user_id is None:
         return flask.redirect('/login')
     user = datauser.get_user(user_id, 'user_id')
-    if not user:
+    if user is None:
         return flask.redirect('/login')
  
 def get_username(user_id):
@@ -53,7 +53,7 @@ def community():
 #-----------------------------------------------------------------------
 
 @app.route('/addquestion/<user_id>', methods=['POST'])
-def add_question():
+def add_question(user_id):
     verify_login()
     user_id = flask.request.cookies.get('user_id')
     title = flask.request.form.get('title_add')
