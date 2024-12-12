@@ -11,8 +11,8 @@
         /* Footer Styling */
         .footer {
             background-color: #e7fff5; /* Updated background color */
-            height: clamp(50px, 8vw, 65px);  
-            display: flex;
+            height: clamp(50px, 25vw, 150px);  
+            display: inline-block;
             justify-content: space-around; 
             align-items: center; /* Vertically center the buttons */
             position: fixed;
@@ -20,6 +20,7 @@
             width: 100%;
             z-index: 1000;
             padding: 0 10px;
+            vertical-align: top;
         }
 
         .footer .btn {
@@ -48,8 +49,8 @@
 <body>
     
     <footer class="footer">
-        <div class="container text-center px-2">
-            <div class="row p-0">
+        <div class="container text-center px-2" style = "vertical-align: top;">
+            <div class="row py-1" style = "vertical-align: top;">
 
                 {% if admin %}
                     <div class="col-3 px-1">
