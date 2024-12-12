@@ -36,10 +36,10 @@ def verify_admin() :
 def verify_login():
     user_id = flask.request.cookies.get('user_id')
     app.logger.info(user_id)
-    if not user_id or user_id=='':
+    if user_id is None or user_id=="":
         return flask.redirect('/login')
     user = database.get_user(user_id, 'user_id')
-    if not user:
+    if user is None:
         return flask.redirect('/login')
 
 # Start of app, outputs login page
