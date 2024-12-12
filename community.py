@@ -27,7 +27,7 @@ def verify_login():
         return flask.redirect('/login')
  
 def get_username(user_id):
-    user = database.get_user(user_id, 'user_id')
+    user = datauser.get_user(user_id, 'user_id')
     return user.first_name + " " + user.last_name
 
 @app.route('/community', methods=['GET'])
