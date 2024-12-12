@@ -206,7 +206,7 @@
 
 <html>
 <body style = "background-color: #fff;">
-    <div class = "container-fluid">
+    <div class = "online-only">
         {% include 'homepage/boxes_w_info.html' %}
     </div>
     <div class="container-fluid bg-success-subtle rounded-top-5 p-0 pb-5">
@@ -221,7 +221,10 @@
             </div>
             </h1>
             <div class = "row p-0 g-0">
-                {% include 'homepage/cropcards.html' %}
+                <div class="online-only">
+                    {% include 'homepage/cropcards.html' %}
+                </div>
+                
             </div>
             
             <div class="offline-only">
