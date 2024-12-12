@@ -67,6 +67,7 @@
         <input type="date" id="taskDateInput-{{ user_crop_id }}">
         <button onclick="submitEdit({{ user_crop_id }})" class="btn btn-success px-2 py-1 my-1">Save</button>
         <button onclick="cancelEdit({{ user_crop_id }})" class="btn btn-secondary px-2 py-1 my-1">Cancel</button>
+        <hr>
     </div>
 
     <!-- Delete form -->
@@ -76,7 +77,9 @@
         <select id="deleteDropdown-{{ user_crop_id }}"></select> <br>
         <button onclick="submitDelete({{ user_crop_id }})" class="btn btn-danger px-2 py-1 my-1">Delete</button>
         <button onclick="cancelDelete({{ user_crop_id }})" class="btn btn-secondary px-2 py-1 my-1">Cancel</button>
+        <hr>
     </div>
+    
 </div>
 
 <!-- assited creating with chatGPT -->
@@ -112,7 +115,7 @@
 
 <div class="container-fluid">
     <div class="row" style="margin: auto; width: 50%; text-align: center;">
-        <div id="addTask" class="py-0 add-task">
+        <div id="addTask" class="py-2 pt-4 add-task">
             New Task +
         </div>
     </div>
