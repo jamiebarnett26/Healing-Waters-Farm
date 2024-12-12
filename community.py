@@ -61,7 +61,7 @@ def add_question():
     user_name = user_id
     question = {'user_id':user_id, 'user_name':user_name, 'title':title, 'text':text, 'status':'Unresolved'}
     database.add_question(question)
-    return redirect(url_for('app.community'))
+    return redirect(url_for('community'))
 
 #-----------------------------------------------------------------------
 
@@ -75,7 +75,7 @@ def add_reply(question_id):
     text = flask.request.form.get('text')
     reply = {'question_id':question_id,'user_id':user_id, 'user_name':user_name, 'text':text}
     database.add_reply(reply)
-    return redirect(url_for('app.community'))
+    return redirect(url_for('community'))
 
 #-----------------------------------------------------------------------
 
@@ -89,7 +89,7 @@ def add_announcement():
     title = flask.request.form.get('title')
     announcement = {'user_id':user_id, 'user_name':user_name, 'text':text, 'title':title}
     database.add_announcement(announcement)
-    return redirect(url_for('app.community'))
+    return redirect(url_for('community'))
 
 #-----------------------------------------------------------------------
 
@@ -97,25 +97,26 @@ def add_announcement():
 def edit_question(question_id):
     verify_login()
     user_id = flask.request.cookies.get('user_id')
-    user_question = database.search_field_id('question', question_id)
-    if(user_id != user_question['question_id']):
+    admin = flask.request.cookies.get('admin') == 'true'
+    user_question = database.search_field_id('question', question_id)[0]
+    if not admin and user_id != user_question['user_id']:
         return "Custom 405 Method Not Allowed Error", 405
     title = flask.request.form.get('title')
     text  = flask.request.form.get('text')
     question = {'title':title, 'text':text}
     database.edit_question(question_id, question)
-    return redirect(url_for('app.community'))
+    return redirect(url_for('community'))
 
 #-----------------------------------------------------------------------
 
 @app.route('/editreply/<reply_id>', methods=['POST'])
 def edit_reply(reply_id):
     verify_login()
-    verify_admin
+    verify_admin()
     text  = flask.request.form.get('text')
     reply = {'text':text}
     database.edit_reply(reply_id, reply)
-    return redirect(url_for('app.community'))
+    return redirect(url_for('community'))
     
 #-----------------------------------------------------------------------
 
@@ -127,18 +128,19 @@ def edit_announcement(announcement_id):
     title = flask.request.form.get('title')
     announcement = {'text':text, 'title':title}
     database.edit_announcement(announcement_id, announcement)
-    return redirect(url_for('app.community'))
+    return redirect(url_for('community'))
 
 #-----------------------------------------------------------------------
 @app.route('/deletequestion/<question_id>', methods=['POST'])
 def delete_question(question_id):
     verify_login()
     user_id = flask.request.cookies.get('user_id')
-    user_question = database.search_field_id('question', question_id)
-    if(user_id != user_question['question_id']):
+    admin = flask.request.cookies.get('admin') == 'true'
+    user_question = database.search_field_id('question', question_id)[0]
+    if (not admin) and user_id != user_question['user_id']:
         return "Custom 405 Method Not Allowed Error", 405
     database.delete_question(user_id, question_id)
-    return redirect(url_for('app.community'))
+    return redirect(url_for('community'))
 
 #-----------------------------------------------------------------------
 @app.route('/deletereply/<reply_id>', methods=['POST'])
@@ -147,7 +149,7 @@ def delete_reply(reply_id):
     verify_admin()
     user_id = flask.request.cookies.get('user_id')
     database.delete_reply(user_id, reply_id)
-    return redirect(url_for('app.community'))
+    return redirect(url_for('community'))
 
 #-----------------------------------------------------------------------
 @app.route('/deleteannouncement/<announcement_id>', methods=['POST'])
@@ -156,6 +158,6 @@ def delete_announcement(announcement_id):
     verify_admin()
     user_id = flask.request.cookies.get('user_id')
     database.delete_announcement(user_id, announcement_id)
-    return redirect(url_for('app.community'))
+    return redirect(url_for('community'))
 
 

@@ -49,7 +49,7 @@ def authorize_login():
      
 #-----------------------------------------------------------------------
 
-@app.route('/logout')
+@app.route('/logout', methods=['POST'])
 def logout():
     flask.session.clear()
     resp = flask.make_response(flask.redirect('https://accounts.google.com/Logout'))

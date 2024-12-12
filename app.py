@@ -35,7 +35,8 @@ def verify_admin() :
 
 def verify_login():
     user_id = flask.request.cookies.get('user_id')
-    if not user_id:
+    app.logger.info(user_id)
+    if not user_id or user_id=='':
         return flask.redirect('/login')
     user = database.get_user(user_id, 'user_id')
     if not user:
@@ -44,8 +45,7 @@ def verify_login():
 # Start of app, outputs login page
 @app.route('/', methods=['GET'])
 def index():
-    verify_login()
-    return flask.redirect('/homepage')
+    return flask.redirect('/login')
 
 #-----------------------------------------------------------------------
 # Helper function, returns crop to do list for cards
@@ -199,10 +199,8 @@ def offline():
 
 @app.route('/newshowcrop/<user_crop_id>', methods = ['GET'])
 def new_show_crop(user_crop_id):
+    verify_login()
     user_id = flask.request.cookies.get('user_id')
-    if not user_id:
-        return flask.redirect('/login')
-    
     crop_info_id = flask.request.args.get('crop_info_id')
 
     tasks = database.get_tasks(user_crop_id)
@@ -247,7 +245,6 @@ def profile_list():
 # helper method to get varieties and latin names as lists for user crops
 def get_crop_varieties_and_latin(user_id):
     user_crops = database.get_user_crops(user_id)
-
     crop_data = []
     for user_crop in user_crops:
         crop_info = data_crop_info.full_crop_info(user_crop['crop_info_id'])

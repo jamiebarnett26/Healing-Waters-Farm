@@ -169,9 +169,11 @@ def delete_task(task_id):
 
 def delete_template(user_crop_id):
     with sqlalchemy.orm.Session(_engine) as session:
+        user_tasks =  session.query(Tasks).filter(Tasks.user_crop_id == user_crop_id).all()
+        for user_task in user_tasks:
+            delete_task(user_task.task_id)
         session.query(User_Crop).filter(User_Crop.user_crop_id == user_crop_id).delete()
         session.commit()
-
 
         
 def add_task(user_id, user_crop_id, task_name, task_date):

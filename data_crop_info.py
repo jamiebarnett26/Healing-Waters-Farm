@@ -1,5 +1,5 @@
 from database import sqlalchemy, os, dotenv
-
+from top import app
 #-----------------------------------------------------------------------
 
 dotenv.load_dotenv()
@@ -49,6 +49,25 @@ class Crop_Info (Base):
     days_to_seed_harvest = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     frost_sensitivity_rating = sqlalchemy.Column(sqlalchemy.Integer)
 
+class User_Crop (Base):
+    __tablename__ = 'user_crops'
+    user_crop_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
+    user_id = sqlalchemy.Column(sqlalchemy.Integer)
+    crop_info_id = sqlalchemy.Column(sqlalchemy.Integer)
+    indoor_seed_starting_date = sqlalchemy.Column(sqlalchemy.Date)
+    transplanting_date = sqlalchemy.Column(sqlalchemy.Date)
+    direct_sow_date = sqlalchemy.Column(sqlalchemy.Date)
+    harvest_date = sqlalchemy.Column(sqlalchemy.Date)
+    seed_harvest_date = sqlalchemy.Column(sqlalchemy.Date)
+
+class Tasks (Base):
+    __tablename__ = 'tasks'
+    task_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
+    user_crop_id = sqlalchemy.Column(sqlalchemy.Integer)
+    user_id = sqlalchemy.Column(sqlalchemy.Integer)
+    task_name = sqlalchemy.Column(sqlalchemy.String(255))
+    task_date = sqlalchemy.Column(sqlalchemy.Date)
+    completed = sqlalchemy.Column(sqlalchemy.Boolean)
 #-----------------------------------------------------------------------
 
 _engine = sqlalchemy.create_engine(_DATABASE_URL, pool_size=10, max_overflow=20, pool_timeout=30, pool_recycle=3600)
@@ -170,6 +189,23 @@ def search_field_id(search_field, search_value):
                 'frost_sensitivity_rating': row.frost_sensitivity_rating
             }
                 results.append(crop_info)
+        if search_field == 'user_crop':
+            query = session.query(User_Crop).filter(
+                User_Crop.user_crop_id == search_value,
+            )
+            table = query.all()
+            for row in table:
+                user_crop= {
+                'user_crop_id': row.user_crop_id,
+                'user_id': row.user_id,
+                'crop_info_id':row.crop_info_id,
+                'indoor_seed_starting_date':row.indoor_seed_starting_date,
+                'transplanting_date':row.transplanting_date,
+                'direct_sow_date':row.direct_sow_date,
+                'harvest_date':row.harvest_date,
+                'seed_harvest_date':row.seed_harvest_date
+            }
+                results.append(user_crop)
 
     return results
 
@@ -268,6 +304,7 @@ def full_crop_info(crop_info_id):
             Crop_Info.crop_info_id == crop_info_id
         )
         info_table = query.first()
+        app.logger.info(crop_info_id)
         if not info_table:
             return None  # Ensure you handle None to avoid AttributeError
 
@@ -277,11 +314,9 @@ def full_crop_info(crop_info_id):
         variety_table = query.first()
         if not variety_table:
             return None  # Similarly, handle None for variety_table
-
         species_table = species_from_variety(info_table.variety_id)
         if not species_table:
             return None  # Check for None before proceeding to avoid crashes
-
         family_table = family_from_species(species_table.species_id)
         if not family_table:
             return None
@@ -409,8 +444,28 @@ def delete_variety(variety_id):
         crop_infos = crop_info_from_variety(variety_id)
         for crop_info in crop_infos:
             crop_info_to_delete = session.query(Crop_Info).filter_by(crop_info_id=crop_info['crop_info_id']).first()
+            user_crops = session.query(User_Crop).filter_by(user_crop_id=crop_info_to_delete['user_crop_id'])
+            for user_crop in user_crops:
+                delete_template(user_crop.user_crop_id)
             session.delete(crop_info_to_delete)
             session.commit()
 
         session.delete(variety_to_delete)
+        session.commit()
+
+def delete_task(task_id):
+    with sqlalchemy.orm.Session(_engine) as session:
+        task = session.query(Tasks).filter(Tasks.task_id == task_id).first()
+        if task:
+            session.delete(task)
+            session.commit()
+        else:
+            raise ValueError("Task not found")
+
+def delete_template(user_crop_id):
+    with sqlalchemy.orm.Session(_engine) as session:
+        user_tasks =  session.query(Tasks).filter(Tasks.user_crop_id == user_crop_id).all()
+        for user_task in user_tasks:
+            delete_task(user_task.task_id)
+        session.query(User_Crop).filter(User_Crop.user_crop_id == user_crop_id).delete()
         session.commit()

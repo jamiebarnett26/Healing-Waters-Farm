@@ -92,6 +92,7 @@ def show_variety():
 @app.route('/editfamily/<family_id>', methods=['POST'])
 def edit_family(family_id):
     verify_login()
+    verify_admin()
     family_name = flask.request.form.get('family_edit_name')
     if(family_name is None):
         return redirect(url_for('select_family'))
@@ -104,6 +105,7 @@ def edit_family(family_id):
 @app.route('/editspecies/<species_id>', methods=['POST'])
 def edit_species(species_id):
     verify_login()
+    verify_admin()
     species_name = flask.request.form.get('species_edit_name')
     latin_name = flask.request.form.get('latin_name_edit')
     if(species_name is None or latin_name is None):
@@ -121,6 +123,10 @@ def get_form_value(field_name):
 @app.route('/editvariety/<variety_id>', methods=['POST'])
 def edit_variety(variety_id):
     verify_login()
+    user_id = flask.request.cookies.get('user_id')
+    user_variety = database.search_field_id('variety', variety_id)
+    if(user_id != user_variety['user_id']):
+        return "Custom 405 Method Not Allowed Error", 405
     variety_name = get_form_value('variety_edit_name')
     crop_type = get_form_value('crop_type_name_edit')
     plant_spacing_harvest = get_form_value('plant_spacing_harvest_edit')
@@ -194,6 +200,7 @@ def create_variety(species_id):
 @app.route('/addfamily', methods=['POST'])
 def add_family():
     verify_login()
+    verify_admin()
     family_name = flask.request.form.get('family_add_name')
     if(family_name is None):
         return redirect(url_for('select_family'))
@@ -205,6 +212,7 @@ def add_family():
 @app.route('/addspecies/<family_id>', methods=['POST'])
 def add_species(family_id):
     verify_login()
+    verify_admin()
     species_name = flask.request.form.get('species_add_name')
     latin_name = flask.request.form.get('latin_name_add')
     if(species_name is None or latin_name is None):
@@ -250,6 +258,7 @@ def add_variety(species_id):
 @app.route('/deletefamily/<family_id>', methods=['POST'])
 def delete_family(family_id):
     verify_login()
+    verify_admin()
     database.delete_family(family_id)
     return redirect(url_for('select_family'))
 
@@ -257,12 +266,19 @@ def delete_family(family_id):
 @app.route('/deletespecies/<species_id>', methods=['POST'])
 def delete_species(species_id):
     verify_login()
+    verify_admin()
     database.delete_species(species_id)
     return redirect(url_for('select_family'))
 
 @app.route('/deletevariety/<variety_id>', methods=['POST'])
 def delete_variety(variety_id):
     verify_login()
+    user_id = flask.request.cookies.get('user_id')
+    user_variety = database.search_field_id('variety', variety_id)
+    if(user_id != user_variety['user_id']):
+        return "Custom 405 Method Not Allowed Error", 405
     database.delete_variety(variety_id)
     return redirect(url_for('select_family'))
+
+
 

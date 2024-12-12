@@ -184,7 +184,7 @@
 
             <!-- Action buttons (edit, delete, reply) -->
             <div class="question-actions">
-                {% if user_id|string == question['user_id']|string %}
+                {% if (admin) or (user_id|string == question['user_id']|string) %}
                     <button onclick="togglePopup('editQuestionPopup{{ question['question_id'] }}')" class="btn btn-warning btn-sm">Edit</button>
                     <form action="/deletequestion/{{ question['question_id'] }}" method="post" class="d-inline-block">
                         <input type="submit" value="Delete" class="btn btn-danger btn-sm">
@@ -236,7 +236,7 @@
                 {% for reply in replies %}
                 {% if reply['question_id'] == question['question_id'] %}
                     <em>{{ reply['text'] }}</em> - by {{ reply['user_name'] }}
-                    {% if user_id|string == reply['user_id']|string %}
+                    {% if (admin) or (user_id|string == reply['user_id']|string) %}
                         <div class="float-end">
                             <button onclick="togglePopup('editReplyPopup{{ reply['reply_id'] }}')" class="btn btn-warning btn-sm">Edit</button>
                             <form action="/deletereply/{{ reply['reply_id'] }}" method="post" class="d-inline-block">

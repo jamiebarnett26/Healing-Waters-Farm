@@ -173,7 +173,7 @@
             </div>
             <p class="announcement-text">{{ announcement['text'] }}</p>
 
-            {% if user_id|string == announcement['user_id']|string %}
+            {% if (admin) or (user_id|string == announcement['user_id']|string) %}
             <div class="announcement-actions">
                 <button onclick="togglePopup('editAnnouncementPopup{{ announcement['announcement_id'] }}')" class="btn btn-edit">Edit</button>
                 <form action="/deleteannouncement/{{ announcement['announcement_id'] }}" method="post" class="delete-form">

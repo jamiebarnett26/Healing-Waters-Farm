@@ -209,9 +209,16 @@ def edit_announcement(announcement_id, updated_data):
 def delete_question(user_id, question_id):
     with get_session() as session:
         question_to_delete = session.query(Question).filter_by(question_id=question_id).first()
-        if(str(user_id) == str(question_to_delete.user_id)):
-            session.delete(question_to_delete)
+        query = session.query(Reply).filter(
+            Reply.question_id == question_id
+        )
+        table = query.all()
+        for row in table:
+            session.delete(row)
             session.commit()
+
+        session.delete(question_to_delete)
+        session.commit()
 
 def delete_reply(user_id, reply_id):
     with get_session() as session:
@@ -224,6 +231,5 @@ def delete_reply(user_id, reply_id):
 def delete_announcement(user_id, announcement_id):
     with get_session() as session:
         announcement_to_delete = session.query(Announcement).filter_by(announcement_id=announcement_id).first()
-        if(str(user_id) == str(announcement_to_delete.user_id)):
-            session.delete(announcement_to_delete)
-            session.commit() 
+        session.delete(announcement_to_delete)
+        session.commit() 

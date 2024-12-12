@@ -34,6 +34,7 @@
 <body>
     <div class="container py-4">
         <h1 class="text-center mb-4">My Crops</h1>
+        {% if crops %}
         <div class="row row-cols-2 g-3">
             {% for crop_info, crop_info_id, user_crop_id in crops %}
                 <div class="col">
@@ -46,6 +47,7 @@
                 </div>
             {% endfor %}
         </div>
+        {% endif %}
         <div class="mt-4">
             <a href="/selectFamily" class="btn btn-custom-green w-100">Add New Crop +</a>
         </div>
