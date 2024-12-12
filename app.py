@@ -287,14 +287,15 @@ def community():
 
 @app.route('/addquestion/<user_id>', methods=['POST'])
 def add_question(user_id):
-    title = flask.request.form.get('title')
+    title = flask.request.form.get('title_add')
     text = flask.request.form.get('text')
     if not user_id:
         return flask.redirect('/login')
     user = database.get_user(user_id, 'user_id')
     if not user:
         return flask.redirect('/login')
-     
+    print(title, file=sys.stderr)
+    print(text, file=sys.stderr)
     user_name = user.first_name + " " + user.last_name
     question = {'user_id':user_id, 'user_name':user_name, 'title':title, 'text':text, 'status':'Unresolved'}
     database.add_question(question)
