@@ -273,10 +273,6 @@ def delete_species(species_id):
 @app.route('/deletevariety/<variety_id>', methods=['POST'])
 def delete_variety(variety_id):
     verify_login()
-    user_id = flask.request.cookies.get('user_id')
-    user_variety = database.search_field_id('variety', variety_id)
-    if(user_id != user_variety['user_id']):
-        return "Custom 405 Method Not Allowed Error", 405
     database.delete_variety(variety_id)
     return redirect(url_for('select_family'))
 

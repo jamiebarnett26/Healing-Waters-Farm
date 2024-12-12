@@ -299,6 +299,10 @@ def add_user_crop(crop_info_id):
 
     # Initialize date variables, set to None if necessary
     date1 = datetime.datetime.now()
+    date2 = None
+    date3 = None
+    date4 = None
+    date5 = None
     
     date2 = date1 + datetime.timedelta(days=crop_info['days_to_transplantation']) if crop_info.get('days_to_transplantation') is not None else None
 
