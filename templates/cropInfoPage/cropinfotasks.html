@@ -62,20 +62,20 @@
     <div id="edit-form-{{ user_crop_id }}" style="display: none;">
         <h3>Select a task to edit</h3>
         <label for="taskDropdown-{{ user_crop_id }}">Task:</label>
-        <select id="taskDropdown-{{ user_crop_id }}"></select>
+        <select id="taskDropdown-{{ user_crop_id }}"></select> <br>
         <label for="taskDateInput-{{ user_crop_id }}">New Date:</label>
         <input type="date" id="taskDateInput-{{ user_crop_id }}">
-        <button onclick="submitEdit({{ user_crop_id }})" class="btn btn-success">Save</button>
-        <button onclick="cancelEdit({{ user_crop_id }})" class="btn btn-secondary">Cancel</button>
+        <button onclick="submitEdit({{ user_crop_id }})" class="btn btn-success px-2 py-1 my-1">Save</button>
+        <button onclick="cancelEdit({{ user_crop_id }})" class="btn btn-secondary px-2 py-1 my-1">Cancel</button>
     </div>
 
     <!-- Delete form -->
     <div id="delete-form-{{ user_crop_id }}" style="display: none;">
         <h3>Select a task to delete</h3>
         <label for="deleteDropdown-{{ user_crop_id }}">Task:</label>
-        <select id="deleteDropdown-{{ user_crop_id }}"></select>
-        <button onclick="submitDelete({{ user_crop_id }})" class="btn btn-danger">Delete</button>
-        <button onclick="cancelDelete({{ user_crop_id }})" class="btn btn-secondary">Cancel</button>
+        <select id="deleteDropdown-{{ user_crop_id }}"></select> <br>
+        <button onclick="submitDelete({{ user_crop_id }})" class="btn btn-danger px-2 py-1 my-1">Delete</button>
+        <button onclick="cancelDelete({{ user_crop_id }})" class="btn btn-secondary px-2 py-1 my-1">Cancel</button>
     </div>
 </div>
 
