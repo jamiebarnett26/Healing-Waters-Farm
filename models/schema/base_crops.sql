@@ -58,127 +58,127 @@ VALUES ((SELECT family_id FROM family WHERE family_name = 'Tomatos'), 'Solanum l
 INSERT INTO variety (species_id, variety_name)
 VALUES ((SELECT species_id FROM species WHERE species_name = 'Unguiculata'), 'Iron and Clay');
 INSERT INTO crop_infos 
-(variety_id, crop_type, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Iron and Clay'), '', 100, 12, 3, 24, 18, 75, 7, NULL, NULL, 90, 100, 3);
+(variety_id, crop_type, user_id, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
+VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Iron and Clay'), '', 0, 100, 12, 3, 24, 18, 75, 7, NULL, NULL, 90, 100, 3);
 
 INSERT INTO variety (species_id, variety_name)
 VALUES ((SELECT species_id FROM species WHERE species_name = 'Unguiculata'), 'Nigerian Clay');
 INSERT INTO crop_infos 
-(variety_id, crop_type, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Nigerian Clay'), '', 75, 30, 30, 75, 75, 25, 25, NULL, 0, 75, 90, 3);
+(variety_id, crop_type, user_id, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
+VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Nigerian Clay'), '', 0, 75, 30, 30, 75, 75, 25, 25, NULL, 0, 75, 90, 3);
 
 INSERT INTO variety (species_id, variety_name)
 VALUES ((SELECT species_id FROM species WHERE species_id = 2), 'Dragon Tongue');
 INSERT INTO crop_infos 
-(variety_id, crop_type, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Dragon Tongue'), 'Bush', 60, 2, 2, 36, 36, 60, 7, NULL, 0, 60, 80, 3);
+(variety_id, crop_type, user_id, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
+VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Dragon Tongue'), 'Bush', 0, 60, 2, 2, 36, 36, 60, 7, NULL, 0, 60, 80, 3);
 
 INSERT INTO variety (species_id, variety_name)
 VALUES ((SELECT species_id FROM species WHERE species_id = 2), 'Mbombo Beans');
 INSERT INTO crop_infos 
-(variety_id, crop_type, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Mbombo Beans'), 'Semi-Vining', 60, 12, 12, 24, 24, 60, 60, NULL, 0, 60, 60, 3);
+(variety_id, crop_type, user_id, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
+VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Mbombo Beans'), 'Semi-Vining', 0, 60, 12, 12, 24, 24, 60, 60, NULL, 0, 60, 60, 3);
 
 INSERT INTO variety (species_id, variety_name)
 VALUES ((SELECT species_id FROM species WHERE species_id = 3), 'Early Wonder Tall Top');
 INSERT INTO crop_infos 
-(variety_id, crop_type, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Early Wonder Tall Top'), '', 60, 5, 1, 18, 18, 60, 60, NULL, 28, 60, 60, 2);
+(variety_id, crop_type, user_id, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
+VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Early Wonder Tall Top'), '', 0, 60, 5, 1, 18, 18, 60, 60, NULL, 28, 60, 60, 2);
 
 INSERT INTO variety (species_id, variety_name)
 VALUES ((SELECT species_id FROM species WHERE species_id = 3), 'Golden Beets');
 INSERT INTO crop_infos 
-(variety_id, crop_type, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Golden Beets'), '', 70, 5, 2, 18, 18, 70, 60, 20, 28, 60, 60, 2);
+(variety_id, crop_type, user_id, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
+VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Golden Beets'), '', 0, 70, 5, 2, 18, 18, 70, 60, 20, 28, 60, 60, 2);
 
 INSERT INTO variety (species_id, variety_name)
 VALUES ((SELECT species_id FROM species WHERE species_name = 'Oleracea'), 'Green Glaze');
 INSERT INTO crop_infos 
-(variety_id, crop_type, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Green Glaze'), '', 80, 30, 30, NULL, NULL, 80, 80, 20, 20, 80, 100, 2);
+(variety_id, crop_type, user_id, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
+VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Green Glaze'), '', 0, 80, 30, 30, NULL, NULL, 80, 80, 20, 20, 80, 100, 2);
 
 INSERT INTO variety (species_id, variety_name)
 VALUES ((SELECT species_id FROM species WHERE species_name = 'Oleracea'), 'Nancy Purple Wheat Collards');
 INSERT INTO crop_infos 
-(variety_id, crop_type, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Nancy Purple Wheat Collards'), '', 70, 30, 30, NULL, NULL, 70, 70, 20, 20, 70, 90, 2);
+(variety_id, crop_type, user_id, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
+VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Nancy Purple Wheat Collards'), '', 0, 70, 30, 30, NULL, NULL, 70, 70, 20, 20, 70, 90, 2);
 
 INSERT INTO variety (species_id, variety_name)
 VALUES ((SELECT species_id FROM species WHERE species_name = 'Esculentus'), 'Jade');
 INSERT INTO crop_infos 
-(variety_id, crop_type, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Jade'), '', 60, 18, 12, 42, 42, 60, 20, 28, 21, 60, 80, 3);
+(variety_id, crop_type,user_id,  days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
+VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Jade'), '', 0, 60, 18, 12, 42, 42, 60, 20, 28, 21, 60, 80, 3);
 
 INSERT INTO variety (species_id, variety_name)
 VALUES ((SELECT species_id FROM species WHERE species_name = 'Esculentus'), 'Star of David');
 INSERT INTO crop_infos 
-(variety_id, crop_type, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Star of David'), '', 70, 18, 18, 42, 42, 70, 20, 35, 21, 70, 90, 3);
+(variety_id, crop_type, user_id, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
+VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Star of David'), '', 0, 70, 18, 18, 42, 42, 70, 20, 35, 21, 70, 90, 3);
 
 INSERT INTO variety (species_id, variety_name)
 VALUES ((SELECT species_id FROM species WHERE species_name = 'Baccatum'), 'Aji Amarillo');
 INSERT INTO crop_infos 
-(variety_id, crop_type, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Aji Amarillo'), '', 120, 18, 18, 36, 18, 120, 120, 60, 0, 120, 120, 3);
+(variety_id, crop_type, user_id, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
+VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Aji Amarillo'), '', 0, 120, 18, 18, 36, 18, 120, 120, 60, 0, 120, 120, 3);
 
 INSERT INTO variety (species_id, variety_name)
 VALUES ((SELECT species_id FROM species WHERE species_name = 'Annum'), 'Fish Peppers');
 INSERT INTO crop_infos 
-(variety_id, crop_type, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Fish Peppers'), '',  75, 24, 24, 36, 36, 75, 75, 42, 0, 75, 75, 3);
+(variety_id, crop_type, user_id, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
+VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Fish Peppers'), '',  0, 75, 24, 24, 36, 36, 75, 75, 42, 0, 75, 75, 3);
 
 INSERT INTO variety (species_id, variety_name)
 VALUES ((SELECT species_id FROM species WHERE species_name = 'Chinense'), 'Red Scotch Bonnet');
 INSERT INTO crop_infos 
-(variety_id, crop_type, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Red Scotch Bonnet'), '',  100, 36, 36, 60, 36, 100, 100, 56, 60, 84, 84, 3);
+(variety_id, crop_type, user_id, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
+VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Red Scotch Bonnet'), '',  0, 100, 36, 36, 60, 36, 100, 100, 56, 60, 84, 84, 3);
 
 INSERT INTO variety (species_id, variety_name)
 VALUES ((SELECT species_id FROM species WHERE species_name = 'Sativus'), 'Misato Rose');
 INSERT INTO crop_infos 
-(variety_id, crop_type, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Misato Rose'), '',  60, 4, NULL, 12, 18, 60, 60, NULL, 60, 60, NULL, 3);
+(variety_id, crop_type, user_id, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
+VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Misato Rose'), '',  0, 60, 4, NULL, 12, 18, 60, 60, NULL, 60, 60, NULL, 3);
 
 INSERT INTO variety (species_id, variety_name)
 VALUES ((SELECT species_id FROM species WHERE species_name = 'Sativus'), 'Cherry Belle');
 INSERT INTO crop_infos 
-(variety_id, crop_type, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Cherry Belle'), '',  21, 2.5, 1, 12, 12, 21, 21, NULL, 30, 21, NULL, 2);
+(variety_id, crop_type, user_id, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
+VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Cherry Belle'), '',  0, 21, 2.5, 1, 12, 12, 21, 21, NULL, 30, 21, NULL, 2);
 
 INSERT INTO variety (species_id, variety_name)
 VALUES ((SELECT species_id FROM species WHERE species_name = 'Bicolor'), 'Dorado');
 INSERT INTO crop_infos 
-(variety_id, crop_type, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Dorado'), '',  130, 28, 6, 36, 36, 130, 130, 28, 21, 130, 130, 3);
+(variety_id, crop_type, user_id, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
+VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Dorado'), '',  0, 130, 28, 6, 36, 36, 130, 130, 28, 21, 130, 130, 3);
 
 INSERT INTO variety (species_id, variety_name)
 VALUES ((SELECT species_id FROM species WHERE species_name = 'Bicolor'), 'Texicoa');
 INSERT INTO crop_infos 
-(variety_id, crop_type, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Texicoa'), '',  90, 15, 4, 40, 40, 90, 90, NULL, 0, 90, 90, 3);
+(variety_id, crop_type, user_id, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
+VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Texicoa'), '',  0, 90, 15, 4, 40, 40, 90, 90, NULL, 0, 90, 90, 3);
 
 INSERT INTO variety (species_id, variety_name)
 VALUES ((SELECT species_id FROM species WHERE species_name = 'Maxima'), 'Nanticoke');
 INSERT INTO crop_infos 
-(variety_id, crop_type, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Nanticoke'), '',  120, 36, 24, 72, 48, 120, 100, 28, 21, 120, 140, 3);
+(variety_id, crop_type, user_id, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
+VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Nanticoke'), '',  0, 120, 36, 24, 72, 48, 120, 100, 28, 21, 120, 140, 3);
 
 INSERT INTO variety (species_id, variety_name)
 VALUES ((SELECT species_id FROM species WHERE species_name = 'Moschata'), 'Mrs. Amersons');
 INSERT INTO crop_infos 
-(variety_id, crop_type, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Mrs. Amersons'), '',  110, 24, 12, 48, 24, 110, 10, 21, NULL, 110, 110, 2);
+(variety_id, crop_type, user_id, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
+VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Mrs. Amersons'), '',  0, 110, 24, 12, 48, 24, 110, 10, 21, NULL, 110, 110, 2);
 
 INSERT INTO variety (species_id, variety_name)
 VALUES ((SELECT species_id FROM species WHERE species_name = 'Lycopersicum'), 'Aunt Lous Underground Railroad');
 INSERT INTO crop_infos 
-(variety_id, crop_type, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Aunt Lous Underground Railroad'), '', 80, 24, 18, 36, 30, 70, 80, 21, NULL, 70, 80, 3);
+(variety_id, crop_type, user_id, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
+VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Aunt Lous Underground Railroad'), '', 0, 80, 24, 18, 36, 30, 70, 80, 21, NULL, 70, 80, 3);
 
 INSERT INTO variety (species_id, variety_name)
 VALUES ((SELECT species_id FROM species WHERE species_name = 'Lycopersicum'), 'Cherokee Purple');
 INSERT INTO crop_infos 
-(variety_id, crop_type, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
-VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Cherokee Purple'), '',  90, 18,18,36,36,90,140,50,NULL,NULL,140,3);
+(variety_id, crop_type, user_id, days_to_maturity, plant_spacing_harvest, plant_spacing_seed, row_spacing_harvest, row_spacing_seed, days_to_maturity_harvest, days_to_maturity_seed, days_to_transplantation, days_to_direct_sow, days_to_harvest, days_to_seed_harvest, frost_sensitivity_rating) 
+VALUES ((SELECT variety_id FROM variety WHERE variety_name = 'Cherokee Purple'), '',  0, 90, 18,18,36,36,90,140,50,NULL,NULL,140,3);
 
 COMMIT;

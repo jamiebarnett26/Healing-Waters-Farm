@@ -41,6 +41,7 @@ class Crop_Info (Base):
     __tablename__ = 'crop_infos'
     crop_info_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     variety_id = sqlalchemy.Column(sqlalchemy.Integer)
+    user_id = sqlalchemy.Column(sqlalchemy.Integer)
     crop_type = sqlalchemy.Column(sqlalchemy.String)
     days_to_maturity = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     plant_spacing_harvest = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
@@ -375,6 +376,7 @@ def search_field_id(search_field, search_value):
                 'crop_info_id': row.crop_info_id,  # Use ':' instead of '='
                 'variety_id': row.variety_id,
                 'crop_type': row.crop_type,
+                'user_id':row.user_id,
                 'days_to_maturity': row.days_to_maturity,
                 'plant_spacing_harvest': row.plant_spacing_harvest,
                 'plant_spacing_seed': row.plant_spacing_seed,
@@ -486,6 +488,7 @@ def crop_info_from_variety(variety_id):
                 'crop_info_id': row.crop_info_id,  # Use ':' instead of '='
                 'variety_id': variety_id,
                 'crop_type': row.crop_type,
+                'user_id':row.user_id,
                 'days_to_maturity': row.days_to_maturity,
                 'plant_spacing_harvest': row.plant_spacing_harvest,
                 'plant_spacing_seed': row.plant_spacing_seed,
@@ -556,6 +559,7 @@ def full_crop_info(crop_info_id):
             'variety_id': variety_table.variety_id,  # Include variety_id explicitly
             'family_name': family_table.family_name,
             'latin_name': species_table.latin_name,
+            'user_id':info_table.user_id,
             'species_name': species_table.species_name,
             'species_id': species_table.species_id,
             'variety_name': variety_table.variety_name,

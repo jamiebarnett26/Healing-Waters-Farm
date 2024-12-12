@@ -155,12 +155,13 @@
             {{ crop_infos[0]['crop_info_id'] }}
             <a href="/addusercrop/{{ crop_info_id }}" class="btn btn-success action-button">Add Crop</a>
             <button onclick="togglePopup('addVarietyPopup')">Create New Variety</button>
-            {% if admin %}
+            {% if (admin) or (user_id|string == crop_infos[0]['user_id']|string) %}
                 <button onclick="togglePopup('editVarietyPopup')">Edit This Variety</button>
                 <form action="/deletevariety/{{ crop_infos[0]['variety_id'] }}" method="post">
                     <input type="submit" value="Delete Variety">
                 </form>
             {% endif %}
+            
 
         </div>
         

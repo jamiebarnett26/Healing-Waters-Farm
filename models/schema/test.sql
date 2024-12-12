@@ -26,6 +26,7 @@ create table crop_infos
 (
     crop_info_id         serial primary key,
     variety_id         integer not null,
+    user_id                   integer,
     crop_type                 varchar(255),
     days_to_maturity          integer,
     plant_spacing_harvest     integer,

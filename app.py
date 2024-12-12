@@ -228,6 +228,7 @@ def new_show_crop(user_crop_id):
                                 tasks=tasks,
                                 user_crop_id = user_crop_id, # identifies crop to user
                                 admin = admin,
+                                user_id=user_id,
                                 variety_id = variety_id))
     
     return resp
@@ -427,6 +428,8 @@ def cropPage(variety_name):
 # Loads the Individual crop page to add a crop
 @app.route('/showcrop/<variety_id>', methods=['GET'])
 def show_crop(variety_id):
+    user_id = flask.request.cookies.get('user_id')
+    print(user_id, file=sys.stderr)
     admin = flask.request.cookies.get('admin') == 'true'
     crop_infos = database.crop_info_from_variety(variety_id)
     full_crop_infos = []
@@ -443,6 +446,7 @@ def show_crop(variety_id):
                                       crop_info_id=crop_infos[0]['crop_info_id'],
                                       species_id=species_id,
                                       admin=admin,
+                                      user_id=user_id,
                                       crop_infos=full_crop_infos)
     response = flask.make_response(html_code)
     return response

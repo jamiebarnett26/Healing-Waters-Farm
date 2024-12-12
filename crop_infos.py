@@ -126,7 +126,7 @@ def edit_variety(variety_id):
 
     variety = {'variety_name':variety_name}
 
-    crop_info = {'crop_type':crop_type,  'plant_spacing_harvest':plant_spacing_harvest,
+    crop_info = {'crop_type':crop_type, 'plant_spacing_harvest':plant_spacing_harvest,
                  'plant_spacing_seed':plant_spacing_seed, 'row_spacing_harvest':row_spacing_harvest,
                  'row_spacing_seed':row_spacing_seed, 'days_to_maturity_harvest':days_to_maturity_harvest,
                  'days_to_maturity_seed':days_to_maturity_seed, 'days_to_transplantation':days_to_transplantation,
@@ -142,6 +142,7 @@ def edit_variety(variety_id):
 @app.route('/createvariety/<species_id>', methods=['GET'])
 def create_variety(species_id):
     admin = flask.request.cookies.get('admin') == 'true'
+    user_id = flask.request.cookies.get('user_id')
     template_crop_id = database.get_template_crop(species_id)
     if template_crop_id == -1:
         family_table = database.family_from_species(species_id)
@@ -150,6 +151,7 @@ def create_variety(species_id):
         full_crop_info = {
             'family_name': family_table.family_name,
             'latin_name': species_table[0]['latin_name'],
+            'user_id': user_id,
             'variety_name': None,
             'crop_type': None,
             'days_to_maturity': None,
@@ -201,6 +203,7 @@ def add_species(family_id):
 
 @app.route('/addvariety/<species_id>', methods=['POST'])
 def add_variety(species_id):
+    user_id = flask.request.cookies.get('user_id')
     variety_name = flask.request.form.get('variety_name')
     crop_type = flask.request.form.get('crop_type_name')
     plant_spacing_harvest = flask.request.form.get('plant_spacing_harvest')
@@ -217,7 +220,7 @@ def add_variety(species_id):
 
     variety = {'species_id':species_id, 'variety_name':variety_name}
 
-    crop_info = {'crop_type':crop_type, 'plant_spacing_harvest':plant_spacing_harvest,
+    crop_info = {'crop_type':crop_type, 'user_id':user_id,'plant_spacing_harvest':plant_spacing_harvest,
                  'plant_spacing_seed':plant_spacing_seed, 'row_spacing_harvest':row_spacing_harvest,
                  'row_spacing_seed':row_spacing_seed, 'days_to_maturity_harvest':days_to_maturity_harvest,
                  'days_to_maturity_seed':days_to_maturity_seed, 'days_to_transplantation':days_to_transplantation,
