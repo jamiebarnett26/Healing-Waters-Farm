@@ -3,6 +3,7 @@ from top import app, oauth
 import flask
 from flask import redirect, url_for
 import data_crop_info as database
+import database as datauser
 import time
 import json
 import sys
@@ -13,10 +14,21 @@ import sys
 def get_current_time():
     return time.asctime(time.localtime())
 
+def verify_admin():
+    if flask.request.cookies.get('admin') != 'true':
+        return "Custom 405 Method Not Allowed Error", 405
+
+def verify_login():
+    user_id = flask.request.cookies.get('user_id')
+    if not user_id:
+        return flask.redirect('/login')
+    user = datauser.get_user(user_id, 'user_id')
+    if not user:
+        return flask.redirect('/login')
+    
 #-----------------------------------------------------------------------
 @app.route('/isAdmin', methods=['GET'])
 def is_admin():
-    # Check if the current user is an admin
     admin = flask.request.cookies.get('admin') == 'true'
     json_doc = json.dumps(admin)
 
@@ -26,6 +38,7 @@ def is_admin():
 
 @app.route('/selectFamily', methods=['GET'])
 def select_family():
+    verify_login()
     return flask.send_file('templates/addCrop/selectFamily.html')
 #-----------------------------------------------------------------------
 @app.route('/footer', methods=['GET'])
@@ -36,7 +49,6 @@ def load_footer():
     return response
 
 
-    #return flask.send_file('templates/footer.html')
 #-----------------------------------------------------------------------
 @app.route('/showFamily', methods=['GET'])
 def show_family():
@@ -52,8 +64,6 @@ def show_family():
 
 @app.route('/showSpecies', methods=['GET'])
 def show_species():
-    #admin = flask.request.cookies.get('admin') == 'true'
-
     familyId = flask.request.args.get('family', '')
     species = database.species_from_family(familyId)
     json_doc = json.dumps(species)
@@ -66,8 +76,6 @@ def show_species():
 
 @app.route('/showVariety', methods=['GET'])
 def show_variety():
-    #admin = flask.request.cookies.get('admin') == 'true'
-
     speciesId = flask.request.args.get('species', '')
     app.logger.info(speciesId)
     variety = database.variety_from_species(speciesId)
@@ -82,7 +90,8 @@ def show_variety():
     
 
 @app.route('/editfamily/<family_id>', methods=['POST'])
-def post_edit_family(family_id):
+def edit_family(family_id):
+    verify_login()
     family_name = flask.request.form.get('family_edit_name')
     if(family_name is None):
         return redirect(url_for('select_family'))
@@ -93,7 +102,8 @@ def post_edit_family(family_id):
 
 
 @app.route('/editspecies/<species_id>', methods=['POST'])
-def post_edit_species(species_id):
+def edit_species(species_id):
+    verify_login()
     species_name = flask.request.form.get('species_edit_name')
     latin_name = flask.request.form.get('latin_name_edit')
     if(species_name is None or latin_name is None):
@@ -110,6 +120,7 @@ def get_form_value(field_name):
 
 @app.route('/editvariety/<variety_id>', methods=['POST'])
 def edit_variety(variety_id):
+    verify_login()
     variety_name = get_form_value('variety_edit_name')
     crop_type = get_form_value('crop_type_name_edit')
     plant_spacing_harvest = get_form_value('plant_spacing_harvest_edit')
@@ -141,6 +152,7 @@ def edit_variety(variety_id):
 #-----------------------------------------------------------------------
 @app.route('/createvariety/<species_id>', methods=['GET'])
 def create_variety(species_id):
+    verify_login()
     admin = flask.request.cookies.get('admin') == 'true'
     user_id = flask.request.cookies.get('user_id')
     template_crop_id = database.get_template_crop(species_id)
@@ -181,6 +193,7 @@ def create_variety(species_id):
 
 @app.route('/addfamily', methods=['POST'])
 def add_family():
+    verify_login()
     family_name = flask.request.form.get('family_add_name')
     if(family_name is None):
         return redirect(url_for('select_family'))
@@ -191,6 +204,7 @@ def add_family():
 
 @app.route('/addspecies/<family_id>', methods=['POST'])
 def add_species(family_id):
+    verify_login()
     species_name = flask.request.form.get('species_add_name')
     latin_name = flask.request.form.get('latin_name_add')
     if(species_name is None or latin_name is None):
@@ -203,6 +217,7 @@ def add_species(family_id):
 
 @app.route('/addvariety/<species_id>', methods=['POST'])
 def add_variety(species_id):
+    verify_login()
     user_id = flask.request.cookies.get('user_id')
     variety_name = flask.request.form.get('variety_name')
     crop_type = flask.request.form.get('crop_type_name')
@@ -234,17 +249,20 @@ def add_variety(species_id):
 # functionality to delete
 @app.route('/deletefamily/<family_id>', methods=['POST'])
 def delete_family(family_id):
+    verify_login()
     database.delete_family(family_id)
     return redirect(url_for('select_family'))
 
 
 @app.route('/deletespecies/<species_id>', methods=['POST'])
 def delete_species(species_id):
+    verify_login()
     database.delete_species(species_id)
     return redirect(url_for('select_family'))
 
 @app.route('/deletevariety/<variety_id>', methods=['POST'])
 def delete_variety(variety_id):
+    verify_login()
     database.delete_variety(variety_id)
     return redirect(url_for('select_family'))
 

@@ -6,6 +6,7 @@ import time
 import flask 
 import database
 import data_crop_info
+import data_community
 import datetime
 
 from authlib.integrations.flask_client import OAuth
@@ -14,6 +15,7 @@ from top import app, redirect, url_for
 import json
 import auth
 import crop_infos
+import community
 import crop_page
 import sys
 import weather_script
@@ -28,20 +30,22 @@ def get_current_time():
     return time.asctime(time.localtime())
 
 #-----------------------------------------------------------------------
+def verify_admin() :
+    return flask.request.cookies.get('admin') == 'true'
+
+def verify_login():
+    user_id = flask.request.cookies.get('user_id')
+    if not user_id:
+        return flask.redirect('/login')
+    user = database.get_user(user_id, 'user_id')
+    if not user:
+        return flask.redirect('/login')
+
 # Start of app, outputs login page
 @app.route('/', methods=['GET'])
 def index():
-    user_id = flask.request.cookies.get('user_id')
-
-    # Instead of redirecting immediately, consider rendering a welcome page.
-    if user_id:
-        user = database.get_user(user_id, 'user_id')
-        if user:
-            return flask.redirect('/login')
-
-    # Show a simple welcome or landing page if no user_id is found.
-    return flask.redirect('/login')
-
+    verify_login()
+    return flask.redirect('/homepage')
 
 #-----------------------------------------------------------------------
 # Helper function, returns crop to do list for cards
@@ -57,14 +61,11 @@ def check_box():
     })
 
 def getCardInfo():
+    verify_login()
     user_id = flask.request.cookies.get('user_id')
-    if not user_id:
-        return flask.redirect('/login')
-
     user_crops = database.get_user_crops(user_id)
     if user_crops is None:
-        app.logger.error("No crops found for user_id: %s", user_id)
-        return []  # Return an empty list if no crops exist.
+        return []  
 
     user_crop_infos = []
     all_todos = []
@@ -72,7 +73,6 @@ def getCardInfo():
     crop_info_id_list = []
 
     for i, user_crop in enumerate(user_crops):
-        # Safely fetch full_crop_info
         full_crop_info = data_crop_info.full_crop_info(user_crop['crop_info_id'])
         if full_crop_info is None:
             app.logger.error("No full crop info found for crop_info_id: %s", user_crop['crop_info_id'])
@@ -168,20 +168,15 @@ def inFrost():
 # Loads main page of app
 @app.route('/homepage', methods = ["GET"])
 def homepage():
+    verify_login()
     user_id = flask.request.cookies.get('user_id')
     admin = flask.request.cookies.get('admin') == 'true'
-    app.logger.info(admin)
-
+    
     weather = weather_script.get_fahrenheit()
     humidity = weather_script.get_humidity()
     wind = weather_script.get_wind_speed()
 
-
-    if not user_id:
-        return flask.redirect('/login')
     user = database.get_user(user_id, 'user_id')
-    if not user:
-        return flask.redirect('/login')
      
     user_name = user.first_name + " " + user.last_name
 
@@ -232,11 +227,11 @@ def new_show_crop(user_crop_id):
     
     return resp
 
-
 #-----------------------------------------------------------------------
 # Admin functionality of seeing all profiles, loads profile_list.html
 @app.route('/profile_list', methods=['GET'])
 def profile_list():
+    verify_login()
     admin = flask.request.cookies.get('admin') == 'true'
     profiles = database.get_profiles()
     html_code = flask.render_template('profile_list.html',
@@ -268,6 +263,7 @@ def get_crop_varieties_and_latin(user_id):
 # Request from homepage by selecting a crop, directs to indv CropPage_task.html
 @app.route('/cropPage/<variety_name>', methods = ["GET"])
 def cropPage(variety_name):
+    verify_login()
     html_code = flask.render_template('indvCropPage/cropPage_tasks.html', variety_name = variety_name)
     response = flask.make_response(html_code)
     return response
@@ -276,8 +272,8 @@ def cropPage(variety_name):
 # Loads the Individual crop page to add a crop
 @app.route('/showcrop/<variety_id>', methods=['GET'])
 def show_crop(variety_id):
+    verify_login()
     user_id = flask.request.cookies.get('user_id')
-    print(user_id, file=sys.stderr)
     admin = flask.request.cookies.get('admin') == 'true'
     crop_infos = data_crop_info.crop_info_from_variety(variety_id)
     full_crop_infos = []
@@ -299,9 +295,9 @@ def show_crop(variety_id):
 
 @app.route('/addusercrop/<crop_info_id>')
 def add_user_crop(crop_info_id):
+    verify_login()
     user_id = flask.request.cookies.get('user_id')
-    if not user_id:
-        return flask.redirect('/login')
+
     crop_info = data_crop_info.search_field_id('crop_info', crop_info_id)[0]
 
     # Initialize date variables, set to None if necessary
@@ -343,10 +339,9 @@ def add_user_crop(crop_info_id):
 
 @app.route('/showusercrops', methods=['GET'])
 def my_crops():
+    verify_login()
     user_id = flask.request.cookies.get('user_id')
     admin = flask.request.cookies.get('admin') == 'true'
-    if not user_id:
-        return flask.redirect('/login')
     user_crops = database.get_user_crops(user_id)
 
     user_crop_infos = []
@@ -369,15 +364,6 @@ def my_crops():
     crops = list(zip(user_crop_infos, crop_info_ids, user_crop_ids))
     return flask.render_template('showusercrops.html', crops=crops, crop_info_ids=crop_info_ids, admin=admin)
 
-
-#-----------------------------------------------------------------------
-
-@app.route('/calendar')
-def calendar():
-    admin = flask.request.cookies.get('admin') == 'true'
-    html_code = flask.render_template('calendar.html', admin=admin)
-    response = flask.make_response(html_code)
-    return response
 
 #-----------------------------------------------------------------------
 
