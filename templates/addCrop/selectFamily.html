@@ -396,6 +396,14 @@
             return Number.isInteger(parsedValue) && parsedValue >= 0;
         }
 
+        function isEmpty(val) {
+            return val == "" || val == 'None';
+        }
+
+        function isValid(val) {
+            return validInteger(val) || isEmpty(val);
+        }
+
         // Get form field values
         const varietyName = document.querySelector('input[name="variety_name"]').value;
         const cropTypeName = document.querySelector('input[name="crop_type_name"]').value;
@@ -414,17 +422,9 @@
 
         // Combined validation for integer fields using validInteger function in one if statement
         if (
-            !validInteger(plantSpacingHarvest) && plantSpacingHarvest !== "" ||
-            !validInteger(plantSpacingSeed) && plantSpacingSeed !== "" ||
-            !validInteger(rowSpacingHarvest) && rowSpacingHarvest !== "" ||
-            !validInteger(rowSpacingSeed) && rowSpacingSeed !== "" ||
-            !validInteger(daysToMaturityHarvest) && daysToMaturityHarvest !== "" ||
-            !validInteger(daysToMaturitySeed) && daysToMaturitySeed !== "" ||
-            !validInteger(daysToTransplantation) && daysToTransplantation !== "" ||
-            !validInteger(daysToDirectSow) && daysToDirectSow !== "" ||
-            !validInteger(daysToHarvest) && daysToHarvest !== "" ||
-            !validInteger(daysToSeedHarvest) && daysToSeedHarvest !== "" ||
-            !validInteger(frostSensitivityRating) && frostSensitivityRating !== ""
+            !isValid(plantSpacingHarvest) || !isValid(plantSpacingSeed) || !isValid(rowSpacingHarvest) || !isValid(rowSpacingSeed) ||
+            !isValid(daysToMaturityHarvest) || !isValid(daysToMaturitySeed) || !isValid(daysToTransplantation) || !isValid(daysToDirectSow) ||
+            !isValid(daysToHarvest) || !isValid(daysTSeedoHarvest) || !validInteger(frostSensitivityRating)
         ) {
             alert("Please ensure all integer fields contain valid integers or are left blank, and no negative values are entered.");
             return false;
