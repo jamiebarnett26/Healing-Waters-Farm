@@ -241,33 +241,34 @@
         }
 
         function validateAddVarietyForm(event) {
-            // Utility function to get and validate form field values
-            function getValidatedFieldValue(fieldName) {
-                const value = document.querySelector(`input[name="${fieldName}"]`)?.value;
-                return value === 'None' || value === '' ? '' : value;
-            }
-
-            // Function to validate integer values
             function validInteger(intVal) {
                 const parsedValue = parseInt(intVal);
                 // Check if parsed value is a valid non-negative integer
                 return Number.isInteger(parsedValue) && parsedValue >= 0;
             }
 
-            // Get form field values using the utility function
-            const varietyName = getValidatedFieldValue('variety_name');
-            const cropTypeName = getValidatedFieldValue('crop_type_name');
-            const plantSpacingHarvest = getValidatedFieldValue('plant_spacing_harvest');
-            const plantSpacingSeed = getValidatedFieldValue('plant_spacing_seed');
-            const rowSpacingHarvest = getValidatedFieldValue('row_spacing_harvest');
-            const rowSpacingSeed = getValidatedFieldValue('row_spacing_seed');
-            const daysToMaturityHarvest = getValidatedFieldValue('days_to_maturity_harvest');
-            const daysToMaturitySeed = getValidatedFieldValue('days_to_maturity_seed');
-            const daysToTransplantation = getValidatedFieldValue('days_to_transplantation');
-            const daysToDirectSow = getValidatedFieldValue('days_to_direct_sow');
-            const daysToHarvest = getValidatedFieldValue('days_to_harvest');
-            const daysToSeedHarvest = getValidatedFieldValue('days_to_seed_harvest');
-            const frostSensitivityRating = getValidatedFieldValue('frost_sensitivity_rating');
+            function isEmpty(val) {
+                return val == "" || val == 'None';
+            }
+
+            function isValid(val) {
+                return validInteger(val) || isEmpty(val);
+            }
+
+            // Get form field values
+            const varietyName = document.querySelector('input[name="variety_name"]').value;
+            const cropTypeName = document.querySelector('input[name="crop_type_name"]').value;
+            const plantSpacingHarvest = document.querySelector('input[name="plant_spacing_harvest"]').value;
+            const plantSpacingSeed = document.querySelector('input[name="plant_spacing_seed"]').value;
+            const rowSpacingHarvest = document.querySelector('input[name="row_spacing_harvest"]').value;
+            const rowSpacingSeed = document.querySelector('input[name="row_spacing_seed"]').value;
+            const daysToMaturityHarvest = document.querySelector('input[name="days_to_maturity_harvest"]').value;
+            const daysToMaturitySeed = document.querySelector('input[name="days_to_maturity_seed"]').value;
+            const daysToTransplantation = document.querySelector('input[name="days_to_transplantation"]').value;
+            const daysToDirectSow = document.querySelector('input[name="days_to_direct_sow"]').value;
+            const daysToHarvest = document.querySelector('input[name="days_to_harvest"]').value;
+            const daysToSeedHarvest = document.querySelector('input[name="days_to_seed_harvest"]').value;
+            const frostSensitivityRating = document.querySelector('input[name="frost_sensitivity_rating"]').value;
 
                                     
             // Check if required fields (variety name and crop type) are not empty
@@ -278,20 +279,12 @@
 
             // Combined validation for integer fields using validInteger function in one if statement
             if (
-                !validInteger(plantSpacingHarvest) && plantSpacingHarvest !== '' ||
-                !validInteger(plantSpacingSeed) && plantSpacingSeed !== '' ||
-                !validInteger(rowSpacingHarvest) && rowSpacingHarvest !== '' ||
-                !validInteger(rowSpacingSeed) && rowSpacingSeed !== '' ||
-                !validInteger(daysToMaturityHarvest) && daysToMaturityHarvest !== ''||
-                !validInteger(daysToMaturitySeed) && daysToMaturitySeed !== '' ||
-                !validInteger(daysToTransplantation) && daysToTransplantation !== '' ||
-                !validInteger(daysToDirectSow) && daysToDirectSow !== '' ||
-                !validInteger(daysToHarvest) && daysToHarvest !== '' ||
-                !validInteger(daysToSeedHarvest) && daysToSeedHarvest !== '' ||
-                !validInteger(frostSensitivityRating) && frostSensitivityRating !== ''
+                !isValid(plantSpacingHarvest) || !isValid(plantSpacingSeed) || !isValid(rowSpacingHarvest) || !isValid(rowSpacingSeed) ||
+                !isValid(daysToMaturityHarvest) || !isValid(daysToMaturitySeed) || !isValid(daysToTransplantation) || !isValid(daysToDirectSow) ||
+                !isValid(daysToHarvest) || !isValid(daysToSeedHarvest) || !validInteger(frostSensitivityRating)
             ) {
                 alert("Please ensure all integer fields contain valid integers or are left blank, and no negative values are entered.");
-                return false;  // Prevent form submission
+                return false;
             }
 
             // If all checks pass, allow form submission
