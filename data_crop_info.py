@@ -447,7 +447,8 @@ def delete_variety(variety_id):
         for crop_info in crop_infos:
             crop_info_to_delete = session.query(Crop_Info).filter_by(crop_info_id=crop_info['crop_info_id']).first()
             if crop_info_to_delete:
-                user_crops = session.query(User_Crop).filter_by(user_crop_id=crop_info_to_delete.crop_info_id).all()
+                user_crops = session.query(User_Crop).filter_by(crop_info_id=crop_info_to_delete.crop_info_id).all()
+                app.logger.info(user_crops)
                 for user_crop in user_crops:
                     delete_template(user_crop.user_crop_id)
                 session.delete(crop_info_to_delete)

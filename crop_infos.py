@@ -199,12 +199,15 @@ def create_variety(species_id):
 
 @app.route('/addfamily', methods=['POST'])
 def add_family():
+    app.logger.info("AH")
     verify_login()
     verify_admin()
     family_name = flask.request.form.get('family_add_name')
+    app.logger.info(family_name)
     if(family_name is None):
         return redirect(url_for('select_family'))
     family = {'family_name':family_name}
+    app.logger.info("add")
     database.add_family(family)
     return redirect(url_for('select_family'))
 
