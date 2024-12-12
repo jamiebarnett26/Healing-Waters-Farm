@@ -440,18 +440,32 @@ def delete_species(species_id):
 def delete_variety(variety_id):
     with get_session() as session:
         variety_to_delete = session.query(Variety).filter_by(variety_id=variety_id).first()
-
+        if not variety_to_delete:
+            raise ValueError("Variety not found")
+        
         crop_infos = crop_info_from_variety(variety_id)
         for crop_info in crop_infos:
             crop_info_to_delete = session.query(Crop_Info).filter_by(crop_info_id=crop_info['crop_info_id']).first()
-            user_crops = session.query(User_Crop).filter_by(user_crop_id=crop_info_to_delete.crop_info_id)
-            for user_crop in user_crops:
-                delete_template(user_crop.user_crop_id)
-            session.delete(crop_info_to_delete)
-            session.commit()
-
+            if crop_info_to_delete:
+                user_crops = session.query(User_Crop).filter_by(user_crop_id=crop_info_to_delete.crop_info_id).all()
+                for user_crop in user_crops:
+                    delete_template(user_crop.user_crop_id)
+                session.delete(crop_info_to_delete)
+                session.commit()
+        
         session.delete(variety_to_delete)
         session.commit()
+
+def delete_template(user_crop_id):
+    with sqlalchemy.orm.Session(_engine) as session:
+        user_tasks = session.query(Tasks).filter(Tasks.user_crop_id == user_crop_id).all()
+        for user_task in user_tasks:
+            delete_task(user_task.task_id)
+        
+        user_crop = session.query(User_Crop).filter(User_Crop.user_crop_id == user_crop_id).first()
+        if user_crop:
+            session.delete(user_crop)
+            session.commit()
 
 def delete_task(task_id):
     with sqlalchemy.orm.Session(_engine) as session:
@@ -461,11 +475,3 @@ def delete_task(task_id):
             session.commit()
         else:
             raise ValueError("Task not found")
-
-def delete_template(user_crop_id):
-    with sqlalchemy.orm.Session(_engine) as session:
-        user_tasks =  session.query(Tasks).filter(Tasks.user_crop_id == user_crop_id).all()
-        for user_task in user_tasks:
-            delete_task(user_task.task_id)
-        session.query(User_Crop).filter(User_Crop.user_crop_id == user_crop_id).delete()
-        session.commit()

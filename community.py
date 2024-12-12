@@ -58,7 +58,7 @@ def add_question(user_id):
     user_id = flask.request.cookies.get('user_id')
     title = flask.request.form.get('title_add')
     text = flask.request.form.get('text')
-    user_name = user_id
+    user_name = get_username(user_id)
     question = {'user_id':user_id, 'user_name':user_name, 'title':title, 'text':text, 'status':'Unresolved'}
     database.add_question(question)
     return redirect(url_for('community'))
@@ -84,7 +84,7 @@ def add_announcement():
     verify_login()
     verify_admin()
     user_id = flask.request.cookies.get('user_id')
-    user_name = user_id
+    user_name = get_username(user_id)
     text = flask.request.form.get('text')
     title = flask.request.form.get('title')
     announcement = {'user_id':user_id, 'user_name':user_name, 'text':text, 'title':title}
