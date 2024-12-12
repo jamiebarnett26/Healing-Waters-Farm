@@ -12,11 +12,7 @@ def login():
     redirect_uri = flask.url_for('authorize_login', _external=True)
     return google.authorize_redirect(redirect_uri)
 
-@app.route('/signup')
-def signup():
-    google = oauth.create_client('google')
-    redirect_uri = flask.url_for('authorize_signin', _external=True)
-    return google.authorize_redirect(redirect_uri)
+
 
 @app.route('/authorize_login')
 def authorize_login():
@@ -41,37 +37,17 @@ def authorize_login():
         admin = database.is_admin(user.user_id)
         resp.set_cookie('admin', admin)
         return resp
-    
-    return redirect('signup')
-     
-@app.route('/authorize_signin')
-def authorize_signin():
-    google = oauth.create_client('google')
-    token = google.authorize_access_token()
-    resp = google.get('userinfo', token=token)
-    resp.raise_for_status()
-    user_info = resp.json()
-
-    email = user_info.get('email')
-    first_name = user_info.get('given_name')
-    last_name = user_info.get('family_name')
-
-    flask.session['first_name'] = first_name
-    flask.session['last_name'] = last_name
-    flask.session['email'] = email
-    
-    user = database.get_user(email, 'email')
-    if user:
-        return flask.redirect('/login')
-    user = database.add_user(first_name, last_name, email)
-    if not user:
-        return flask.redirect('/signup')
+    else:
+        user = database.add_user(first_name, last_name, email)
+        
     resp = flask.make_response(flask.redirect('/homepage'))
     resp.set_cookie('user_id', str(user.user_id))
     admin = database.is_admin(user.user_id)
     resp.set_cookie('admin', admin)
     return resp
-    
+
+     
+
 
 #-----------------------------------------------------------------------
 
