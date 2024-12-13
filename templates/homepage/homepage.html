@@ -33,14 +33,12 @@
             });
         }
 
-        // Function to check offline status
         function isOffline() {
-            return !navigator.onLine;  // Return true if offline
+            return !navigator.onLine;  
         }
 
-        // Function to toggle online/offline content
         function toggleOfflineElements() {
-            const onlineElements = document.querySelectorAll('.online-only'); // These elements will only be shown when online
+            const onlineElements = document.querySelectorAll('.online-only'); 
             const offlineElements = document.querySelectorAll('.offline-only');
             if (isOffline()) {
                 onlineElements.forEach(el => el.style.display = 'none');
@@ -50,8 +48,7 @@
                 onlineElements.forEach(el => el.style.display = 'block');
                 offlineElements.forEach(el => el.style.display = 'none');
                 const cropsData = JSON.parse('{{ crops_with_todos | tojson }}');
-                saveCropsToLocal(cropsData);  // Save the crops data to IndexedDB for offline use
-            }
+                saveCropsToLocal(cropsData);  
         }
 
         window.addEventListener('online', toggleOfflineElements);
@@ -73,14 +70,12 @@
                 const transaction = db.transaction("crops", "readwrite");
                 const store = transaction.objectStore("crops");
 
-                // Clear the object store before adding new data
                 const clearRequest = store.clear();
 
                 clearRequest.onsuccess = () => {
                     console.log("IndexedDB cleared");
                     
-                    // Insert the new crops
-                    crops.forEach(([cropDetails, tasks, variety_id]) => {
+\                    crops.forEach(([cropDetails, tasks, variety_id]) => {
                         const cropData = {
                             id: variety_id,
                             crop_info: cropDetails,

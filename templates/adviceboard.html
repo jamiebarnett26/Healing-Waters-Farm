@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Advice Board</title>
     <style>
-        /* Global styling */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -13,7 +12,6 @@
             background-color: #f4f4f4;
         }
 
-        /* Title styling */
         .page-title {
             font-size: 2em;
             font-weight: bold;
@@ -21,7 +19,6 @@
             margin-bottom: 20px;
         }
 
-        /* Popup form styling */
         .popup-form {
             position: fixed;
             top: 50%;
@@ -36,7 +33,6 @@
             max-width: 90%;
         }
 
-        /* Form group and input styling */
         .form-group {
             margin-bottom: 10px;
         }
@@ -54,7 +50,6 @@
             border-radius: 4px;
         }
 
-        /* Button styling */
         .form-actions .btn {
             padding: 8px 15px;
             font-size: 14px;
@@ -63,7 +58,7 @@
         }
 
         .btn-primary {
-            background-color: #4CAF50; /* Green background for primary buttons */
+            background-color: #4CAF50; 
             color: white;
             border: none;
         }
@@ -91,9 +86,8 @@
             color: #6c757d;
         }
 
-        /* Question Box Styling */
         .question-box {
-            background-color: #e8f5e9; /* Light green background */
+            background-color: #e8f5e9; 
             color: #333;
             padding: 15px;
             margin-bottom: 15px;
@@ -121,7 +115,6 @@
             margin-right: 10px;
         }
 
-        /* Replies section styling */
         .replies-section {
             margin-top: 10px;
         }
@@ -168,12 +161,10 @@
         </form>
     </div>
 
-    <!-- Transparent overlay to close the popup -->
     <div id="overlay" class="overlay" onclick="togglePopup('addQuestionPopup')" style="display: none;"></div>
 
     <hr>
 
-    <!-- Loop through the questions -->
     {% for question in questions %}
         <div class="question-box">
             <div class="question-header">
@@ -182,7 +173,6 @@
             </div>
             <p class="question-text">{{ question['text'] }}</p>
 
-            <!-- Action buttons (edit, delete, reply) -->
             <div class="question-actions">
                 {% if (admin) or (user_id|string == question['user_id']|string) %}
                     <button onclick="togglePopup('editQuestionPopup{{ question['question_id'] }}')" class="btn btn-warning btn-sm">Edit</button>
@@ -195,7 +185,6 @@
                 {% endif %}
             </div>
 
-            <!-- Popup for editing a question -->
             <div id="editQuestionPopup{{ question['question_id'] }}" class="popup-form" style="display: none;">
                 <form action="/editquestion/{{ question['question_id'] }}" method="post">
                     <div class="form-group">
@@ -213,7 +202,6 @@
                 </form>
             </div>
 
-            <!-- Popup for adding a reply -->
             <div id="addReplyPopup{{ question['question_id'] }}" class="popup-form" style="display: none;">
                 <form action="/addreply/{{ question['question_id'] }}" method="post">
                     <div class="form-group">
@@ -227,10 +215,8 @@
                 </form>
             </div>
 
-            <!-- Toggle Replies Button -->
             <button onclick="toggleReplies('{{ question['question_id'] }}')" class="btn btn-outline-secondary btn-sm mt-3">View Replies</button>
 
-            <!-- Replies Section -->
             <div id="replies-{{ question['question_id'] }}" class="replies-section" style="display: none;">
                 <strong>Replies:</strong><br>
                 {% for reply in replies %}
@@ -245,7 +231,6 @@
                         </div>
                     {% endif %}
                     <br>
-                        <!-- Popup for editing a reply -->
                         <div id="editReplyPopup{{ reply['reply_id'] }}" class="popup-form" style="display: none;">
                             <form action="/editreply/{{ reply['reply_id'] }}" method="post">
                                 <div class="form-group">

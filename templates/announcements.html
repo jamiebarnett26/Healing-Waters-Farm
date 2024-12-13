@@ -15,11 +15,11 @@
         }
 
         .content-wrapper {
-            flex: 1; /* This ensures that the content takes up available space */
+            flex: 1; 
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Center vertically */
-            align-items: center; /* Center horizontally */
+            justify-content: center; 
+            align-items: center; 
             padding: 20px;
         }
 
@@ -56,7 +56,7 @@
         }
 
         .announcement-box {
-            background-color: rgb(103, 165, 107); /* Green background */
+            background-color: rgb(103, 165, 107); 
             color: white;
             padding: 15px;
             margin-bottom: 20px;
@@ -67,7 +67,7 @@
 
         .announcement-header {
             background-color: white;
-            color: rgb(15, 135, 73); /* Green text */
+            color: rgb(15, 135, 73); 
             padding: 10px;
             border-radius: 8px 8px 0 0;
             display: flex;
@@ -118,11 +118,9 @@
     </style>
 </head>
 <body>
-    <!-- Content wrapper to center the page content between header and footer -->
     <div class="content-wrapper">
         <h1 class="page-title">Announcements</h1>
 
-        <!-- Popup form for adding a new announcement -->
         <div id="addAnnouncementPopup" class="popup-form" style="display: none;">
             <form action="/addannouncement/{{ announcement_id }}" method="post">
                 <div class="form-group">
@@ -141,7 +139,6 @@
         </div>
 
         {% if admin %}
-        <!-- Button to open the popup form for adding a new announcement -->
         <button onclick="togglePopup('addAnnouncementPopup')" class="btn btn-primary">Create Announcement</button>
         {% endif %}
 
@@ -165,7 +162,6 @@
             </form>
         </div>
 
-        <!-- Announcement Container -->
         <div class="announcement-box">
             <div class="announcement-header">
                 <h2>{{ announcement['title'] }}</h2>
@@ -185,7 +181,6 @@
         {% endfor %}
     </div>
 
-    <!-- Overlay for popup background -->
     <div id="overlay" class="overlay" style="display: none;"></div>
 
     <script>

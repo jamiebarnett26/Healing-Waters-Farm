@@ -391,9 +391,9 @@
     window.validateAddVarietyForm = function() {
         // Helper function to validate integer values (non-negative and valid integer)
         function validInteger(intVal) {
-            const parsedValue = parseInt(intVal);
-            // Check if parsed value is a valid non-negative integer
-            return Number.isInteger(parsedValue) && parsedValue >= 0;
+            const parsedValue = parseInt(intVal, 10); // Explicitly specify base 10 for parsing
+            // Check if parsed value is a valid non-negative integer within the safe range
+            return Number.isInteger(parsedValue) && parsedValue >= 0 && parsedValue <= Number.MAX_SAFE_INTEGER;
         }
 
         function isEmpty(val) {

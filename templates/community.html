@@ -31,7 +31,6 @@
     <body>
         {% include 'header.html' %}
 
-        <!-- Tab navigation -->
         <div class="container-fluid mt-3">
             <ul class="nav nav-tabs" id="contentTabs" role="tablist">
                 <li class="nav-item" role="presentation">
@@ -43,48 +42,39 @@
             </ul>
         </div>
 
-        <!-- Tab content -->
         <div class="tab-content" id="contentTabsContent" style="margin-bottom: 3rem;">
-            <div class="tab-pane fade" id="announcements" role="tabpanel" aria-labelledby="announcements-tab">
+            <div class="tab-pane fade" id="announcements" role="tabpanel">
                 {% include 'announcements.html' %}
             </div>
-            <div class="tab-pane fade" id="advice-board" role="tabpanel" aria-labelledby="advice-board-tab">
+            <div class="tab-pane fade" id="advice-board" role="tabpanel">
                 {% include 'adviceboard.html' %}
             </div>
         </div>
 
-        <!-- Footer -->
         <footer class="mt-4 border-top">
             {% include 'footer.html' %}
         </footer>
 
         <script>
             document.addEventListener("DOMContentLoaded", function() {
-                // Get the last active tab from localStorage
                 const activeTab = localStorage.getItem('activeTab');
 
                 if (activeTab) {
                     const activeTabLink = document.getElementById(activeTab);
                     if (activeTabLink) {
-                        // Makes active tab visible
                         activeTabLink.classList.add('active');  
-                        // Gets id of tab content (the announcements or advice page) -> #announcements or #advice-board
-                        // substring removes # in front
                         const activeTabContent = document.getElementById(activeTabLink.getAttribute('href').substring(1));
                         if (activeTabContent) {
-                            // Makes tab content (html file) visible
                             activeTabContent.classList.add('show', 'active');  
                         }
                     }
                 } else {
-                    // If no tab is stored, just show announcements
                     const defaultTabLink = document.getElementById('announcements-tab');
                     defaultTabLink.classList.add('active');
                     const defaultTabContent = document.getElementById('announcements');
                     defaultTabContent.classList.add('show', 'active');
                 }
 
-                // Event listener to save the active tab in localStorage when a tab is clicked
                 $('#contentTabs a').on('click', function (e) {
                     const targetTabId = e.target.id;
                     localStorage.setItem('activeTab', targetTabId); 
