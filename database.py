@@ -112,8 +112,6 @@ def is_admin(user_id):
 
         if table:
             return 'true'
-        if table.email == 'rdondero@princeton.edu' or table.email == 'ek1074@princeton.edu' or table.email == 'jiaweim@princeton.edu' or table.email == 'jamiebarnett2022@gmail.com':
-            return 'true'
         return 'false'
 def get_profiles():
     with get_session() as session:
