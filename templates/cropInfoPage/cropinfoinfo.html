@@ -131,12 +131,11 @@
         }
 
         function isEmpty(val) {
-
-            return val + "" == "" || val + "" == 'None';
+            return val.toString().trim() == "" || val.toString().trim() == "None";
         }
 
         function isValid(val) {
-            return validInteger(val) || isEmpty(val);
+            return validInteger(val) || !isEmpty(val);
         }
 
         function frostInRange(val) {
