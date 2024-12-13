@@ -124,7 +124,6 @@
 
         function validInteger(intVal) {
             const parsedValue = parseInt(intVal, 10); // Explicitly specify base 10 for parsing
-            console.log(parsedValue);
             // Check if parsed value is a valid non-negative integer within the safe range
             return Number.isInteger(parsedValue) && parsedValue >= 0 && parsedValue <= Number.MAX_SAFE_INTEGER;
         }
@@ -146,10 +145,6 @@
             var updatedValue = $this.find('input').val() || $this.text();
             updated_fields[fieldId] = updatedValue;
         });
-
-        console.log('strict value: ' + validInteger(44));
-
-        console.log("plant spacing value: " + updated_fields["plant_spacing_harvest"])
 
         let plantSpacingHarvest = updated_fields["plant_spacing_harvest"];
         let plantSpacingSeed = updated_fields["plant_spacing_seed"];
