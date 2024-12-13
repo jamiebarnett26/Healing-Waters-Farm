@@ -20,10 +20,10 @@
 
 <div class="container-fluid py-1 px-4">
     <div class="row d-flex justify-content-center">
-        <!-- <button type="button" class="btn btn-outline-success edit-button" id="edit-button">
+        <button type="button" class="btn btn-outline-success edit-button" id="edit-button">
             <img src="../../static/icon/edit.png" style="height: 6vw;" class="pb-2">
             <span style="font-size: 5vw;"> &nbsp; Edit </span>
-        </button> -->
+        </button>
     </div>
 </div>
 
@@ -46,64 +46,16 @@
 </div>
 
 
-<!-- <script>
-    
-    'use strict';
-    function validateEditVarietyForm(event) {
-        function validInteger(intVal) {
-            const parsedValue = parseInt(intVal, 10); 
-            return Number.isInteger(parsedValue) && parsedValue >= 0 && parsedValue <= Number.MAX_SAFE_INTEGER;
-        }
-
-        function isEmpty(val) {
-            return val == "" || val == 'None';
-        }
-
-        function isValid(val) {
-            return validInteger(val) || isEmpty(val);
-        }
-
-        function getValueFromEditable(id) {
-            returndocument.getElementById(id).val;
-            return element.querySelector('input') ? element.querySelector('input').value : element.textContent.trim();
-        }
-
-        // Get the values from the form (editable elements)
-        const plantSpacingHarvest = getValueFromEditable('plant_spacing_harvest');
-        alert(plantSpacingHarvest)
-        const plantSpacingSeed = getValueFromEditable('plant_spacing_seed');
-        const rowSpacingHarvest = getValueFromEditable('row_spacing_harvest');
-        const rowSpacingSeed = getValueFromEditable('row_spacing_seed');
-        const daysToMaturityHarvest = getValueFromEditable('days_to_maturity_harvest');
-        const daysToMaturitySeed = getValueFromEditable('days_to_maturity_seed');
-        const daysToTransplantation = getValueFromEditable('days_to_transplantation');
-        const daysToDirectSow = getValueFromEditable('days_to_direct_sow');
-        const daysToHarvest = getValueFromEditable('days_to_harvest');
-        const daysToSeedHarvest = getValueFromEditable('days_to_seed_harvest');
-        const frostSensitivityRating = getValueFromEditable('frost_sensitivity_rating');
-                                                
-        // Combined validation for integer fields
-        if (
-            !isValid(plantSpacingHarvest) || !isValid(plantSpacingSeed) || !isValid(rowSpacingHarvest) || !isValid(rowSpacingSeed) ||
-            !isValid(daysToMaturityHarvest) || !isValid(daysToMaturitySeed) || !isValid(daysToTransplantation) || !isValid(daysToDirectSow) ||
-            !isValid(daysToHarvest) || !isValid(daysToSeedHarvest) || !validInteger(frostSensitivityRating)
-        ) {
-            alert("Please ensure all integer fields contain valid integers or are left blank, and no negative values are entered.");
-            return false;
-        }
-
-        return true; // Form is valid
-    }
+<script>
 
     const variety_id = "{{ variety_id }}";
     const variety_name = "{{ variety_name }}"
 
     // send updated data
     function sendText() {
-        if (!validateEditVarietyForm()) {
+        if (!validateEditVariety()) {
             return; 
         }
-        alert("ah");
         var updated_fields = {};
 
         $('.editable-text').each(function() {
@@ -166,4 +118,58 @@
     $(document).ready(function() {
         $('#edit-button').text('Edit');
     });
-</script> -->
+
+    // sanitizing all info inputs
+    function validateEditVariety() {
+
+        function validInteger(intVal) {
+            const parsedValue = parseInt(intVal, 10); // Explicitly specify base 10 for parsing
+            console.log(parsedValue);
+            // Check if parsed value is a valid non-negative integer within the safe range
+            return Number.isInteger(parsedValue) && parsedValue >= 0 && parsedValue <= Number.MAX_SAFE_INTEGER;
+        }
+
+        function isEmpty(val) {
+            return val == "" || val == 'None';
+        }
+
+        function isValid(val) {
+            return validInteger(val) || isEmpty(val);
+        }
+
+        var updated_fields = {};
+
+        $('.editable-text').each(function() {
+            var $this = $(this);
+            var fieldId = $this.attr('id');
+            // could be in edit state or not
+            var updatedValue = $this.find('input').val() || $this.text();
+            updated_fields[fieldId] = updatedValue;
+        });
+
+        console.log('strict value: ' + validInteger(44));
+
+        console.log("plant spacing value: " + updated_fields["plant_spacing_harvest"])
+
+        let plantSpacingHarvest = updated_fields["plant_spacing_harvest"];
+        let plantSpacingSeed = updated_fields["plant_spacing_seed"];
+        let rowSpacingHarvest = updated_fields["row_spacing_harvest"];
+        let rowSpacingSeed = updated_fields["row_spacing_seed"];
+        let daysToMaturityHarvest = updated_fields["days_to_maturity_harvest"];
+        let daysToMaturitySeed = updated_fields["days_to_maturity_seed"];
+        let daysToTransplantation = updated_fields["days_to_transplantation"];
+
+        // Combined validation for integer fields using validInteger function in one if statement
+        if (
+            !isValid(updated_fields["plant_spacing_harvest"]) || !isValid(updated_fields["plant_spacing_seed"]) || !isValid(updated_fields["row_spacing_harvest"]) || !isValid(updated_fields["row_spacing_seed"]) ||
+            !isValid(updated_fields["days_to_maturity_harvest"]) || !isValid(updated_fields["days_to_maturity_seed"]) || !isValid(updated_fields["days_to_transplantation"]) || !isValid(updated_fields["days_to_direct_sow"]) ||
+            !isValid(updated_fields["days_to_harvest"]) || !isValid(updated_fields["days_to_seed_harvest"]) || !validInteger(updated_fields["frost_sensitivity_rating"])
+        ) {
+            alert("Please ensure all integer fields contain valid integers or are left blank, and no negative values are entered.");
+            return false;
+        }
+
+        // If all checks pass, allow form submission
+        return true;
+    }
+</script>

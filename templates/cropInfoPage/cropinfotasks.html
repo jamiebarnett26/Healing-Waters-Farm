@@ -374,10 +374,8 @@
                 if (response.success) {
                     // Find the checkbox element by task_id
                     const todo = $('#todo-' + taskId);
-                    
                     // toggling todo checked attribute
                     if (todo) { todo.checked = !completed; }
-
                     else { console.error("Todo not found for taskId:", taskId); }
 
                     const label = $('label[for="todo-' + taskId + '"]');
@@ -385,7 +383,8 @@
                         // Dynamically update the data-completed attribute with the new state
                         label.setAttribute('data-completed', !completed);
                     }
-                } else {
+                } 
+                else {
                     alert("Failed to update task status.");
                 }
             },
