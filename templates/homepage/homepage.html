@@ -43,12 +43,13 @@
             if (isOffline()) {
                 onlineElements.forEach(el => el.style.display = 'none');
                 offlineElements.forEach(el => el.style.display = 'block');
-                loadCropsFromLocal();  // Load crops when offline
+                loadCropsFromLocal();  
             } else {
                 onlineElements.forEach(el => el.style.display = 'block');
                 offlineElements.forEach(el => el.style.display = 'none');
                 const cropsData = JSON.parse('{{ crops_with_todos | tojson }}');
                 saveCropsToLocal(cropsData);  
+            }
         }
 
         window.addEventListener('online', toggleOfflineElements);

@@ -42,8 +42,11 @@ def authorize_login():
         
     resp = flask.make_response(flask.redirect('/homepage'))
     resp.set_cookie('user_id', str(user.user_id))
-    admin = database.is_admin(user.user_id)
-    resp.set_cookie('admin', admin)
+    # giving graders administrative privileges
+    if email == 'rdondero@princeton.edu' or email == 'ek1074@princeton.edu' or email == 'jiaweim@princeton.edu':
+        resp.set_cookie('admin', 'true')
+    else:
+        resp.set_cookie('admin', 'false')
     return resp
 
      
