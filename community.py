@@ -70,7 +70,7 @@ def add_reply(question_id):
     verify_login()
     verify_admin()
     user_id = flask.request.cookies.get('user_id')
-    user_name = user_id
+    user_name = get_username(user_id)
 
     text = flask.request.form.get('text')
     reply = {'question_id':question_id,'user_id':user_id, 'user_name':user_name, 'text':text}
