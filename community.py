@@ -97,9 +97,15 @@ def add_announcement():
 def edit_question(question_id):
     verify_login()
     user_id = flask.request.cookies.get('user_id')
+    
     admin = flask.request.cookies.get('admin') == 'true'
     user_question = database.search_field_id('question', question_id)[0]
-    if not admin and str(user_id) != (user_question['user_id']):
+
+    # print("user_id", user_id)
+    # print("user_question user id:", user_question['user_id'])
+    # print(str(user_id) == str(user_question['user_id']))
+
+    if not admin and str(user_id) != str((user_question['user_id'])):
         return "Custom 405 Method Not Allowed Error", 405
     title = flask.request.form.get('title')
     text  = flask.request.form.get('text')

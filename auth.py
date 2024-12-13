@@ -26,7 +26,15 @@ def authorize_login():
     first_name = user_info.get('given_name')
     last_name = user_info.get('family_name')
 
+    if first_name == None:
+        first_name = ''
+
+    if last_name == None:
+        last_name = ''
+
     flask.session['first_name'] = first_name
+    # print("first name:", first_name)
+    # print("last name:", last_name)
     flask.session['last_name'] = last_name
     flask.session['email'] = email
     
