@@ -33,6 +33,7 @@
             });
         }
 
+        
         function isOffline() {
             return !navigator.onLine;  
         }
@@ -76,7 +77,7 @@
                 clearRequest.onsuccess = () => {
                     console.log("IndexedDB cleared");
                     
-\                    crops.forEach(([cropDetails, tasks, variety_id]) => {
+                    crops.forEach(([cropDetails, tasks, variety_id]) => {
                         const cropData = {
                             id: variety_id,
                             crop_info: cropDetails,
@@ -117,7 +118,7 @@
 
             getAllRequest.onsuccess = (event) => {
                 const crops = event.target.result;
-                renderCrops(crops);  // Render crops when offline
+                showCrops(crops);  
             };
 
             getAllRequest.onerror = (error) => {
@@ -130,9 +131,9 @@
         };
     }
 
-    function renderCrops(crops) {
+    function showCrops(crops) {
         const container = document.getElementById('crops-container');
-        container.innerHTML = ''; // Clear existing content
+        container.innerHTML = ''; 
 
         crops.forEach(crop => {
             const cropDetails = crop.crop_info;
@@ -141,10 +142,9 @@
 
             if (!cropDetails || !cropDetails.variety_name) {
                 console.error("Invalid crop data:", crop);
-                return; // Skip invalid data
+                return; 
             }
 
-            // Create crop card
             const cropCard = document.createElement('div');
             cropCard.className = 'card card-body m-2 mb-3';
             cropCard.style.minWidth = '75vw';
