@@ -131,7 +131,8 @@
         }
 
         function isEmpty(val) {
-            return val == "" || val == 'None';
+
+            return val + "" == "" || val + "" == 'None';
         }
 
         function isValid(val) {
@@ -166,7 +167,7 @@
             !isValid(updated_fields["days_to_maturity_harvest"]) || !isValid(updated_fields["days_to_maturity_seed"]) || !isValid(updated_fields["days_to_transplantation"]) || !isValid(updated_fields["days_to_direct_sow"]) ||
             !isValid(updated_fields["days_to_harvest"]) || !isValid(updated_fields["days_to_seed_harvest"]) || !validInteger(updated_fields["frost_sensitivity_rating"])
         ) {
-            alert("Please ensure all integer fields contain valid integers or are left blank, and no negative values are entered.");
+            alert("Please ensure all integer fields contain valid small enough integers or are left blank, and no negative values are entered.");
             return false;
         }
 
