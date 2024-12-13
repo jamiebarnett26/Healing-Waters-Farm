@@ -219,6 +219,7 @@
             function validateEditVarietyForm(event) {
                 function validInteger(intVal) {
                     const parsedValue = parseInt(intVal, 10); // Explicitly specify base 10 for parsing
+                    // Check if parsed value is a valid non-negative integer within the safe range
                     return Number.isInteger(parsedValue) && parsedValue >= 0 && parsedValue <= Number.MAX_SAFE_INTEGER;
                 }
 
@@ -261,6 +262,7 @@
                     return false;
                 }
 
+                // If all checks pass, allow form submission
                 return true;
             }
         </script>
@@ -283,6 +285,7 @@
         </div>
         
         <div class="content-section">
+            <!-- Include dynamic crop information here -->
             {% include 'displaycropinfo.html' %}
         </div>
 
@@ -293,6 +296,7 @@
         </footer>
     </div>
 
+    <!-- Bootstrap JS and Popper.js via CDN -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHj/GD76VjFqGaabiE/H6jnOE/Ia5nlxQ+24n3y1PwTxeyJz7s4e+4O" crossorigin="anonymous"></script>
 
 </body>

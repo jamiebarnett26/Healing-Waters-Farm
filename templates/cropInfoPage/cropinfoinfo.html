@@ -20,10 +20,10 @@
 
 <div class="container-fluid py-1 px-4">
     <div class="row d-flex justify-content-center">
-        <button type="button" class="btn btn-outline-success edit-button" id="edit-button">
+        <!-- <button type="button" class="btn btn-outline-success edit-button" id="edit-button">
             <img src="../../static/icon/edit.png" style="height: 6vw;" class="pb-2">
             <span style="font-size: 5vw;"> &nbsp; Edit </span>
-        </button>
+        </button> -->
     </div>
 </div>
 
@@ -39,26 +39,76 @@
     <strong>Days to Maturity for Harvesting Crops:</strong> <span class="editable-text" id="days_to_maturity_harvest">{{ full_crop_infos['days_to_maturity_harvest'] }}</span><br>
     <strong>Days to Maturity for Harvesting Seeds:</strong> <span class="editable-text" id="days_to_maturity_seed">{{ full_crop_infos['days_to_maturity_seed'] }}</span><br>
     <strong>Days to Transplantation:</strong> <span class="editable-text" id="days_to_transplantation">{{ full_crop_infos['days_to_transplantation'] }}</span><br>
-    <strong>Days to Direct Sow:</strong> <span class="editable-text" id="ddays_to_direct_sow">{{ full_crop_infos['days_to_direct_sow'] }}</span><br>
+    <strong>Days to Direct Sow:</strong> <span class="editable-text" id="days_to_direct_sow">{{ full_crop_infos['days_to_direct_sow'] }}</span><br>
     <strong>Days for Harvesting Crops:</strong> <span class="editable-text" id="days_to_harvest">{{ full_crop_infos['days_to_harvest'] }}</span><br>
     <strong>Days for Harvesting Seeds:</strong> <span class="editable-text" id="days_to_seed_harvest">{{ full_crop_infos['days_to_seed_harvest'] }}</span><br>
     <strong>Frost Sensitivity Rating:</strong> <span class="editable-text" id="frost_sensitivity_rating">{{ full_crop_infos['frost_sensitivity_rating'] }}</span><br>
 </div>
 
-<script>
+
+<!-- <script>
+    
     'use strict';
+    function validateEditVarietyForm(event) {
+        function validInteger(intVal) {
+            const parsedValue = parseInt(intVal, 10); 
+            return Number.isInteger(parsedValue) && parsedValue >= 0 && parsedValue <= Number.MAX_SAFE_INTEGER;
+        }
+
+        function isEmpty(val) {
+            return val == "" || val == 'None';
+        }
+
+        function isValid(val) {
+            return validInteger(val) || isEmpty(val);
+        }
+
+        function getValueFromEditable(id) {
+            returndocument.getElementById(id).val;
+            return element.querySelector('input') ? element.querySelector('input').value : element.textContent.trim();
+        }
+
+        // Get the values from the form (editable elements)
+        const plantSpacingHarvest = getValueFromEditable('plant_spacing_harvest');
+        alert(plantSpacingHarvest)
+        const plantSpacingSeed = getValueFromEditable('plant_spacing_seed');
+        const rowSpacingHarvest = getValueFromEditable('row_spacing_harvest');
+        const rowSpacingSeed = getValueFromEditable('row_spacing_seed');
+        const daysToMaturityHarvest = getValueFromEditable('days_to_maturity_harvest');
+        const daysToMaturitySeed = getValueFromEditable('days_to_maturity_seed');
+        const daysToTransplantation = getValueFromEditable('days_to_transplantation');
+        const daysToDirectSow = getValueFromEditable('days_to_direct_sow');
+        const daysToHarvest = getValueFromEditable('days_to_harvest');
+        const daysToSeedHarvest = getValueFromEditable('days_to_seed_harvest');
+        const frostSensitivityRating = getValueFromEditable('frost_sensitivity_rating');
+                                                
+        // Combined validation for integer fields
+        if (
+            !isValid(plantSpacingHarvest) || !isValid(plantSpacingSeed) || !isValid(rowSpacingHarvest) || !isValid(rowSpacingSeed) ||
+            !isValid(daysToMaturityHarvest) || !isValid(daysToMaturitySeed) || !isValid(daysToTransplantation) || !isValid(daysToDirectSow) ||
+            !isValid(daysToHarvest) || !isValid(daysToSeedHarvest) || !validInteger(frostSensitivityRating)
+        ) {
+            alert("Please ensure all integer fields contain valid integers or are left blank, and no negative values are entered.");
+            return false;
+        }
+
+        return true; // Form is valid
+    }
 
     const variety_id = "{{ variety_id }}";
     const variety_name = "{{ variety_name }}"
 
     // send updated data
     function sendText() {
+        if (!validateEditVarietyForm()) {
+            return; 
+        }
+        alert("ah");
         var updated_fields = {};
 
         $('.editable-text').each(function() {
             var $this = $(this);
             var fieldId = $this.attr('id');
-            // for when it is span or input mode
             var updatedValue = $this.find('input').val() || $this.text();
             updated_fields[fieldId] = updatedValue;
         });
@@ -80,6 +130,7 @@
             }
         });
     }
+
 
     // toggling edit button to create edit state or not
     // coded with the help of ChatGPT
@@ -115,4 +166,4 @@
     $(document).ready(function() {
         $('#edit-button').text('Edit');
     });
-</script>
+</script> -->
