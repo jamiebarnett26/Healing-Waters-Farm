@@ -99,7 +99,7 @@ def edit_question(question_id):
     user_id = flask.request.cookies.get('user_id')
     admin = flask.request.cookies.get('admin') == 'true'
     user_question = database.search_field_id('question', question_id)[0]
-    if not admin and user_id != user_question['user_id']:
+    if not admin and str(user_id) != (user_question['user_id']):
         return "Custom 405 Method Not Allowed Error", 405
     title = flask.request.form.get('title')
     text  = flask.request.form.get('text')
@@ -137,7 +137,7 @@ def delete_question(question_id):
     user_id = flask.request.cookies.get('user_id')
     admin = flask.request.cookies.get('admin') == 'true'
     user_question = database.search_field_id('question', question_id)[0]
-    if (not admin) and user_id != user_question['user_id']:
+    if (not admin) and str(user_id) != str(user_question['user_id']):
         return "Custom 405 Method Not Allowed Error", 405
     database.delete_question(user_id, question_id)
     return redirect(url_for('community'))

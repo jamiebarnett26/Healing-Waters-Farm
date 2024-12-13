@@ -58,6 +58,20 @@
             const taskText = document.getElementById('task-' + taskId);
             taskText.classList.toggle('done', checkbox.checked);
         }
+        function togglePopup(popupId) {
+            console.log(popupId)
+            const popupForm = document.getElementById(popupId);
+            if (popupForm.style.display === 'none') {
+                popupForm.style.display = 'block';
+            } else {
+                popupForm.style.display = 'none';
+            }
+        }
+        
+
+       
+
+
     </script>
 </head>
 <body>
@@ -88,7 +102,7 @@
             <strong>Row Spacing for Harvesting Crops (in):</strong>
             <input type="text", name="row_spacing_harvest", value={{ crop_infos[0]['row_spacing_harvest'] }} autofocus> <br>
             <strong>Row Spacing for Harvesting Seeds (in):</strong>
-            <input type="text", name="row_spacing_seed'", value={{ crop_infos[0]['row_spacing_seed'] }} autofocus> <br>
+            <input type="text", name="row_spacing_seed", value={{ crop_infos[0]['row_spacing_seed'] }} autofocus> <br>
             <strong>Days to Maturity for Harvesting Crops:</strong>
             <input type="text", name="days_to_maturity_harvest", value={{ crop_infos[0]['days_to_maturity_harvest'] }} autofocus> <br>
             <strong>Days to Maturity for Harvesting Seed:</strong>
@@ -106,6 +120,56 @@
             <input type="submit" value="Add Variety">
             <button type="button" onclick="togglePopup('addVarietyPopup')">Cancel</button>
         </form>
+        <script>
+            function validateAddVarietyForm(event) {
+                function validInteger(intVal) {
+                    const parsedValue = parseInt(intVal);
+                    // Check if parsed value is a valid non-negative integer
+                    return Number.isInteger(parsedValue) && parsedValue >= 0;
+                }
+
+                function isEmpty(val) {
+                    return val == "" || val == 'None';
+                }
+
+                function isValid(val) {
+                    return validInteger(val) || isEmpty(val);
+                }
+                // Get form field values
+                const varietyName = document.querySelector('input[name="variety_name"]').value;
+                const cropTypeName = document.querySelector('input[name="crop_type_name"]').value;
+                const plantSpacingHarvest = document.querySelector('input[name="plant_spacing_harvest"]').value;
+                const plantSpacingSeed = document.querySelector('input[name="plant_spacing_seed"]').value;
+                const rowSpacingHarvest = document.querySelector('input[name="row_spacing_harvest"]').value;
+                const rowSpacingSeed = document.querySelector('input[name="row_spacing_seed"]').value;
+                const daysToMaturityHarvest = document.querySelector('input[name="days_to_maturity_harvest"]').value;
+                const daysToMaturitySeed = document.querySelector('input[name="days_to_maturity_seed"]').value;
+                const daysToTransplantation = document.querySelector('input[name="days_to_transplantation"]').value;
+                const daysToDirectSow = document.querySelector('input[name="days_to_direct_sow"]').value;
+                const daysToHarvest = document.querySelector('input[name="days_to_harvest"]').value;
+                const daysToSeedHarvest = document.querySelector('input[name="days_to_seed_harvest"]').value;
+                const frostSensitivityRating = document.querySelector('input[name="frost_sensitivity_rating"]').value;
+                
+                // Check if required fields (variety name and crop type) are not empty
+                if (!varietyName) {
+                    alert("Variety name cannot be empty.");
+                    return false;  // Prevent form submission
+                }
+
+                // Combined validation for integer fields using validInteger function in one if statement
+                if (
+                    !isValid(plantSpacingHarvest) || !isValid(plantSpacingSeed) || !isValid(rowSpacingHarvest) || !isValid(rowSpacingSeed) ||
+                    !isValid(daysToMaturityHarvest) || !isValid(daysToMaturitySeed) || !isValid(daysToTransplantation) || !isValid(daysToDirectSow) ||
+                    !isValid(daysToHarvest) || !isValid(daysToSeedHarvest) || !validInteger(frostSensitivityRating)
+                ) {
+                    alert("Please ensure all integer fields contain valid integers or are left blank, and no negative values are entered.");
+                    return false;
+                }
+
+                // If all checks pass, allow form submission
+                return true;
+            }
+        </script>
     </div>
     <div id="editVarietyPopup" style="display: none; 
     position: fixed; 
@@ -127,7 +191,7 @@
             <strong>Crop Type</strong>
             <input type="text" name="crop_type_name_edit" value='{{ crop_infos[0]['crop_type_name'] }}' autofocus> <br>
             <strong>Seed Spacing for Harvesting Crops:</strong>
-            <input type="text", name="plant_spacing_harvest", value="{{ crop_infos[0]['plant_spacing_harvest'] }}" autofocus> <br>
+            <input type="text", name="plant_spacing_harvest_edit", value="{{ crop_infos[0]['plant_spacing_harvest'] }}" autofocus> <br>
             <strong>Seed Spacing for Harvesting Seeds:</strong>
             <input type="text" name="plant_spacing_seed_edit" value={{ crop_infos[0]['plant_spacing_seed'] }} autofocus> <br>
             <strong>Row Spacing for Harvesting Crops:</strong>
@@ -151,7 +215,60 @@
             <input type="submit" value="Edit Variety">
             <button type="button" onclick="togglePopup('editVarietyPopup')">Cancel</button>
         </form>
+        <script>
+            function validateEditVarietyForm(event) {
+                // Utility function to get and validate form field values
+                function validInteger(intVal) {
+                    const parsedValue = parseInt(intVal);
+                    // Check if parsed value is a valid non-negative integer
+                    return Number.isInteger(parsedValue) && parsedValue >= 0;
+                }
+
+                function isEmpty(val) {
+                    return val == "" || val == 'None';
+                }
+
+                function isValid(val) {
+                    return validInteger(val) || isEmpty(val);
+                }
+
+                // Get form field values
+                const varietyName = document.querySelector('input[name="variety_edit_name"]').value;
+                const cropTypeName = document.querySelector('input[name="crop_type_name_edit"]').value;
+                const plantSpacingHarvest = document.querySelector('input[name="plant_spacing_harvest_edit"]').value;
+                const plantSpacingSeed = document.querySelector('input[name="plant_spacing_seed_edit"]').value;
+                const rowSpacingHarvest = document.querySelector('input[name="row_spacing_harvest_edit"]').value;
+                const rowSpacingSeed = document.querySelector('input[name="row_spacing_seed_edit"]').value;
+                const daysToMaturityHarvest = document.querySelector('input[name="days_to_maturity_harvest_edit"]').value;
+                const daysToMaturitySeed = document.querySelector('input[name="days_to_maturity_seed_edit"]').value;
+                const daysToTransplantation = document.querySelector('input[name="days_to_transplantation_edit"]').value;
+                const daysToDirectSow = document.querySelector('input[name="days_to_direct_sow_edit"]').value;
+                const daysToHarvest = document.querySelector('input[name="days_to_harvest_edit"]').value;
+                const daysToSeedHarvest = document.querySelector('input[name="days_to_seed_harvest_edit"]').value;
+                const frostSensitivityRating = document.querySelector('input[name="frost_sensitivity_rating_edit"]').value;
+                                        
+                // Check if required fields (variety name and crop type) are not empty
+                if (!varietyName) {
+                    alert("Variety name cannot be empty.");
+                    return false;  // Prevent form submission
+                }
+
+                // Combined validation for integer fields using validInteger function in one if statement
+                if (
+                    !isValid(plantSpacingHarvest) || !isValid(plantSpacingSeed) || !isValid(rowSpacingHarvest) || !isValid(rowSpacingSeed) ||
+                    !isValid(daysToMaturityHarvest) || !isValid(daysToMaturitySeed) || !isValid(daysToTransplantation) || !isValid(daysToDirectSow) ||
+                    !isValid(daysToHarvest) || !isValid(daysToSeedHarvest) || !validInteger(frostSensitivityRating)
+                ) {
+                    alert("Please ensure all integer fields contain valid integers or are left blank, and no negative values are entered.");
+                    return false;
+                }
+
+                // If all checks pass, allow form submission
+                return true;
+            }
+        </script>
     </div>
+
     <div class="container py-4">
         <h1 class="page-title text-center mb-4">{{ crop_infos[0]['variety_name'] }}</h1>
         <div class="text-end">
@@ -182,121 +299,7 @@
 
     <!-- Bootstrap JS and Popper.js via CDN -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHj/GD76VjFqGaabiE/H6jnOE/Ia5nlxQ+24n3y1PwTxeyJz7s4e+4O" crossorigin="anonymous"></script>
-    <script>
-        function togglePopup(popupId) {
-            console.log(popupId)
-            const popupForm = document.getElementById(popupId);
-            if (popupForm.style.display === 'none') {
-                popupForm.style.display = 'block';
-            } else {
-                popupForm.style.display = 'none';
-            }
-        }
-        function validateEditVarietyForm(event) {
-            // Utility function to get and validate form field values
-            function validInteger(intVal) {
-                const parsedValue = parseInt(intVal);
-                // Check if parsed value is a valid non-negative integer
-                return Number.isInteger(parsedValue) && parsedValue >= 0;
-            }
 
-            function isEmpty(val) {
-                return val == "" || val == 'None';
-            }
-
-            function isValid(val) {
-                return validInteger(val) || isEmpty(val);
-            }
-
-            // Get form field values
-            const varietyName = document.querySelector('input[name="variety_edit_name"]').value;
-            const cropTypeName = document.querySelector('input[name="crop_type_name_edit"]').value;
-            const plantSpacingHarvest = document.querySelector('input[name="plant_spacing_harvest_edit"]').value;
-            const plantSpacingSeed = document.querySelector('input[name="plant_spacing_seed_edit"]').value;
-            const rowSpacingHarvest = document.querySelector('input[name="row_spacing_harvest_edit"]').value;
-            const rowSpacingSeed = document.querySelector('input[name="row_spacing_seed_edit"]').value;
-            const daysToMaturityHarvest = document.querySelector('input[name="days_to_maturity_harvest_edit"]').value;
-            const daysToMaturitySeed = document.querySelector('input[name="days_to_maturity_seed_edit"]').value;
-            const daysToTransplantation = document.querySelector('input[name="days_to_transplantation_edit"]').value;
-            const daysToDirectSow = document.querySelector('input[name="days_to_direct_sow_edit"]').value;
-            const daysToHarvest = document.querySelector('input[name="days_to_harvest_edit"]').value;
-            const daysToSeedHarvest = document.querySelector('input[name="days_to_seed_harvest_edit"]').value;
-            const frostSensitivityRating = document.querySelector('input[name="frost_sensitivity_rating_edit"]').value;
-
-                                    
-            // Check if required fields (variety name and crop type) are not empty
-            if (!varietyName) {
-                alert("Variety name cannot be empty.");
-                return false;  // Prevent form submission
-            }
-
-            // Combined validation for integer fields using validInteger function in one if statement
-            if (
-                !isValid(plantSpacingHarvest) || !isValid(plantSpacingSeed) || !isValid(rowSpacingHarvest) || !isValid(rowSpacingSeed) ||
-                !isValid(daysToMaturityHarvest) || !isValid(daysToMaturitySeed) || !isValid(daysToTransplantation) || !isValid(daysToDirectSow) ||
-                !isValid(daysToHarvest) || !isValid(daysToSeedHarvest) || !validInteger(frostSensitivityRating)
-            ) {
-                alert("Please ensure all integer fields contain valid integers or are left blank, and no negative values are entered.");
-                return false;
-            }
-
-            // If all checks pass, allow form submission
-            return true;
-        }
-
-        function validateAddVarietyForm(event) {
-            function validInteger(intVal) {
-                const parsedValue = parseInt(intVal);
-                // Check if parsed value is a valid non-negative integer
-                return Number.isInteger(parsedValue) && parsedValue >= 0;
-            }
-
-            function isEmpty(val) {
-                return val == "" || val == 'None';
-            }
-
-            function isValid(val) {
-                return validInteger(val) || isEmpty(val);
-            }
-
-            // Get form field values
-            const varietyName = document.querySelector('input[name="variety_name"]').value;
-            const cropTypeName = document.querySelector('input[name="crop_type_name"]').value;
-            const plantSpacingHarvest = document.querySelector('input[name="plant_spacing_harvest"]').value;
-            const plantSpacingSeed = document.querySelector('input[name="plant_spacing_seed"]').value;
-            const rowSpacingHarvest = document.querySelector('input[name="row_spacing_harvest"]').value;
-            const rowSpacingSeed = document.querySelector('input[name="row_spacing_seed"]').value;
-            const daysToMaturityHarvest = document.querySelector('input[name="days_to_maturity_harvest"]').value;
-            const daysToMaturitySeed = document.querySelector('input[name="days_to_maturity_seed"]').value;
-            const daysToTransplantation = document.querySelector('input[name="days_to_transplantation"]').value;
-            const daysToDirectSow = document.querySelector('input[name="days_to_direct_sow"]').value;
-            const daysToHarvest = document.querySelector('input[name="days_to_harvest"]').value;
-            const daysToSeedHarvest = document.querySelector('input[name="days_to_seed_harvest"]').value;
-            const frostSensitivityRating = document.querySelector('input[name="frost_sensitivity_rating"]').value;
-
-                                    
-            // Check if required fields (variety name and crop type) are not empty
-            if (!varietyName) {
-                alert("Variety name cannot be empty.");
-                return false;  // Prevent form submission
-            }
-
-            // Combined validation for integer fields using validInteger function in one if statement
-            if (
-                !isValid(plantSpacingHarvest) || !isValid(plantSpacingSeed) || !isValid(rowSpacingHarvest) || !isValid(rowSpacingSeed) ||
-                !isValid(daysToMaturityHarvest) || !isValid(daysToMaturitySeed) || !isValid(daysToTransplantation) || !isValid(daysToDirectSow) ||
-                !isValid(daysToHarvest) || !isValid(daysToSeedHarvest) || !validInteger(frostSensitivityRating)
-            ) {
-                alert("Please ensure all integer fields contain valid integers or are left blank, and no negative values are entered.");
-                return false;
-            }
-
-            // If all checks pass, allow form submission
-            return true;
-        }
-
-
-    </script>
 </body>
 </html>
 

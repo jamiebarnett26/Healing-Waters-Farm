@@ -125,8 +125,6 @@ def edit_variety(variety_id):
     verify_login()
     user_id = flask.request.cookies.get('user_id')
     user_variety = database.search_field_id('variety', variety_id)
-    if(user_id != user_variety['user_id']):
-        return "Custom 405 Method Not Allowed Error", 405
     variety_name = get_form_value('variety_edit_name')
     crop_type = get_form_value('crop_type_name_edit')
     plant_spacing_harvest = get_form_value('plant_spacing_harvest_edit')
