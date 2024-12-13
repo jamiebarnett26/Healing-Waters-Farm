@@ -94,6 +94,7 @@ def edit_family(family_id):
     verify_login()
     verify_admin()
     family_name = flask.request.form.get('family_edit_name')
+    app.logger.info(family_name)
     if(family_name is None):
         return redirect(url_for('select_family'))
     family = {'family_name':family_name}

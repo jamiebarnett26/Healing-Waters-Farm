@@ -358,9 +358,9 @@
                 <div id="editFamilyPopup${selectedValue}" class="popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); z-index: 1000; border-radius: 8px;">
                     <form action="/editfamily/${selectedValue}" method="post">
                         <strong>Family Name</strong>
-                        <input type="text" id="family_edit_name" class="form-control mb-2" required class="form-control" autofocus> <br>
+                        <input type="text" name="family_edit_name" class="form-control mb-2" required class="form-control" autofocus> <br>
                         <input type="submit" value="Edit Family" class="btn btn-success">
-                        <button type="button" onclick="togglePopup('addSpeciesPopup${selectedValue}')" class="btn btn-secondary btn-sm">Cancel</button>
+                        <button type="button" onclick="togglePopup('editFamilyPopup${selectedValue}')" class="btn btn-secondary btn-sm">Cancel</button>
                     </form>
                 </div>
                 <button onclick="togglePopup('addSpeciesPopup')" class="btn btn-primary btn-sm">Add New Species</button>
