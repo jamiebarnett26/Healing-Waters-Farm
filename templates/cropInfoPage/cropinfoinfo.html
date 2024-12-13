@@ -32,7 +32,7 @@
     <strong>Latin Name:</strong> <span id="latin-name">{{ full_crop_infos['latin_name'] }}</span><br>
     <strong>Variety:</strong> <span id="variety">{{ full_crop_infos['variety_name'] }}</span><br>
     <strong>Type:</strong> <span id="type">{{ full_crop_infos['crop_type'] }}</span><br>
-    <strong>Seed Spacing for Harvesting Crops (in.):</strong> <span class="editable-text" id="plant_spacing_harvest">{{ full_crop_infos['plant_spacing_harvest'] }} </span><br>
+    <strong>Seed Spacing for Harvesting Crops (in.):</strong> <span class="editable-text" id="plant_spacing_harvest">{{ full_crop_infos['plant_spacing_harvest'] }}</span><br>
     <strong>Row Spacing for Harvesting Crops (in.):</strong> <span class="editable-text" id="row_spacing_harvest">{{ full_crop_infos['row_spacing_harvest'] }}</span><br>
     <strong>Seed Spacing for Harvesting Seeds (in.):</strong> <span class="editable-text" id="plant_spacing_seed">{{ full_crop_infos['plant_spacing_seed'] }}</span><br>
     <strong>Row Spacing for Harvesting Seeds (in.):</strong> <span class="editable-text" id="row_spacing_seed">{{ full_crop_infos['row_spacing_seed'] }}</span><br>
@@ -62,7 +62,7 @@
         $('.editable-text').each(function() {
             var $this = $(this);
             var fieldId = $this.attr('id');
-            var updatedValue = $this.find('input').val() || $this.text();
+            var updatedValue = $this.find('input').val() || $this.text().trim();
             updated_fields[fieldId] = updatedValue;
         });
         console.log(updated_fields);
@@ -132,11 +132,11 @@
         }
 
         function isEmpty(val) {
-            return val.toString().trim() == "" || val.toString().trim() == "None";
+            return val.toString() == "" || val.toString().trim() == "None";
         }
 
         function isValid(val) {
-            return validInteger(val) && !isEmpty(val);
+            return validInteger(val) || isEmpty(val);
         }
 
         function frostInRange(val) {
@@ -167,7 +167,7 @@
             !isValid(updated_fields["days_to_maturity_harvest"]) || !isValid(updated_fields["days_to_maturity_seed"]) || !isValid(updated_fields["days_to_transplantation"]) || !isValid(updated_fields["days_to_direct_sow"]) ||
             !isValid(updated_fields["days_to_harvest"]) || !isValid(updated_fields["days_to_seed_harvest"]) || !validInteger(updated_fields["frost_sensitivity_rating"])
         ) {
-            alert("Please ensure all integer fields contain valid small enough integers or are left blank, and no negative values are entered.");
+            alert("Please ensure all integer fields contain valid small enough integers, are left blank or contain only the world None, and no negative values are entered.");
             return false;
         }
 
