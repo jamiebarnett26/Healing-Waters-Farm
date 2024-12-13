@@ -54,6 +54,7 @@
     // send updated data
     function sendText() {
         if (!validateAllInfo()) {
+            location.reload();
             return; 
         }
         var updated_fields = {};
@@ -127,7 +128,7 @@
         function validInteger(intVal) {
             const parsedValue = parseInt(intVal, 10); // Explicitly specify base 10 for parsing
             // Check if parsed value is a valid non-negative integer within the safe range
-            return Number.isInteger(parsedValue) && parsedValue >= 0 && parsedValue <= Number.MAX_SAFE_INTEGER;
+            return Number.isInteger(parsedValue) && parsedValue >= 0 && parsedValue <= Number.MAX_SAFE_INTEGER && !Number.isNaN(parsedValue);
         }
 
         function isEmpty(val) {
@@ -135,7 +136,7 @@
         }
 
         function isValid(val) {
-            return validInteger(val) || !isEmpty(val);
+            return validInteger(val) && !isEmpty(val);
         }
 
         function frostInRange(val) {
