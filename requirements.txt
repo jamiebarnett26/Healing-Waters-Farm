@@ -1,4 +1,5 @@
 flask
+flask_session
 python-dotenv
 psycopg2
 SQLAlchemy

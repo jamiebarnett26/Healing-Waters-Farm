@@ -119,7 +119,7 @@
                 <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <form action="/deleteCrop/{{ user_crop_id }}" method="POST">
-                    <button class = "btn btn-danger" name="delete_button" value="Delete">Delete</button>
+                    <button class = "btn btn-danger" name="delete_button" onclick="this.form.submit(); this.disabled=true;"  value="Delete">Delete</button>
                 </form>
                 </div>
             </div>

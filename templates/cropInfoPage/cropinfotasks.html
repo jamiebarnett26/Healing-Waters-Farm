@@ -74,7 +74,7 @@
         <h3>Select a task to delete</h3>
         <label for="deleteDropdown-{{ user_crop_id }}">Task:</label>
         <select id="deleteDropdown-{{ user_crop_id }}"></select> <br>
-        <button onclick="submitDelete({{ user_crop_id }})" class="btn btn-danger px-2 py-1 my-1">Delete</button>
+        <button onclick="submitDelete(this, {{ user_crop_id }})" class="btn btn-danger px-2 py-1 my-1">Delete</button>
         <button onclick="cancelDelete({{ user_crop_id }})" class="btn btn-secondary px-2 py-1 my-1">Cancel</button>
     </div>
 </div>
@@ -103,7 +103,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" id="saveTaskBtn">Save Task</button>
+          <button type="button" class="btn btn-primary" onclick="this.form.submit(); this.disabled=true;"  id="saveTaskBtn">Save Task</button>
         </div>
       </div>
     </div>
@@ -224,13 +224,15 @@
         });
     }
 
-    function submitDelete(userCropId) {
+    function submitDelete(button, userCropId) {
         const taskId = document.getElementById(`deleteDropdown-${userCropId}`).value;
 
         if (!taskId) {
             alert("Please select a task to delete!");
             return;
         }
+        button.disabled = true;
+        button.innerText = 'Deleting...';
 
         // Send delete request via AJAX
         $.ajax({
@@ -245,6 +247,8 @@
                     taskList.innerHTML = '';
                     document.getElementById(`delete-form-${userCropId}`).style.display = 'none';
                     showTasks(); 
+                    button.disabled = false;
+                    button.innerText = 'Delete';
                 } else {
                     alert("Error: " + response.message);
                 }
@@ -272,8 +276,10 @@
     $('#saveTaskBtn').on('click', function() {
         const taskTitle = $('#taskTitle').val();
         const taskDate = $('#taskDate').val();
+        const saveTaskBtn = $(this);
 
         if (taskTitle && taskDate) {
+            saveTaskBtn.prop('disabled', true).text('Saving...');
             
             $.ajax({
                 url: '/addTask', 
@@ -291,6 +297,7 @@
                         $('#taskList').empty();
                         //reload  
                         showTasks();  
+                        saveTaskBtn.prop('disabled', false).text('Save Task');
                     } else {
                         alert("Failed to add task.");
                     }

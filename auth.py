@@ -2,8 +2,19 @@
 from top import app, oauth
 import flask
 from flask import redirect
+from flask_session import Session
 import database
 import sys
+import os
+
+app.config.update(
+    SECRET_KEY=os.getenv('SECRET_KEY'),
+    SESSION_TYPE='filesystem',
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax',
+)
+Session(app)
 
 @app.route('/login')
 def login():
@@ -16,25 +27,20 @@ def login():
 
 @app.route('/authorize_login')
 def authorize_login():
-    google = oauth.create_client('google')
-    token = google.authorize_access_token()
-    resp = google.get('userinfo', token=token)
-    resp.raise_for_status()
-    user_info = resp.json()
+    try:
+        google = oauth.create_client('google')
+        token = google.authorize_access_token()
+        resp = google.get('userinfo', token=token)
+        resp.raise_for_status()
+        user_info = resp.json()
+    except Exception as e:
+        return flask.abort(401, f"Authorization failed: {str(e)}")
 
     email = user_info.get('email')
-    first_name = user_info.get('given_name')
-    last_name = user_info.get('family_name')
-
-    if first_name == None:
-        first_name = ''
-
-    if last_name == None:
-        last_name = ''
+    first_name = user_info.get('given_name','')
+    last_name = user_info.get('family_name','')
 
     flask.session['first_name'] = first_name
-    # print("first name:", first_name)
-    # print("last name:", last_name)
     flask.session['last_name'] = last_name
     flask.session['email'] = email
     
@@ -43,18 +49,13 @@ def authorize_login():
         resp = flask.make_response(flask.redirect('/homepage'))
         resp.set_cookie('user_id', str(user.user_id))
         admin = database.is_admin(user.user_id)
-        resp.set_cookie('admin', admin)
+        resp.set_cookie('admin', admin, httponly=True, secure=True, max_age=3600)
         return resp
     else:
         user = database.add_user(first_name, last_name, email)
         
     resp = flask.make_response(flask.redirect('/homepage'))
-    resp.set_cookie('user_id', str(user.user_id))
-    # giving graders administrative privileges
-    if email == 'rdondero@princeton.edu' or email == 'ek1074@princeton.edu' or email == 'jiaweim@princeton.edu':
-        resp.set_cookie('admin', 'true')
-    else:
-        resp.set_cookie('admin', 'false')
+    resp.set_cookie('user_id', str(user.user_id), httponly=True, secure=True, max_age=3600)
     return resp
 
      

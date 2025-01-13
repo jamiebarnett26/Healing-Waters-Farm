@@ -132,7 +132,7 @@
                     <textarea name="text" id="text" class="form-control" rows="4"></textarea>
                 </div>
                 <div class="form-actions">
-                    <input type="submit" value="Create Announcement" class="btn btn-primary">
+                    <input type="submit" value="Create Announcement" onclick="this.form.submit(); this.disabled=true;" class="btn btn-primary">
                     <button type="button" onclick="togglePopup('addAnnouncementPopup')" class="btn btn-secondary">Cancel</button>
                 </div>
             </form>
@@ -173,7 +173,7 @@
             <div class="announcement-actions">
                 <button onclick="togglePopup('editAnnouncementPopup{{ announcement['announcement_id'] }}')" class="btn btn-edit">Edit</button>
                 <form action="/deleteannouncement/{{ announcement['announcement_id'] }}" method="post" class="delete-form">
-                    <input type="submit" value="Delete" class="btn btn-danger">
+                    <input type="submit" value="Delete" onclick="this.form.submit(); this.disabled=true;" class="btn btn-danger">
                 </form>
             </div>
             {% endif %}

@@ -44,7 +44,12 @@
                     <p>
                     {% for variety in varieties %}
                     <br>
-                        <a href="/showcrop/{{ variety['variety_id'] }}">{{ variety['variety_name'] }}</a>   {% if admin %} <a href="/deletevariety/{{ variety['variety_id'] }}">Delete Variety</a> {% endif %}
+                        <a href="/showcrop/{{ variety['variety_id'] }}">{{ variety['variety_name'] }}</a>   
+                        {% if admin %} 
+                            <form action="/deletevariety/{{ variety['variety_id'] }}" method="post">
+                                <button type="submit" onclick="this.form.submit(); this.disabled=true;"  class="btn btn-primary">Delete Variety</button>
+                            </form>
+                        {% endif %}
                     <br>
                     {% endfor %}
                     <br>
@@ -53,7 +58,9 @@
                 </div>
             </h3>
         </div>
-        <a href="/createvariety/{{ species_id }}">Create Variety</a>
+        <form action="/createvariety/{{ species_id }}" method="post">
+            <button type="submit" onclick="this.form.submit(); this.disabled=true;"  class="btn btn-primary">Create Variety</button>
+        </form>
         <hr>
 
         {% include 'footer.html' %}

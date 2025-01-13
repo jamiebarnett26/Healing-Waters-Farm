@@ -200,6 +200,12 @@
         html, body {
             overflow-x: hidden;
         }
+
+        .tasks-container {
+            height: 50vh; /* Adjust this height as needed */
+            overflow-y: auto;
+            padding-bottom: 10vh; /* Ensure some space for the logout button */
+        }
         
     </style>
 </head>
@@ -210,35 +216,39 @@
         {% include 'homepage/boxes_w_info.html' %}
     </div>
     <div class="container-fluid bg-success-subtle rounded-top-5 p-0 pb-5">
-
-        <div class="container-fluid p-0">
-            <div class = "row pt-1 g-0">
-                <div class = "col text-center">
-                    <h1 class = "text-dark" style = "font-size: 10vw;">
-                        <u> <b> Tasks this Week: </b></u>
-                    </h1>
-                </div>
-            </div>
-            </h1>
-            <div class = "row p-0 g-0">
-                <div class="online-only">
-                    {% include 'homepage/cropcards.html' %}
+        <div class="online-only">
+            <div class="container-fluid p-0">
+                <div class = "row pt-1 g-0">
+                    <div class = "col text-center">
+                        <h1 class = "text-dark" style = "font-size: 10vw;">
+                            <u> <b> Tasks this Week: </b></u>
+                        </h1>
+                    </div>
                 </div>
                 
-            </div>
+                <div class="tasks-container">
+                    <div class = "row g-0">
+                            {% include 'homepage/cropcards.html' %}
+                        </div>
+                    </div>    
+                </div>
+        </div>
             
-            <div class="offline-only">
-                <div id="crops-container" class="container-fluid p-0">
-            <div class="offline-only">
-            </div>
-            <div class="container-fluid text-center mt-4">
+        <div class="offline-only">
+            <div id="crops-container" class="container-fluid p-0"></div>
+        </div>
+        <div class="offline-only">
+        </div>
+        <div class="online-only">
+            <div class="container-fluid text-center logout-btn" style="padding-top: 5vh;">
                 <form action="/logout" method="post">
-                    <button type="submit" class="btn btn-danger btn-lg">
+                    <button type="submit" class="btn btn-danger btn-lg" >
                         <i class="bi bi-box-arrow-right"></i> Logout
                     </button>
                 </form>
             </div>
         </div>
+
     </div>
 
     <!-- Footer -->
