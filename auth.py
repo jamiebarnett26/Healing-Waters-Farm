@@ -9,7 +9,8 @@ import os
 
 app.config.update(
     SECRET_KEY=os.getenv('SECRET_KEY'),
-    SESSION_TYPE='filesystem',
+    SESSION_TYPE='filesystem',  
+    SESSION_PERMANENT=False,    
     SESSION_COOKIE_SECURE=True,
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE='Lax',
