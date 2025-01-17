@@ -1,4 +1,5 @@
 import flask
+import os
 from authlib.integrations.flask_client import OAuth
 from flask import redirect, url_for
 
@@ -13,12 +14,13 @@ def serve_manifest():
 def serve_serviceWorker():
     return flask.send_from_directory('.', 'serviceWorker.js')
 
+app.secret_key = os.getenv('SECRET_KEY')
 # oauth config for google
 oauth = OAuth(app)
 google = oauth.register(
     name='google',
-    client_id='272340197272-0n57ghndnfe5q06928eubf4nac3ig39o.apps.googleusercontent.com',
-    client_secret='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',
+    client_id='144993838713-mvb15a64nvp0t5jd7j1spj4vr8pg7hdv.apps.googleusercontent.com',
+    client_secret='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',
     access_token_url='https://accounts.google.com/o/oauth2/token',
     access_token_params=None,
     authorize_url='https://accounts.google.com/o/oauth2/auth',

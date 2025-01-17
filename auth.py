@@ -2,20 +2,10 @@
 from top import app, oauth
 import flask
 from flask import redirect
-from flask_session import Session
 import database
 import sys
 import os
 
-app.config.update(
-    SECRET_KEY=os.getenv('SECRET_KEY'),
-    SESSION_TYPE='filesystem',  
-    SESSION_PERMANENT=False,    
-    SESSION_COOKIE_SECURE=True,
-    SESSION_COOKIE_HTTPONLY=True,
-    SESSION_COOKIE_SAMESITE='Lax',
-)
-Session(app)
 
 @app.route('/login')
 def login():
@@ -46,17 +36,18 @@ def authorize_login():
     flask.session['email'] = email
     
     user = database.get_user(email, 'email')
+    app.logger.info("Ah")
     if user:
         resp = flask.make_response(flask.redirect('/homepage'))
         resp.set_cookie('user_id', str(user.user_id))
         admin = database.is_admin(user.user_id)
-        resp.set_cookie('admin', admin, httponly=True, secure=True, max_age=3600)
+        resp.set_cookie('admin', admin)
         return resp
     else:
         user = database.add_user(first_name, last_name, email)
         
     resp = flask.make_response(flask.redirect('/homepage'))
-    resp.set_cookie('user_id', str(user.user_id), httponly=True, secure=True, max_age=3600)
+    resp.set_cookie('user_id', str(user.user_id))
     return resp
 
      
