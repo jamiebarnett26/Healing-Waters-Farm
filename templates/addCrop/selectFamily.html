@@ -68,8 +68,8 @@
             <div id="addFamilyPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); z-index: 1000;">
                 <form id="familyForm" action="/addfamily" method="post">
                     <strong>Family Name</strong>
-                    <input type="text", name="family_add_name", id="family_add_name", required class="form-control" autofocus> <br>
-                    <input type="submit" onclick="this.form.submit(); this.disabled=true;" value="Add Family">
+                    <input type="text" name="family_add_name" id="family_add_name" required class="form-control" autofocus> <br>
+                    <input type="submit" onclick="if (validateAddFamilyForm()) { this.disabled = true; this.form.submit(); } else { return false; }" value="Add Family">
                     <button type="button" onclick="togglePopup('addFamilyPopup')">Cancel</button>
                 </form>
             </div>
@@ -96,7 +96,10 @@
 
     function setup() {
         getFamilyResults();  // Fetch family results on setup
+        
     }
+
+    
 
 
     // Function to add admin-specific features
@@ -307,6 +310,33 @@
 
     $(document).ready(function() {
         // Check if the user is an admin
+
+        window.validateAddFamilyForm = function() { 
+            const familyAddName = document.getElementById('family_add_name').value;
+            // Validation checks
+            if (!familyAddName) {
+                alert("Family name cannot be empty.");
+                return false;
+            }
+            if(familyAddName.length > 50) {
+                alert("Please keep fields within a reasonable length");
+                return false;
+            }
+            return true;
+        };
+        window.validateEditFamilyForm = function() { 
+            const familyEditName = document.getElementById('family_edit_name').value;
+            // Validation checks
+            if (!familyEditName) {
+                alert("Family name cannot be empty.");
+                return false;
+            }
+            if(familyEditName.length > 50) {
+                alert("Please keep fields within a reasonable length");
+                return false;
+            }
+            return true;
+        };
         $.ajax({
             url: '/isAdmin',
             method: 'GET',
@@ -324,18 +354,16 @@
             }
         });
 
+
         $(document).on('change', '#templateFamilyList', function() {
             var selectedValue = $(this).val();
             getSpeciesResults(selectedValue);
             var familyActionsContainer = document.getElementById('editFamilyActions');
             console.log(familyActionsContainer);
 
-            // Assign the validation function globally
             window.validateAddSpeciesForm = function() { 
                 const speciesAddName = document.getElementById('species_add_name').value;
                 const latinNameAdd = document.getElementById('latin_name_add').value;
-                console.log('Species Add Name:', speciesAddName);
-                console.log('Latin Name Add:', latinNameAdd);
 
                 // Validation checks
                 if (!speciesAddName) {
@@ -346,8 +374,32 @@
                     alert("Latin name cannot be empty.");
                     return false;
                 }
+                if(latinNameAdd.length > 50 || speciesAddName.length > 50) {
+                    alert("Please keep fields within a reasonable length");
+                    return false;
+                }
                 return true;
             };
+            window.validateEditSpeciesForm = function() { 
+                const speciesEditName = document.getElementById('species_edit_name').value;
+                const latinNameEdit = document.getElementById('latin_name_edit').value;
+
+                // Validation checks
+                if (!speciesEditName) {
+                    alert("Species name cannot be empty.");
+                    return false;
+                }
+                if (!latinNameEdit) {
+                    alert("Latin name cannot be empty.");
+                    return false;
+                }
+                if(latinNameEdit.length > 50 || speciesEditName.length > 50) {
+                    alert("Please keep fields within a reasonable length");
+                    return false;
+                }
+                return true;
+            };
+
 
             // Dynamically update the family actions container
             familyActionsContainer.innerHTML = `
@@ -359,18 +411,18 @@
                     <form action="/editfamily/${selectedValue}" method="post">
                         <strong>Family Name</strong>
                         <input type="text" name="family_edit_name" class="form-control mb-2" required class="form-control" autofocus> <br>
-                        <input type="submit" value="Edit Family" class="btn btn-success">
+                        <input type="submit" onclick="if (validateEditFamilyForm()) { this.disabled = true; this.form.submit(); } else {  return false; }" value="Edit Family">
                         <button type="button" onclick="togglePopup('editFamilyPopup${selectedValue}')" class="btn btn-secondary btn-sm">Cancel</button>
                     </form>
                 </div>
                 <button onclick="togglePopup('addSpeciesPopup')" class="btn btn-primary btn-sm">Add New Species</button>
                 <div id="addSpeciesPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); z-index: 1000; border-radius: 8px;">
-                    <form action="/addspecies/${selectedValue}" method="post">
+                    <form action="/addspecies/${selectedValue}" onsubmit='return validateAddSpeciesForm()' method="post">
                         <strong>Species Name</strong>
                         <input type="text" name="species_add_name" class="form-control mb-2" id="species_add_name" required class="form-control" autofocus><br>
                         <strong>Latin Name</strong>
                         <input type="text" name="latin_name_add" class="form-control mb-2" id="latin_name_add" required class="form-control" autofocus><br>
-                        <input type="submit" value="Add Species" onclick="this.form.submit(); this.disabled=true;" class="btn btn-success">
+                        <input type="submit" onclick="if (validateAddSpeciesForm()) { this.disabled = true; this.form.submit(); } else {  return false; }" value="Add Species">
                         <button type="button" onclick="togglePopup('addSpeciesPopup')" class="btn btn-secondary btn-sm">Cancel</button>
                     </form>
                 </div>
@@ -391,6 +443,22 @@
     window.validateAddVarietyForm = function() {
         // Helper function to validate integer values (non-negative and valid integer)
         function validInteger(intVal) {
+            if (typeof intVal !== 'string' || intVal.length > 20) {
+                return false;
+            }
+
+            // Remove leading and trailing spaces
+            intVal = intVal.trim();
+
+            // Check for number followed by character or exponential notation
+            const regex = /^[0-9]+$/;
+
+            // Check if the input matches the regex (only digits)
+            if (!regex.test(intVal)) {
+                return false;
+            }
+
+
             const parsedValue = parseInt(intVal, 10); // Explicitly specify base 10 for parsing
             // Check if parsed value is a valid non-negative integer within the safe range
             return Number.isInteger(parsedValue) && parsedValue >= 0 && parsedValue <= Number.MAX_SAFE_INTEGER;
@@ -422,11 +490,11 @@
 
         // Combined validation for integer fields using validInteger function in one if statement
         if (
-            !isValid(plantSpacingHarvest) || !isValid(plantSpacingSeed) || !isValid(rowSpacingHarvest) || !isValid(rowSpacingSeed) ||
+            isEmpty(varietyName) || !isValid(plantSpacingHarvest) || !isValid(plantSpacingSeed) || !isValid(rowSpacingHarvest) || !isValid(rowSpacingSeed) ||
             !isValid(daysToMaturityHarvest) || !isValid(daysToMaturitySeed) || !isValid(daysToTransplantation) || !isValid(daysToDirectSow) ||
             !isValid(daysToHarvest) || !isValid(daysToSeedHarvest) || !validInteger(frostSensitivityRating)
         ) {
-            alert("Please ensure all integer fields contain valid integers or are left blank, and no negative values are entered.");
+            alert("Please ensure all integer fields contain valid integers or are left blank, and no negative values are entered. Integers should be of a reasonable length");
             return false;
         }
 
@@ -448,7 +516,7 @@
                     <input type="text" id="species_edit_name" name="species_edit_name" class="form-control mb-2" required class="form-control" autofocus> <br>
                     <strong>Latin Name</strong>
                     <input type="text" id="latin_name_edit" name="latin_name_edit" class="form-control mb-2" required class="form-control" autofocus> <br>
-                    <input type="submit" value="Edit species" class="btn btn-success">
+                    <input type="submit" onclick="if (validateEditSpeciesForm()) { this.disabled = true; this.form.submit(); } else { return false; }" value="Edit Species">
                     <button type="button" onclick="togglePopup('editSpeciesPopup${selectedValue}')" class="btn btn-secondary btn-sm">Cancel</button>
                 </form>
             </div>
@@ -468,7 +536,7 @@
                 overflow-y: auto; /* Make it scrollable */ 
                 width: 90%; /* Adjust width for smaller screens */
                 max-width: 600px; /* Prevent it from being too wide */">
-                <form action="/addvariety/${selectedValue}" onsubmit='return validateAddVarietyForm()' method="post">
+                <form action="/addvariety/${selectedValue}" method="post">
                     <strong>Variety</strong>
                     <input type="text" name="variety_name" required class="form-control" autofocus> <br>
                     <strong>Crop Type</strong>
@@ -495,7 +563,7 @@
                     <input type="text" name="days_to_seed_harvest" value="0" autofocus> <br>
                     <strong>Frost Sensitivity Rating:</strong>
                     <input type="text" name="frost_sensitivity_rating" value="0" autofocus> <br>
-                    <input type="submit" onclick="this.form.submit(); this.disabled=true;" value="Add Variety">
+                    <input type="submit" onclick="if (validateAddVarietyForm()) { this.disabled = true; this.form.submit(); } else { return false; }" value="Add Variety">
                     <button type="button" onclick="togglePopup('addVarietyPopup')">Cancel</button>
                 </form>
             </div>

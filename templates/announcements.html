@@ -132,7 +132,7 @@
                     <textarea name="text" id="text" class="form-control" rows="4"></textarea>
                 </div>
                 <div class="form-actions">
-                    <input type="submit" value="Create Announcement" onclick="this.form.submit(); this.disabled=true;" class="btn btn-primary">
+                    <input type="submit" onclick="if (validateAddAnnouncementForm()) { this.disabled = true; this.form.submit(); } else {  return false; }" value="Create Announcement">
                     <button type="button" onclick="togglePopup('addAnnouncementPopup')" class="btn btn-secondary">Cancel</button>
                 </div>
             </form>
@@ -156,7 +156,7 @@
                     <textarea name="text" id="text{{ announcement['announcement_id'] }}" class="form-control" rows="4">{{ announcement['text'] }}</textarea>
                 </div>
                 <div class="form-actions">
-                    <input type="submit" value="Edit Announcement" class="btn btn-primary">
+                    <input type="submit" onclick="if (validateEditAnnouncementForm({{ announcement['announcement_id'] }})) { this.disabled = true; this.form.submit(); } else {  return false; }" value="Edit Announcement">
                     <button type="button" onclick="togglePopup('editAnnouncementPopup{{ announcement['announcement_id'] }}')" class="btn btn-secondary">Cancel</button>
                 </div>
             </form>
@@ -195,6 +195,40 @@
                 overlay.style.display = 'none';
             }
         }
+        function validateAddAnnouncementForm() {
+                const title = document.getElementById('title').value;
+                const text = document.getElementById('text').value;
+
+                if (!title || title.length > 100) {
+                    alert("Please ensure the title is not empty and is less than 100 characters.");
+                    return false;
+                }
+
+                if (!text || text.length > 500) {
+                    alert("Please ensure the text is not empty and is less than 500 characters.");
+                    return false;
+                }
+
+                return true;
+            }
+
+            // Validate the form for editing a question
+            function validateEditAnnouncementForm(announcementId) {
+                const title = document.getElementById(`title${announcementId}`).value.trim();
+                const text = document.getElementById(`text${announcementId}`).value.trim();
+
+                if (!title || title.length > 100) {
+                    alert("Please ensure the title is not empty and is less than 100 characters.");
+                    return false;
+                }
+
+                if (!text || text.length > 500) {
+                    alert("Please ensure the text is not empty and is less than 500 characters.");
+                    return false;
+                }
+
+                return true;
+            }
     </script>
 </body>
 </html>

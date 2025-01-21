@@ -174,6 +174,7 @@
         <form action="/addquestion/{{ user_id }}" method="post">
             <div class="form-group">
                 <label for="title"><strong>Title</strong></label>
+        
                 <input type="text" name="title_add" id="title_add" autofocus required class="form-control">
             </div>
             <div class="form-group">
@@ -181,7 +182,7 @@
                 <textarea name="text" id="text" rows="4" class="form-control"></textarea>
             </div>
             <div class="form-actions">
-                <input type="submit" value="Ask Question" onclick="this.form.submit(); this.disabled=true;" class="btn btn-primary">
+                <input type="submit" onclick="if (validateAddQuestionForm()) { this.disabled = true; this.form.submit(); } else {  return false; }" value="Ask Question">
                 <button type="button" onclick="togglePopup('addQuestionPopup')" class="btn btn-secondary">Cancel</button>
             </div>
         </form>
@@ -222,7 +223,7 @@
                         <textarea name="text" id="edit-text{{ question['question_id'] }}" class="form-control" rows="4">{{ question['text'] }}</textarea>
                     </div>
                     <div class="form-actions">
-                        <input type="submit" value="Save Changes" class="btn btn-primary">
+                        <input type="submit" onclick="if (validateEditQuestionForm({{ question['question_id'] }})) { this.disabled = true; this.form.submit(); } else {  return false; }" value="Save Changes">
                         <button type="button" onclick="togglePopup('editQuestionPopup{{ question['question_id'] }}')" class="btn btn-secondary">Cancel</button>
                     </div>
                 </form>
@@ -235,7 +236,7 @@
                         <input type="text" name="text" id="reply-text{{ question['question_id'] }}" required class="form-control" autofocus>
                     </div>
                     <div class="form-actions">
-                        <input type="submit" value="Reply" onclick="this.form.submit(); this.disabled=true;" class="btn btn-primary">
+                        <input type="submit" onclick="if (validateAddReplyForm({{ question['question_id'] }})) { this.disabled = true; this.form.submit(); } else {  return false; }" value="Reply">
                         <button type="button" onclick="togglePopup('addReplyPopup{{ question['question_id'] }}')" class="btn btn-secondary">Cancel</button>
                     </div>
                 </form>
@@ -267,7 +268,7 @@
                                 <textarea name="text" id="reply-edit-text{{ reply['reply_id'] }}" rows="4" required class="form-control">{{ reply['text'] }}</textarea>
                             </div>
                             <div class="form-actions">
-                                <input type="submit" value="Save Changes" class="btn btn-primary">
+                                <input type="submit" onclick="if (validateEditReplyForm({{ reply['reply_id'] }})) { this.disabled = true; this.form.submit(); } else {  return false; }" value="Save Changes">
                                 <button type="button" onclick="togglePopup('editReplyPopup{{ reply['reply_id'] }}')" class="btn btn-secondary">Cancel</button>
                             </div>
                         </form>
@@ -296,6 +297,73 @@
                 overlay.style.display = 'none';
             }
         }
+
+        
+            // Validate the form for adding a question
+            function validateAddQuestionForm() {
+                const title = document.getElementById('title_add').value;
+                const text = document.getElementById('text').value;
+
+                if (!title || title.length > 100) {
+                    alert("Please ensure the title is not empty and is less than 100 characters.");
+                    return false;
+                }
+
+                if (!text || text.length > 500) {
+                    alert("Please ensure the text is not empty and is less than 500 characters.");
+                    return false;
+                }
+
+                return true;
+            }
+
+            // Validate the form for editing a question
+            function validateEditQuestionForm(questionId) {
+                const title = document.getElementById(`edit-title${questionId}`).value.trim();
+                const text = document.getElementById(`edit-text${questionId}`).value.trim();
+
+                if (!title || title.length > 100) {
+                    alert("Please ensure the title is not empty and is less than 100 characters.");
+                    return false;
+                }
+
+                if (!text || text.length > 500) {
+                    alert("Please ensure the text is not empty and is less than 500 characters.");
+                    return false;
+                }
+
+                return true;
+            }
+
+            // Validate the form for adding a reply
+            function validateAddReplyForm(questionId) {
+                const text = document.getElementById(`reply-text${questionId}`).value;
+
+                if (!text || text.length > 500) {
+                    alert("Please ensure the reply text is not empty and is less than 500 characters.");
+                    return false;
+                }
+
+                return true;
+            }
+            function validateEditReplyForm(reply_id) {
+                const replyText = document.getElementById('reply-edit-text' + reply_id).value.trim();
+                
+                // Check if the reply text is not empty
+                if (replyText === "") {
+                    alert("Reply cannot be empty.");
+                    return false; // Prevent form submission
+                }
+
+                // Check if the reply text is too long
+                if (replyText.length > 500) {
+                    alert("Please keep the reply within 500 characters.");
+                    return false; // Prevent form submission
+                }
+
+                return true; // Allow form submission
+            }
+        
 
     </script>
 

@@ -164,7 +164,6 @@ def create_variety(species_id):
     if template_crop_id == -1:
         family_table = database.family_from_species(species_id)
         species_table = database.search_field_id('species', species_id)
-        print(species_table)
         full_crop_info = {
             'family_name': family_table.family_name,
             'latin_name': species_table[0]['latin_name'],
@@ -198,11 +197,9 @@ def create_variety(species_id):
 
 @app.route('/addfamily', methods=['POST'])
 def add_family():
-    app.logger.info("AH")
     verify_login()
     verify_admin()
     family_name = flask.request.form.get('family_add_name')
-    app.logger.info(family_name)
     if(family_name is None):
         return redirect(url_for('select_family'))
     family = {'family_name':family_name}
