@@ -132,30 +132,31 @@
 
     let templateFamilyList = ` 
         <select class="form-select" id="templateFamilyList" aria-label="Default select Family">
-            <option selected>Select Family</option>
+            <option value="" selected>Select Family</option>
             {{#family}}
-            <option value={{family_id}}>{{family_name}}</option>
+            <option value="{{family_id}}">{{family_name}}</option>
             {{/family}}
         </select>
     `;
 
     let templateSpeciesList = ` 
         <select class="form-select" id="templateSpeciesList" aria-label="Default select Family">
-            <option selected>Select Species</option>
+            <option value="" selected>Select Species</option>
             {{#species}}
-            <option value={{species_id}}>{{species_name}}</option>
+            <option value="{{species_id}}">{{species_name}}</option>
             {{/species}}
         </select>
     `;
 
     let templateVarietyList = ` 
         <select class="form-select" id="templateVarietyList" aria-label="Default select Family">
-            <option selected>Select Variety</option>
+            <option value="" selected>Select Variety</option>
             {{#variety}}
-            <option value={{variety_id}}>{{variety_name}}</option>
+            <option value="{{variety_id}}">{{variety_name}}</option>
             {{/variety}}
         </select>
     `;
+
 
     function togglePopup(popupId) {
         const popupForm = document.getElementById(popupId);
@@ -357,9 +358,24 @@
 
         $(document).on('change', '#templateFamilyList', function() {
             var selectedValue = $(this).val();
-            getSpeciesResults(selectedValue);
             var familyActionsContainer = document.getElementById('editFamilyActions');
-            console.log(familyActionsContainer);
+            var speciesActionsContainer = document.getElementById('editSpeciesActions');
+            var speciesDropDown = document.getElementById('templateSpeciesList');
+            if(speciesDropDown)
+                speciesDropDown.style.display = 'none';
+            var varDropDown = document.getElementById('templateVarietyList');
+            if(varDropDown)
+                varDropDown.style.display = 'none';
+            if(selectedValue == "") {
+                familyActionsContainer.style.display = 'none';
+                speciesActionsContainer.style.display = 'none';  
+                return;
+            }
+            else {
+                familyActionsContainer.style.display = 'block';
+            }
+            getSpeciesResults(selectedValue);
+            
 
             window.validateAddSpeciesForm = function() { 
                 const speciesAddName = document.getElementById('species_add_name').value;
@@ -435,10 +451,20 @@
 
     $(document).on('change', '#templateSpeciesList', function() {
     var selectedValue = $(this).val();
-    console.log("Selected Species Value:", selectedValue);
+    var speciesActionsContainer = document.getElementById('editSpeciesActions');
+    var varDropDown = document.getElementById('templateVarietyList');
+    if(varDropDown)
+        varDropDown.style.display = 'none';
+    if(selectedValue == "") {
+        speciesActionsContainer.style.display = 'none';
+        return;
+    }
+    else {
+        speciesActionsContainer.style.display = 'block';
+    }
 
     getVarietyResults(selectedValue);
-    var speciesActionsContainer = document.getElementById('editSpeciesActions');
+    
 
     window.validateAddVarietyForm = function() {
         // Helper function to validate integer values (non-negative and valid integer)
